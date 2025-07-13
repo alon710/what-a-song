@@ -4,9 +4,10 @@ A Next.js application that creates engaging lyric translation guessing games.
 
 ## Features
 
-- **🎮 Interactive Game**: Players guess song titles based on translated lyrics
-- **🎯 Progressive Hints**: Artist name, popularity, album, and release year
-- **📊 Performance Tracking**: Statistics on hints used, lines revealed, and time taken
+- **🎮 Interactive Game**: Players guess song titles based on translated lyrics with 5 attempts
+- **🎯 Enhanced Hints System**: 5 strategic hints including blurred album cover reveal
+- **⏱️ Real-time Timer**: Automatic timer with performance tracking
+- **📊 Performance Tracking**: Statistics on hints used, lines revealed, tries used, and time taken
 - **✅ Multiple Valid Answers**: Support for different ways to write song titles
 - **🔍 Spotify Integration**: Search and select songs with rich metadata
 - **🔥 Firebase Backend**: Secure game data storage and retrieval

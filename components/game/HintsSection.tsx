@@ -67,8 +67,16 @@ export default function HintsSection({
                       Reveal
                     </Button>
                   ) : (
-                    <span className="text-lg font-semibold text-blue-700">
-                      {hint.value}
+                    <span
+                      className={`text-lg font-semibold ${
+                        hint.id === "albumCover"
+                          ? "text-green-700"
+                          : "text-blue-700"
+                      }`}
+                    >
+                      {hint.id === "albumCover"
+                        ? "Album Revealed! 🎨"
+                        : hint.value}
                     </span>
                   )}
                 </div>
