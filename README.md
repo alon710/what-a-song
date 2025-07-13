@@ -1,13 +1,13 @@
 # 🎵 What a Song - Lyric Translation Game
 
-A Next.js application that creates engaging lyric translation guessing games with AI-powered translation suggestions.
+A Next.js application that creates engaging lyric translation guessing games.
 
 ## Features
 
 - **🎮 Interactive Game**: Players guess song titles based on translated lyrics
 - **🎯 Progressive Hints**: Artist name, popularity, album, and release year
 - **📊 Performance Tracking**: Statistics on hints used, lines revealed, and time taken
-- **🤖 AI Translation**: Gemini AI-powered automatic translation suggestions for admins
+- **✅ Multiple Valid Answers**: Support for different ways to write song titles
 - **🔍 Spotify Integration**: Search and select songs with rich metadata
 - **🔥 Firebase Backend**: Secure game data storage and retrieval
 - **🌐 Multi-language Support**: Hebrew ↔ English translation support
@@ -16,8 +16,7 @@ A Next.js application that creates engaging lyric translation guessing games wit
 ## Tech Stack
 
 - **Frontend**: Next.js 15+, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Next.js API routes, Firebase Firestore
-- **AI**: Google Gemini AI for translations
+- **Backend**: Next.js Server Actions, Firebase Firestore
 - **Music Data**: Spotify Web API
 - **Deployment**: Vercel-ready
 
@@ -38,9 +37,6 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id_here
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id_here
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id_here
-
-# Google Gemini AI API (for translation suggestions)
-GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ## API Keys Setup
@@ -57,11 +53,6 @@ GEMINI_API_KEY=your_gemini_api_key_here
 2. Create a new project
 3. Enable Firestore Database
 4. Get your web app configuration
-
-### 3. Google Gemini AI
-
-1. Go to [Google AI Studio](https://ai.google.dev)
-2. Get your API key for Gemini
 
 ## Getting Started
 
@@ -90,9 +81,9 @@ npm run dev
 
 1. Navigate to `/admin`
 2. Search for songs using Spotify
-3. Select a song (AI automatically analyzes metadata to predict lyrics language)
-4. Enter original lyrics (AI detects actual language as you type)
-5. Use AI translation suggestions or enter manual translations
+3. Select a song and set the original language
+4. Add multiple acceptable answers (different ways to write the song title)
+5. Enter translated lyrics (up to 5 lines)
 6. Save the game
 
 ### For Players
@@ -102,23 +93,55 @@ npm run dev
 3. Use hints strategically to improve your score
 4. View your performance summary
 
-## AI Translation Features
+## Multiple Valid Answers Feature
 
-The admin panel includes intelligent translation suggestions powered by Google Gemini AI:
+The admin panel allows you to add multiple acceptable answers for each song to improve the player experience:
 
-### Smart Language Detection
+### Examples of Multiple Answers:
 
-- **Metadata Analysis**: Instantly predicts lyrics language from song title, artist names, and album info
-- **Lyrics Detection**: Real-time analysis of actual lyrics as you type
-- **Auto-Configuration**: Automatically sets original language based on confident predictions
+- **"Can't Help Myself"** and **"Can't Help Myself (Sugar Pie Honey Bunch)"**
+- **"Yesterday"** and **"Yesterday (Remastered)"**
+- **"Bohemian Rhapsody"** and **"Bohemian Rhapsody - 2011 Mix"**
+- **"Don't Stop Me Now"** and **"Don't Stop Me Now - 2011 Mix"**
 
-### Translation Capabilities
+### Why This Matters:
 
-- **Individual Line Translation**: Translate single lyric lines with context
-- **Batch Translation**: Translate all lyrics at once
-- **Context-Aware**: Uses song and artist information for better translations
-- **Smart Prompting**: Maintains poetic meaning and natural flow
-- **Hebrew ↔ English**: Specialized support for both languages
+- **User-Friendly**: Players don't need to guess the exact Spotify title format
+- **Flexible**: Accounts for common abbreviations and variations
+- **Better Experience**: Reduces frustration from "technically correct" answers being rejected
+
+### Best Practices:
+
+- Always include the basic song title without extra information
+- Add versions without parentheses if the original has them
+- Include common shortened versions or nicknames
+- Consider alternate spellings or punctuation variations
+
+## Server Actions
+
+The application uses Next.js 15+ Server Actions for modern, efficient form handling:
+
+### Key Features:
+
+- **Type-Safe**: Full TypeScript support with shared interfaces
+- **Progressive Enhancement**: Works without JavaScript
+- **Better Performance**: No client-side fetch calls needed
+- **Automatic Revalidation**: Built-in cache invalidation
+- **Error Handling**: Server-side validation and error management
+
+### Available Actions:
+
+- `createGame(formData)` - Create new game from form data
+- `createGameWithRedirect(gameData)` - Create game and redirect on success
+- `getRandomGame()` - Fetch random active game for playing
+- `getAllGames()` - Admin function to list all games
+
+### Benefits over API Routes:
+
+- **Less Boilerplate**: No need for separate API endpoints
+- **Better DX**: Direct function calls instead of fetch
+- **Type Safety**: Shared types between client and server
+- **Built-in Loading States**: useTransition() for pending states
 
 ## Project Structure
 
@@ -128,11 +151,28 @@ app/
 ├── game/               # Game interface for players
 ├── api/
 │   ├── spotify-*       # Spotify API integration
-│   ├── translate-gemini # Gemini AI translation
-│   └── admin/games/    # Game CRUD operations
-├── components/ui/      # shadcn/ui components
-└── lib/
-    └── firebase.ts     # Firebase configuration
+│   └── translate/      # Translation utilities
+├── components/
+│   ├── admin/          # Admin panel components
+│   │   ├── SearchSongs.tsx      # Song search functionality
+│   │   ├── AcceptableAnswers.tsx # Multiple answers management
+│   │   ├── LanguageSettings.tsx # Language selection
+│   │   ├── LyricsInput.tsx      # Lyrics input form
+│   │   ├── SelectedSongInfo.tsx # Song details display
+│   │   ├── SuccessMessage.tsx   # Success feedback
+│   │   └── SaveGameButton.tsx   # Save game action
+│   ├── game/           # Game interface components
+│   │   ├── GameHeader.tsx       # Progress and navigation
+│   │   ├── LyricsDisplay.tsx    # Lyrics presentation
+│   │   ├── GuessInput.tsx       # Guess submission
+│   │   ├── HintsSection.tsx     # Hints management
+│   │   └── ResultsDialog.tsx    # Game results modal
+│   └── ui/             # shadcn/ui base components
+├── lib/
+│   ├── actions.ts      # Next.js Server Actions
+│   └── firebase.ts     # Firebase configuration
+├── types/
+│   └── index.ts        # Shared TypeScript interfaces
 ```
 
 ## Copyright Notice
@@ -142,7 +182,7 @@ app/
 - Ensure you have proper rights and permissions
 - Use short excerpts that qualify as fair use
 - Consider using public domain or Creative Commons licensed content
-- The application includes prominent copyright warnings
+- Always respect copyright laws
 
 ## License
 

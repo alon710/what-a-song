@@ -18,6 +18,7 @@ export const db = getFirestore(app);
 export interface GameData {
   id: string;
   songTitle: string;
+  acceptableAnswers: string[]; // Multiple valid ways to write the song name
   artist: string;
   album: string;
   releaseYear: number;
@@ -26,8 +27,7 @@ export interface GameData {
   originalLanguage: "en" | "he";
   spotifyId: string;
   spotifyUrl: string;
-  originalLyrics: string[];
-  translatedLyrics: string[];
+  translatedLyrics: string[]; // Only store translated lyrics
   createdAt: string;
   isActive: boolean;
 }

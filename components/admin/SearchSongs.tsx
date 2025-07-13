@@ -1,0 +1,108 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { SpotifyTrack } from "@/types";
+
+interface SearchSongsProps {
+  onSongSelect: (song: SpotifyTrack) => void;
+}
+
+export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const searchSongs = async () => {
+    if (!searchQuery.trim()) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/spotify-search?q=${encodeURIComponent(searchQuery)}&limit=10`
+      );
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (data.tracks) {
+        setSearchResults(data.tracks);
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSongSelect = (song: SpotifyTrack) => {
+    onSongSelect(song);
+    setSearchResults([]);
+    setSearchQuery("");
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Search className="w-5 h-5" />
+          Search Songs
+        </CardTitle>
+        <CardDescription>
+          Search for songs using Spotify's database
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Search for a song..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && searchSongs()}
+          />
+          <Button onClick={searchSongs} disabled={loading}>
+            {loading ? "..." : <Search className="w-4 h-4" />}
+          </Button>
+        </div>
+
+        {searchResults.length > 0 && (
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {searchResults.map((song) => (
+              <Card
+                key={song.id}
+                className="cursor-pointer hover:bg-slate-50"
+                onClick={() => handleSongSelect(song)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
+                    {song.album.images[0] && (
+                      <img
+                        src={song.album.images[0].url}
+                        alt={song.album.name}
+                        className="w-12 h-12 rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-medium">{song.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {song.artists.map((a) => a.name).join(", ")}
+                      </p>
+                    </div>
+                    <Button size="sm">Select</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
