@@ -14,7 +14,7 @@ export default function ErrorState({ error }: ErrorStateProps) {
   const t = useTranslations("game");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8">
+    <div className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-center min-h-[60vh]">
           <Card className="w-96">

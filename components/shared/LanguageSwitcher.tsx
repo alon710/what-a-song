@@ -1,14 +1,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Globe } from "lucide-react";
-import { useLocale } from "next-intl";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Globe, ChevronDown } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("shared.languages");
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = (newLocale: string) => {
@@ -22,41 +32,38 @@ export default function LanguageSwitcher() {
       html.setAttribute("lang", newLocale);
       html.setAttribute("dir", isRTL ? "rtl" : "ltr");
 
-      // Add/remove RTL class for additional styling support
-      if (isRTL) {
-        html.classList.add("rtl");
-        html.classList.remove("ltr");
-      } else {
-        html.classList.add("ltr");
-        html.classList.remove("rtl");
-      }
-
       // Refresh the page to apply the new locale
       window.location.reload();
     });
   };
 
+  const getCurrentLanguageName = () => {
+    return locale === "he" ? t("hebrew") : t("english");
+  };
+
   return (
-    <div className="flex items-center gap-2">
-      <Globe className="w-4 h-4" />
-      <div className="flex gap-1">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button
-          variant={locale === "he" ? "default" : "outline"}
-          size="sm"
-          onClick={() => switchLocale("he")}
+          variant="outline"
+          className="flex items-center gap-2 text-gray-700"
           disabled={isPending}
         >
-          עב
+          <Globe className="h-4 w-4" />
+          <span>{getCurrentLanguageName()}</span>
+          <ChevronDown className="h-4 w-4" />
         </Button>
-        <Button
-          variant={locale === "en" ? "default" : "outline"}
-          size="sm"
-          onClick={() => switchLocale("en")}
-          disabled={isPending}
-        >
-          EN
-        </Button>
-      </div>
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[180px]">
+        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup value={locale} onValueChange={switchLocale}>
+          <DropdownMenuRadioItem value="he">
+            עברית (Hebrew)
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

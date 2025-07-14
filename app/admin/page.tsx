@@ -99,7 +99,7 @@ function AdminContent() {
   return (
     <div className="p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8 text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
           🎵 Admin Panel - Create Game
         </h1>
 
@@ -146,7 +146,7 @@ export default function AdminPanel() {
       fallback={
         <div className="p-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold text-white mb-8 text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
               🎵 Admin Panel - Loading...
             </h1>
           </div>
