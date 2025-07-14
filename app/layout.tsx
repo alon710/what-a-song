@@ -29,20 +29,20 @@ export default async function RootLayout({
   const englishMessages = (await import("../messages/en.json")).default;
 
   return (
-    <html lang="he" dir="rtl">
-      <body
+    <LocaleProvider
+      hebrewMessages={hebrewMessages}
+      englishMessages={englishMessages}
+    >
+      <html
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <LocaleProvider
-          hebrewMessages={hebrewMessages}
-          englishMessages={englishMessages}
-        >
-          <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+        <body>
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             <Navigation />
             <main>{children}</main>
           </div>
-        </LocaleProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </LocaleProvider>
   );
 }

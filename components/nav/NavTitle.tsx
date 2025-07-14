@@ -9,7 +9,7 @@ export default function NavTitle() {
   return (
     <Link
       href="/"
-      className="text-xl font-bold text-white hover:opacity-80 transition-opacity"
+      className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
     >
       {t("title")}
     </Link>
