@@ -14,17 +14,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { LogIn, Music } from "lucide-react";
+import { UserPlus, Music } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const router = useRouter();
   const t = useTranslations("auth");
 
@@ -34,10 +35,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      await signIn(email, password);
-      router.push("/admin");
+      await signUp(email, password, displayName || undefined);
+      router.push("/");
     } catch (error: any) {
-      console.error("Login error:", error);
       setError(getErrorMessage(error.code));
     } finally {
       setIsLoading(false);
@@ -45,40 +45,34 @@ export default function LoginPage() {
   };
 
   const getErrorMessage = (errorCode: string) => {
-    switch (errorCode) {
-      case "auth/user-not-found":
-        return t("errors.userNotFound");
-      case "auth/wrong-password":
-        return t("errors.wrongPassword");
-      case "auth/invalid-email":
-        return t("errors.invalidEmail");
-      case "auth/too-many-requests":
-        return t("errors.tooManyRequests");
-      default:
-        return t("errors.loginFailed");
-    }
+    const errorMessages: { [key: string]: string } = {
+      "auth/email-already-in-use": t("errors.emailAlreadyInUse"),
+      "auth/invalid-email": t("errors.invalidEmail"),
+      "auth/weak-password": t("errors.weakPassword"),
+      "auth/too-many-requests": t("errors.tooManyRequests"),
+    };
+
+    return errorMessages[errorCode] || t("errors.signupFailed");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md space-y-6">
-        {/* Logo and Title */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <Music className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-800">🎵 איזה שיר</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Music className="h-8 w-8 text-blue-600" />
+            <h1 className="text-2xl font-bold text-gray-900">What A Song</h1>
           </div>
-          <p className="text-gray-600">{t("adminLogin")}</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-start flex items-center gap-2">
-              <LogIn className="w-5 h-5" />
-              {t("signIn")}
-            </CardTitle>
+        <Card className="w-full shadow-xl">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <UserPlus className="h-6 w-6 text-blue-600" />
+              <CardTitle className="text-xl">{t("createAccount")}</CardTitle>
+            </div>
             <CardDescription className="text-start">
-              {t("enterCredentials")}
+              {t("enterSignupDetails")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -119,19 +113,33 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="displayName" className="text-start">
+                  {t("displayName")}
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder={t("displayNamePlaceholder")}
+                  className="text-start"
+                />
+              </div>
+
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? t("signingIn") : t("signIn")}
+                {isLoading ? t("signingUp") : t("signUp")}
               </Button>
             </form>
 
             <div className="mt-4 pt-4 border-t text-center space-y-2">
               <p className="text-sm text-gray-600">
-                {t("dontHaveAccount")}{" "}
+                {t("alreadyHaveAccount")}{" "}
                 <Link
-                  href="/auth/signup"
+                  href="/auth/login"
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  {t("signUp")}
+                  {t("signIn")}
                 </Link>
               </p>
               <Link

@@ -141,15 +141,23 @@
   },
   "auth": {
     "signIn": "כניסה",
+    "signUp": "הרשמה",
     "signOut": "יציאה",
     "adminLogin": "כניסה לממשק ניהול",
+    "createAccount": "יצירת חשבון",
     "enterCredentials": "הזן את פרטי ההתחברות שלך",
+    "enterSignupDetails": "צור חשבון חדש כדי להתחיל",
     "email": "דוא\"ל",
     "password": "סיסמה",
+    "displayName": "שם תצוגה (אופציונלי)",
     "emailPlaceholder": "הזן כתובת דוא\"ל",
     "passwordPlaceholder": "הזן סיסמה",
+    "displayNamePlaceholder": "הזן שם תצוגה",
     "signingIn": "נכנס...",
+    "signingUp": "יוצר חשבון...",
     "backToGame": "חזור למשחק",
+    "alreadyHaveAccount": "כבר יש לך חשבון?",
+    "dontHaveAccount": "אין לך חשבון?",
     "verifyingAccess": "מאמת גישה...",
     "accessDenied": "גישה נדחתה",
     "loginRequired": "נדרשת התחברות כדי לגשת לאזור זה",
@@ -159,8 +167,11 @@
       "userNotFound": "משתמש לא נמצא",
       "wrongPassword": "סיסמה שגויה",
       "invalidEmail": "כתובת דוא\"ל לא תקינה",
-      "tooManyRequests": "יותר מדי ניסיונות התחברות. נסה שוב מאוחר יותר",
-      "loginFailed": "ההתחברות נכשלה. נסה שוב"
+      "emailAlreadyInUse": "כתובת הדוא\"ל כבר בשימוש",
+      "weakPassword": "הסיסמה צריכה להכיל לפחות 6 תווים",
+      "tooManyRequests": "יותר מדי ניסיונות. נסה שוב מאוחר יותר",
+      "loginFailed": "ההתחברות נכשלה. נסה שוב",
+      "signupFailed": "יצירת החשבון נכשלה. נסה שוב"
     }
   },
   "shared": {

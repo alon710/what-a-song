@@ -141,15 +141,23 @@
   },
   "auth": {
     "signIn": "Sign In",
+    "signUp": "Sign Up",
     "signOut": "Sign Out",
     "adminLogin": "Admin Login",
+    "createAccount": "Create Account",
     "enterCredentials": "Enter your credentials to continue",
+    "enterSignupDetails": "Create a new account to get started",
     "email": "Email",
     "password": "Password",
+    "displayName": "Display Name (Optional)",
     "emailPlaceholder": "Enter your email",
     "passwordPlaceholder": "Enter your password",
+    "displayNamePlaceholder": "Enter your display name",
     "signingIn": "Signing in...",
+    "signingUp": "Creating account...",
     "backToGame": "Back to Game",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
     "verifyingAccess": "Verifying access...",
     "accessDenied": "Access Denied",
     "loginRequired": "Login required to access this area",
@@ -159,8 +167,11 @@
       "userNotFound": "User not found",
       "wrongPassword": "Incorrect password",
       "invalidEmail": "Invalid email address",
-      "tooManyRequests": "Too many login attempts. Please try again later",
-      "loginFailed": "Login failed. Please try again"
+      "emailAlreadyInUse": "Email address is already in use",
+      "weakPassword": "Password should be at least 6 characters",
+      "tooManyRequests": "Too many attempts. Please try again later",
+      "loginFailed": "Login failed. Please try again",
+      "signupFailed": "Account creation failed. Please try again"
     }
   },
   "shared": {
