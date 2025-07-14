@@ -1241,6 +1241,30 @@
   resolved "https://registry.yarnpkg.com/@schummar/icu-type-parser/-/icu-type-parser-1.21.5.tgz#75989085bbbf80ee325874a0137437bde77e9baf"
   integrity sha512-bXHSaW5jRTmke9Vd0h5P7BtWZG9Znqb8gSDxZnxaGSJnGwPLDPfS+3g0BKzeWqzgZPsIVZkM7m2tbo18cm5HBw==
 
+"@stagewise-plugins/react@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@stagewise-plugins/react/-/react-0.5.2.tgz#ddcb19e79998dbd2da51f185a5c06aea53e6a0be"
+  integrity sha512-nNyaooMMPzRRqjN3ZqQneuQfuFYWEwYlWT7uYip0C+iHGuOJE+V3dUK6cJ8+q1YRAMBvzQYeDFqVZA01Cz9Ysw==
+
+"@stagewise/toolbar-next@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@stagewise/toolbar-next/-/toolbar-next-0.5.2.tgz#1225627a750456dc937ce177e75408a4529d222d"
+  integrity sha512-ywd610gNfd3XfATYlctBQnWd50x0ai0MeZUfaOPh4QZ1Lr9MHk0HMjAPV0DOJNWgvU2LVlXQMMEAuPpfrR946Q==
+  dependencies:
+    "@stagewise/toolbar-react" "0.5.2"
+
+"@stagewise/toolbar-react@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@stagewise/toolbar-react/-/toolbar-react-0.5.2.tgz#d5a78e24731e074fae55b5bf5b2bd400bc54c9d0"
+  integrity sha512-9TfmIFvqkpfGIGrpNIgmkKGKY9Fj/anypCQGgOcYICYQhHBFSQywz87fsdqk5tYrZVHlTyZlR0v2ixKd1+v2GQ==
+  dependencies:
+    "@stagewise/toolbar" "0.5.2"
+
+"@stagewise/toolbar@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@stagewise/toolbar/-/toolbar-0.5.2.tgz#fc2f85dd4f31fe2bf940575e1e4435a30eba083c"
+  integrity sha512-QxowY55dhYJS4iD3KuYCvmLl3jA74boYziEr9lent+NZpO1rjtF0KpDyld+hClA4lWnCVLPxhMwW69Qv2+xzjg==
+
 "@swc/counter@0.1.3":
   version "0.1.3"
   resolved "https://registry.npmjs.org/@swc/counter/-/counter-0.1.3.tgz"

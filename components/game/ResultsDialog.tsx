@@ -58,7 +58,6 @@ export default function ResultsDialog({
 
   if (!songData) return null;
 
-  // For modal-style display (just finished playing)
   if (mode === "justFinished" && stats) {
     return (
       <Dialog open={open}>
@@ -188,25 +187,12 @@ export default function ResultsDialog({
     );
   }
 
-  // For full-screen display (already played/won)
   if ((mode === "alreadyWon" || mode === "alreadyPlayed") && previousScore) {
     const isWon = mode === "alreadyWon";
     const t = isWon ? tAlreadyWon : tAlreadyPlayed;
 
     return (
       <div className="text-center space-y-8 py-16">
-        <div className="space-y-4">
-          <div className="flex items-center justify-center gap-2">
-            {isWon ? (
-              <Trophy className="w-8 h-8 text-yellow-500" />
-            ) : (
-              <XCircle className="w-8 h-8 text-red-500" />
-            )}
-            <h1 className="text-3xl font-bold text-gray-800">{t("title")}</h1>
-          </div>
-          <p className="text-gray-600">{t("subtitle")}</p>
-        </div>
-
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
           <AlbumCover
             src={songData.albumCover}

@@ -1,7 +1,15 @@
 "use server";
 
-import { db, ScoreData, SongData } from "./firebase";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { db, SongData } from "./firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { redirect } from "next/navigation";
 
 export interface CreateSongData {
@@ -16,22 +24,6 @@ export interface CreateSongData {
   spotifyId: string;
   spotifyUrl: string;
   translatedLyrics: string[];
-}
-
-export interface SaveScoreData {
-  songId: string;
-  userId?: string;
-  songTitle: string;
-  artist: string;
-  album: string;
-  releaseYear: number;
-  isWon: boolean;
-  triesUsed: number;
-  hintsUsed: number;
-  linesRevealed: number;
-  timeElapsed: number;
-  attempts: string[];
-  usedHintTypes: string[];
 }
 
 export async function createSong(formData: FormData) {
@@ -176,9 +168,8 @@ export async function getRandomSong() {
 }
 
 export async function getAllSongs() {
-  const collectionName = "songs";
   try {
-    const songsRef = collection(db, collectionName);
+    const songsRef = collection(db, "songs");
     const querySnapshot = await getDocs(songsRef);
 
     const songs = querySnapshot.docs.map((doc) => ({
@@ -196,135 +187,55 @@ export async function getAllSongs() {
   }
 }
 
-export async function saveScore(scoreData: SaveScoreData) {
+export async function getSongById(songId: string) {
   try {
-    console.log("Starting to save score...", {
-      songId: scoreData.songId,
-      userId: scoreData.userId,
-      isWon: scoreData.isWon,
-    });
-
-    // Validate required fields
-    if (!scoreData.songId) {
-      throw new Error("Missing songId");
-    }
-    if (!scoreData.songTitle) {
-      throw new Error("Missing songTitle");
-    }
-    if (!scoreData.artist) {
-      throw new Error("Missing artist");
+    if (!songId) {
+      return { success: false, error: "Missing songId" };
     }
 
-    const calculateScore = () => {
-      let score = 0;
+    const songDoc = await getDoc(doc(db, "songs", songId));
 
-      if (scoreData.isWon) {
-        score += 1000;
+    if (!songDoc.exists()) {
+      return { success: false, error: "Song not found" };
+    }
 
-        const triesBonus = (3 - scoreData.triesUsed) * 200;
-        score += triesBonus;
+    const songData = {
+      id: songDoc.id,
+      ...songDoc.data(),
+    } as SongData;
 
-        const hintsBonus = (5 - scoreData.hintsUsed) * 100;
-        score += hintsBonus;
+    // Check if song is active
+    if (!songData.isActive) {
+      return { success: false, error: "Song is not active" };
+    }
 
-        const linesBonus = Math.max(0, (5 - scoreData.linesRevealed) * 50);
-        score += linesBonus;
-
-        if (scoreData.timeElapsed <= 30) score += 300;
-        else if (scoreData.timeElapsed <= 60) score += 200;
-        else if (scoreData.timeElapsed <= 120) score += 100;
-      }
-
-      return Math.max(0, score);
-    };
-
-    const score = calculateScore();
-    console.log("Calculated score:", score);
-
-    const scoreRecord: Omit<ScoreData, "id"> = {
-      songId: scoreData.songId,
-      userId: scoreData.userId || "",
-      songTitle: scoreData.songTitle,
-      artist: scoreData.artist,
-      album: scoreData.album || "",
-      releaseYear: scoreData.releaseYear || 0,
-      isWon: scoreData.isWon,
-      triesUsed: scoreData.triesUsed,
-      hintsUsed: scoreData.hintsUsed,
-      linesRevealed: scoreData.linesRevealed,
-      timeElapsed: scoreData.timeElapsed,
-      attempts: scoreData.attempts || [],
-      usedHintTypes: scoreData.usedHintTypes || [],
-      completedAt: new Date().toISOString(),
-      score,
-    };
-
-    console.log("Attempting to save score record to Firestore...");
-
-    const docRef = await addDoc(collection(db, "scores"), scoreRecord);
-    console.log("Score saved successfully with ID:", docRef.id);
-
-    return { success: true, id: docRef.id, score: scoreRecord };
+    return { success: true, song: songData };
   } catch (error) {
-    console.error("Error saving score - Full error:", error);
-    console.error(
-      "Error message:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
-    console.error(
-      "Error stack:",
-      error instanceof Error ? error.stack : "No stack trace"
-    );
-
+    console.error("Error fetching song by ID:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
-      details: error instanceof Error ? error.stack : undefined,
     };
   }
 }
 
-export async function getUserScoreForSong(userId: string, songId: string) {
+export async function getActiveSongs() {
   try {
-    if (!userId || !songId) {
-      return { success: false, error: "Missing userId or songId" };
-    }
-
-    const scoresRef = collection(db, "scores");
-    const q = query(
-      scoresRef,
-      where("userId", "==", userId),
-      where("songId", "==", songId)
-    );
-
+    const songsRef = collection(db, "songs");
+    const q = query(songsRef, where("isActive", "==", true));
     const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-      return { success: true, hasPlayed: false, hasWon: false, score: null };
-    }
-
-    // Get the user's score (there should only be one per user per song)
-    const scores = querySnapshot.docs.map((doc) => ({
+    const songs = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as ScoreData[];
+    })) as SongData[];
 
-    const userScore = scores[0]; // Take the first (and should be only) score
-
-    return {
-      success: true,
-      hasPlayed: true,
-      hasWon: userScore.isWon,
-      score: userScore,
-    };
+    return { success: true, songs };
   } catch (error) {
-    console.error("Error checking user score for song:", error);
+    console.error("Error fetching active songs:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
-      hasPlayed: false,
-      hasWon: false,
-      score: null,
     };
   }
 }

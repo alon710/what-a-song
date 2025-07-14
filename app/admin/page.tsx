@@ -12,7 +12,7 @@ import LyricsInput from "@/components/admin/LyricsInput";
 import SelectedSongInfo from "@/components/admin/SelectedSongInfo";
 import SuccessMessage from "@/components/admin/SuccessMessage";
 import SaveGameButton from "@/components/admin/SaveGameButton";
-import { CreateSongData, createSongOnly } from "@/lib/actions";
+import { CreateSongData, createSongOnly } from "@/lib/songs";
 import LoadingState from "@/components/common/LoadingState";
 
 function AdminContent() {

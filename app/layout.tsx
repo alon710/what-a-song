@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import LocaleProvider from "@/components/shared/LocaleProvider";
 import AuthProvider from "@/components/shared/AuthProvider";
 import Navigation from "@/components/nav/Navigation";
+import { StagewiseToolbar } from "@stagewise/toolbar-next";
+import ReactPlugin from "@stagewise-plugins/react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,6 +46,13 @@ export default async function RootLayout({
                 {children}
               </main>
             </div>
+            {process.env.NODE_ENV === "development" && (
+              <StagewiseToolbar
+                config={{
+                  plugins: [ReactPlugin],
+                }}
+              />
+            )}
           </body>
         </html>
       </AuthProvider>

@@ -1,120 +1,58 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Music, Clock, Trophy, Calendar } from "lucide-react";
-import { SpotifyTrack } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
+import { SongData } from "@/lib/firebase";
+import { Trophy } from "lucide-react";
 
 interface SongCardProps {
-  song: SpotifyTrack;
+  song: SongData;
+  userHasPlayed?: boolean;
+  userHasWon?: boolean;
 }
 
-export default function SongCard({ song }: SongCardProps) {
-  const formatDuration = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
-    return `${minutes}:${seconds.padStart(2, "0")}`;
-  };
-
-  const albumImage =
-    song.album.images.find((img) => img.width >= 300) || song.album.images[0];
-
+export default function SongCard({
+  song,
+  userHasPlayed,
+  userHasWon,
+}: SongCardProps) {
   return (
-    <Card className="overflow-hidden shadow-2xl">
-      <div className="md:flex">
-        {/* Album Cover */}
-        <div className="md:w-1/2">
-          {albumImage && (
-            <Image
-              src={albumImage.url}
-              alt={`${song.album.name} cover`}
-              width={albumImage.width || 300}
-              height={albumImage.height || 300}
-              className="w-full h-full object-cover"
-            />
-          )}
-        </div>
+    <Link href={`/play/${song.id}`}>
+      <div className="group relative aspect-square overflow-hidden rounded-lg transition-all duration-300 hover:scale-105 cursor-pointer">
+        <Image
+          src={song.albumCover}
+          alt={`${song.songTitle} by ${song.artist}`}
+          fill
+          className={`object-cover transition-all duration-300 group-hover:scale-110 ${
+            !userHasPlayed ? "blur-sm" : ""
+          }`}
+        />
 
-        {/* Song Info */}
-        <div className="md:w-1/2 p-8">
-          <CardHeader className="p-0 mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <Badge variant="secondary" className="mb-2">
-                Track ID: {song.id}
-              </Badge>
-              {song.explicit && <Badge variant="destructive">Explicit</Badge>}
+        {/* Trophy for completed games */}
+        {userHasPlayed && (
+          <div className="absolute top-2 right-2">
+            <div
+              className={`p-2 rounded-full ${
+                userHasWon ? "bg-yellow-500" : "bg-gray-500"
+              } bg-opacity-90`}
+            >
+              <Trophy className="w-5 h-5 text-white" />
             </div>
-            <CardTitle className="text-3xl font-bold mb-2">
-              {song.name}
-            </CardTitle>
-            <CardDescription className="text-lg">
-              by {song.artists.map((artist) => artist.name).join(", ")}
-            </CardDescription>
-          </CardHeader>
+          </div>
+        )}
 
-          <CardContent className="p-0 space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Music className="w-4 h-4" />
-                <span className="font-medium">Album:</span>
-                <span>{song.album.name}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span className="font-medium">Duration:</span>
-                <span>{formatDuration(song.duration_ms)}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span className="font-medium">Release:</span>
-                <span>{new Date(song.album.release_date).getFullYear()}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4" />
-                <span className="font-medium">Popularity:</span>
-                <Badge variant="outline">{song.popularity}/100</Badge>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              {song.preview_url && (
-                <Button asChild>
-                  <a
-                    href={song.preview_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Music className="w-4 h-4 mr-2" />
-                    Preview
-                  </a>
-                </Button>
-              )}
-
-              <Button variant="outline" asChild>
-                <a
-                  href={song.external_urls.spotify}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Open in Spotify
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </div>
+        {/* Song details overlay for won games */}
+        {userHasWon && (
+          <div className="absolute bottom-0 left-0 right-0 bg-white/30 backdrop-blur-sm p-4 m-2 rounded-lg">
+            <h3 className="font-bold text-sm text-gray-800 line-clamp-1 mb-1">
+              {song.songTitle}
+            </h3>
+            <p className="text-xs text-gray-600 line-clamp-1">
+              by {song.artist}
+            </p>
+          </div>
+        )}
       </div>
-    </Card>
+    </Link>
   );
 }
