@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface SaveGameButtonProps {
   onSave: () => void;
@@ -14,6 +15,8 @@ export default function SaveGameButton({
   isPending,
   disabled,
 }: SaveGameButtonProps) {
+  const t = useTranslations("admin");
+
   return (
     <Button
       onClick={onSave}
@@ -22,11 +25,11 @@ export default function SaveGameButton({
       size="lg"
     >
       {isPending ? (
-        "Saving..."
+        t("saving")
       ) : (
         <>
           <Save className="w-4 h-4 me-2" />
-          Save Game
+          {t("saveButton")}
         </>
       )}
     </Button>

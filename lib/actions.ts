@@ -110,6 +110,37 @@ export async function createGameWithRedirect(gameData: CreateGameData) {
   redirect("/admin?success=true");
 }
 
+export async function createGameOnly(gameData: CreateGameData) {
+  try {
+    // Validate required fields
+    if (
+      !gameData.songTitle ||
+      !gameData.artist ||
+      !gameData.acceptableAnswers.length ||
+      !gameData.translatedLyrics.length
+    ) {
+      throw new Error("Missing required fields");
+    }
+
+    // Save to Firebase
+    const docRef = await addDoc(collection(db, "games"), {
+      ...gameData,
+      createdAt: new Date().toISOString(),
+      isActive: true,
+    });
+
+    console.log("Game created with ID:", docRef.id);
+
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("Error creating game:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
 export async function getRandomGame() {
   try {
     const gamesRef = collection(db, "games");

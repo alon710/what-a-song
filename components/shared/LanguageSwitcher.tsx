@@ -16,7 +16,6 @@ import { useTransition } from "react";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const t = useTranslations("shared.languages");
   const tNav = useTranslations("shared");
   const [isPending, startTransition] = useTransition();
 
@@ -33,12 +32,8 @@ export default function LanguageSwitcher() {
     });
   };
 
-  const getCurrentLanguageName = () => {
-    return locale === "he" ? t("hebrew") : t("english");
-  };
-
-  const getCurrentLanguageShort = () => {
-    return locale === "he" ? "עב" : "EN";
+  const getLanguageWithFlag = (lang: string) => {
+    return lang === "he" ? "🇮🇱 עברית" : "🇺🇸 English";
   };
 
   return (
@@ -47,21 +42,14 @@ export default function LanguageSwitcher() {
         <Button
           variant="outline"
           size="sm"
-          className="flex items-center gap-1 sm:gap-2 text-gray-700 h-8 px-2 sm:px-3 text-xs sm:text-sm min-w-[44px] touch-manipulation"
+          className="flex items-center gap-1 text-gray-700 h-8 px-2 min-w-[44px] touch-manipulation"
           disabled={isPending}
         >
-          <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-          {/* Show short version on very small screens, full name on larger screens */}
-          <span className="hidden xs:inline sm:inline">
-            {getCurrentLanguageName()}
-          </span>
-          <span className="xs:hidden sm:hidden">
-            {getCurrentLanguageShort()}
-          </span>
-          <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+          <Globe className="h-4 w-4 flex-shrink-0" />
+          <ChevronDown className="h-3 w-3 flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px] sm:w-[180px]">
+      <DropdownMenuContent align="end" className="w-[140px]">
         <DropdownMenuLabel className="text-sm">
           {tNav("selectLanguage")}
         </DropdownMenuLabel>
@@ -71,13 +59,13 @@ export default function LanguageSwitcher() {
             value="he"
             className="text-sm py-2.5 cursor-pointer touch-manipulation"
           >
-            {tNav("hebrewOption")}
+            {getLanguageWithFlag("he")}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="en"
             className="text-sm py-2.5 cursor-pointer touch-manipulation"
           >
-            {tNav("englishOption")}
+            {getLanguageWithFlag("en")}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

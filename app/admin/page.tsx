@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { createGameWithRedirect, CreateGameData } from "@/lib/actions";
+import { createGameOnly, CreateGameData } from "@/lib/actions";
 import { SpotifyTrack } from "@/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
@@ -82,11 +82,22 @@ function AdminContent() {
 
     startTransition(async () => {
       try {
-        await createGameWithRedirect(gameData);
+        const result = await createGameOnly(gameData);
 
-        setSelectedSong(null);
-        setTranslatedLyrics(["", "", "", "", ""]);
-        setAcceptableAnswers([""]);
+        if (result.success) {
+          // Show success message
+          setShowSuccess(true);
+
+          // Reset form
+          setSelectedSong(null);
+          setTranslatedLyrics(["", "", "", "", ""]);
+          setAcceptableAnswers([""]);
+
+          // Hide success message after 5 seconds
+          setTimeout(() => setShowSuccess(false), 5000);
+        } else {
+          alert(`Failed to save game: ${result.error}`);
+        }
       } catch (error) {
         console.error("Failed to save game", error);
         alert("Failed to save game. Please try again.");
