@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import LocaleProvider from "@/components/shared/LocaleProvider";
+import AuthProvider from "@/components/shared/AuthProvider";
 import Navigation from "@/components/nav/Navigation";
 import "./globals.css";
 
@@ -33,16 +34,20 @@ export default async function RootLayout({
       hebrewMessages={hebrewMessages}
       englishMessages={englishMessages}
     >
-      <html
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <body>
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
-            <Navigation />
-            <main className="flex-1 w-full overflow-x-hidden">{children}</main>
-          </div>
-        </body>
-      </html>
+      <AuthProvider>
+        <html
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <body>
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+              <Navigation />
+              <main className="flex-1 w-full overflow-x-hidden">
+                {children}
+              </main>
+            </div>
+          </body>
+        </html>
+      </AuthProvider>
     </LocaleProvider>
   );
 }

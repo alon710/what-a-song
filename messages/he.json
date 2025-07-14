@@ -139,6 +139,30 @@
       "home": "בית"
     }
   },
+  "auth": {
+    "signIn": "כניסה",
+    "signOut": "יציאה",
+    "adminLogin": "כניסה לממשק ניהול",
+    "enterCredentials": "הזן את פרטי ההתחברות שלך",
+    "email": "דוא\"ל",
+    "password": "סיסמה",
+    "emailPlaceholder": "הזן כתובת דוא\"ל",
+    "passwordPlaceholder": "הזן סיסמה",
+    "signingIn": "נכנס...",
+    "backToGame": "חזור למשחק",
+    "verifyingAccess": "מאמת גישה...",
+    "accessDenied": "גישה נדחתה",
+    "loginRequired": "נדרשת התחברות כדי לגשת לאזור זה",
+    "adminRequired": "נדרשות הרשאות מנהל",
+    "adminAccessOnly": "רק מנהלים יכולים לגשת לאזור זה",
+    "errors": {
+      "userNotFound": "משתמש לא נמצא",
+      "wrongPassword": "סיסמה שגויה",
+      "invalidEmail": "כתובת דוא\"ל לא תקינה",
+      "tooManyRequests": "יותר מדי ניסיונות התחברות. נסה שוב מאוחר יותר",
+      "loginFailed": "ההתחברות נכשלה. נסה שוב"
+    }
+  },
   "shared": {
     "languages": {
       "hebrew": "עברית",

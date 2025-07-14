@@ -139,6 +139,30 @@
       "home": "Home"
     }
   },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "adminLogin": "Admin Login",
+    "enterCredentials": "Enter your credentials to continue",
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "signingIn": "Signing in...",
+    "backToGame": "Back to Game",
+    "verifyingAccess": "Verifying access...",
+    "accessDenied": "Access Denied",
+    "loginRequired": "Login required to access this area",
+    "adminRequired": "Admin Access Required",
+    "adminAccessOnly": "Only administrators can access this area",
+    "errors": {
+      "userNotFound": "User not found",
+      "wrongPassword": "Incorrect password",
+      "invalidEmail": "Invalid email address",
+      "tooManyRequests": "Too many login attempts. Please try again later",
+      "loginFailed": "Login failed. Please try again"
+    }
+  },
   "shared": {
     "languages": {
       "hebrew": "Hebrew",

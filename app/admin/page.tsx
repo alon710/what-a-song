@@ -6,6 +6,7 @@ import { createGameWithRedirect, CreateGameData } from "@/lib/actions";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 import { SpotifyTrack } from "@/types";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // Import our reusable components
 import SearchSongs from "@/components/admin/SearchSongs";
@@ -99,6 +100,10 @@ function AdminContent() {
   return (
     <div className="p-3 sm:p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 md:mb-8 text-center">
+          🎵 Admin Panel - Create Game
+        </h1>
+
         <SuccessMessage show={showSuccess} />
 
         {/* Mobile-first layout: Single column on mobile, side-by-side on larger screens */}
@@ -154,18 +159,20 @@ function AdminContent() {
 
 export default function AdminPanel() {
   return (
-    <Suspense
-      fallback={
-        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
-          <div className="max-w-6xl mx-auto">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 md:mb-8 text-center">
-              🎵 Admin Panel - Loading...
-            </h1>
+    <ProtectedRoute requireAdmin={true}>
+      <Suspense
+        fallback={
+          <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+            <div className="max-w-6xl mx-auto">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 md:mb-8 text-center">
+                🎵 Admin Panel - Loading...
+              </h1>
+            </div>
           </div>
-        </div>
-      }
-    >
-      <AdminContent />
-    </Suspense>
+        }
+      >
+        <AdminContent />
+      </Suspense>
+    </ProtectedRoute>
   );
 }
