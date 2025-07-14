@@ -217,7 +217,7 @@ export default function ResultsDialog({
           <div className="p-8">
             <div className="mb-6">
               <h2 className="text-xl font-bold text-gray-800 mb-2">
-                "{songData.songTitle}"
+                {songData.songTitle}
               </h2>
               <p className="text-gray-600">by {songData.artist}</p>
             </div>

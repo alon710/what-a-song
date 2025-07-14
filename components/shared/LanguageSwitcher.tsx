@@ -8,11 +8,9 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
-import { useLocale } from "next-intl";
 import { useTransition } from "react";
 
 export default function LanguageSwitcher() {
-  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = (newLocale: string) => {

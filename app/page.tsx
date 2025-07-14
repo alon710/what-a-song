@@ -8,7 +8,7 @@ import {
   Users,
   Image as ImageIcon,
 } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { SongData, ScoreData } from "@/lib/firebase";
 import {
   getRandomSong,
@@ -34,9 +34,7 @@ import RevealButton from "@/components/game/RevealButton";
 
 export default function Home() {
   const t = useTranslations("game.hints");
-  const tGame = useTranslations("game");
-  const locale = useLocale();
-  const { user, userData } = useAuth();
+  const { user } = useAuth();
   const [songData, setSongData] = useState<SongData | null>(null);
   const [currentGuess, setCurrentGuess] = useState("");
   const [revealedLines, setRevealedLines] = useState(1);
