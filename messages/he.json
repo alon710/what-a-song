@@ -69,6 +69,7 @@
     }
   },
   "game": {
+    "revealHint": "גלה לי",
     "title": "🎮 משחק תרגום מילים",
     "loading": "טוען משחק...",
     "noGamesAvailable": "אין משחקים זמינים",

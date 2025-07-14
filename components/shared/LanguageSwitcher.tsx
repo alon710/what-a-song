@@ -5,8 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -46,20 +45,18 @@ export default function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-12 min-w-0 p-1">
-        <DropdownMenuRadioGroup value={locale} onValueChange={switchLocale}>
-          <DropdownMenuRadioItem
-            value="he"
-            className="justify-center p-2 cursor-pointer focus:bg-accent list-none"
-          >
-            {getLanguageWithFlag("he")}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            value="en"
-            className="justify-center p-2 cursor-pointer focus:bg-accent list-none"
-          >
-            {getLanguageWithFlag("en")}
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+        <DropdownMenuItem
+          onClick={() => switchLocale("he")}
+          className="justify-center p-2 cursor-pointer focus:bg-accent"
+        >
+          {getLanguageWithFlag("he")}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => switchLocale("en")}
+          className="justify-center p-2 cursor-pointer focus:bg-accent"
+        >
+          {getLanguageWithFlag("en")}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

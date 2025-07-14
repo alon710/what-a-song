@@ -8,7 +8,7 @@ import {
   Users,
   Image as ImageIcon,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { GameData } from "@/lib/firebase";
 import { getRandomGame, saveScore, SaveScoreData } from "@/lib/actions";
@@ -22,6 +22,7 @@ import ResultsDialog from "@/components/game/ResultsDialog";
 export default function Home() {
   const t = useTranslations("game.hints");
   const tGame = useTranslations("game");
+  const locale = useLocale();
   const { user, userData } = useAuth();
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [currentGuess, setCurrentGuess] = useState("");
@@ -259,9 +260,19 @@ export default function Home() {
               <p className="text-gray-600">{tGame("waitingToStart")}</p>
             </div>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-left">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
+              <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
+                <Image
+                  src={gameData.albumCover}
+                  alt="Album cover"
+                  fill
+                  className="object-cover filter blur-sm"
+                />
+                <div
+                  className={`absolute top-4 ${
+                    locale === "he" ? "right-4" : "left-4"
+                  } bg-white/80 backdrop-blur-sm rounded-lg p-3`}
+                >
                   <div className="text-sm text-gray-600 font-medium">
                     <span
                       className={`transition-all duration-500 ${
@@ -288,42 +299,47 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-                <div className="w-16 h-16 rounded-lg overflow-hidden filter blur-sm">
-                  <Image
-                    src={gameData.albumCover}
-                    alt="Album cover"
-                    width={64}
-                    height={64}
-                    className="w-full h-full object-cover"
-                  />
+              </div>
+
+              <div className="p-8">
+                <div className="space-y-2 mb-6">
+                  {gameData.translatedLyrics.slice(0, 3).map((_, index) => (
+                    <div
+                      key={index}
+                      className="text-center py-2 text-gray-400 filter blur-sm select-none"
+                    >
+                      ████████ ████ ████████
+                    </div>
+                  ))}
                 </div>
-              </div>
 
-              <div className="space-y-2 mb-6">
-                {gameData.translatedLyrics.slice(0, 3).map((_, index) => (
-                  <div
-                    key={index}
-                    className="text-center py-2 text-gray-400 filter blur-sm select-none"
-                  >
-                    ████████ ████ ████████
-                  </div>
-                ))}
+                <button
+                  onClick={startGame}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                >
+                  {tGame("startGame")}
+                </button>
               </div>
-
-              <button
-                onClick={startGame}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-              >
-                {tGame("startGame")}
-              </button>
             </div>
           </div>
         ) : (
           <div className="space-y-4 py-8">
             {/* Header with artist info and album cover */}
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-left">
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
+              <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
+                <Image
+                  src={gameData.albumCover}
+                  alt="Album cover"
+                  fill
+                  className={`object-cover transition-all duration-700 ${
+                    isAlbumBlurred ? "filter blur-lg" : "filter blur-none"
+                  }`}
+                />
+                <div
+                  className={`absolute top-4 ${
+                    locale === "he" ? "right-4" : "left-4"
+                  } bg-white/80 backdrop-blur-sm rounded-lg p-3`}
+                >
                   <div className="text-sm text-gray-600 font-medium">
                     <span
                       className={`transition-all duration-500 ${
@@ -353,102 +369,93 @@ export default function Home() {
                     {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
                   </div>
                 </div>
-                <div className="w-16 h-16 rounded-lg overflow-hidden">
-                  <Image
-                    src={gameData.albumCover}
-                    alt="Album cover"
-                    width={64}
-                    height={64}
-                    className={`w-full h-full object-cover transition-all duration-700 ${
-                      isAlbumBlurred ? "filter blur-lg" : "filter blur-none"
-                    }`}
-                  />
+              </div>
+
+              <div className="p-6">
+                {/* Lyrics display */}
+                <div className="space-y-3 mb-6">
+                  {gameData.translatedLyrics.map((lyric, index) => (
+                    <div
+                      key={index}
+                      className={`text-center py-2 transition-all duration-500 ${
+                        index < revealedLines
+                          ? "text-gray-800 font-medium"
+                          : "text-gray-400 filter blur-sm select-none"
+                      }`}
+                    >
+                      {index < revealedLines ? lyric : "████████ ████ ████████"}
+                    </div>
+                  ))}
                 </div>
-              </div>
 
-              {/* Lyrics display */}
-              <div className="space-y-3 mb-6">
-                {gameData.translatedLyrics.map((lyric, index) => (
-                  <div
-                    key={index}
-                    className={`text-center py-2 transition-all duration-500 ${
-                      index < revealedLines
-                        ? "text-gray-800 font-medium"
-                        : "text-gray-400 filter blur-sm select-none"
-                    }`}
-                  >
-                    {index < revealedLines ? lyric : "████████ ████ ████████"}
-                  </div>
-                ))}
-              </div>
-
-              {/* Progress circles */}
-              <div className="flex justify-center space-x-2 mb-6">
-                {gameData.translatedLyrics.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors ${
-                      index < revealedLines
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-gray-200 text-gray-500 border-gray-300"
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                ))}
-              </div>
-
-              {/* Action buttons */}
-              <div className="space-y-3">
-                {revealedLines < gameData.translatedLyrics.length &&
-                  !gameOver && (
-                    <button
-                      onClick={revealNextLine}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                {/* Progress circles */}
+                <div className="flex justify-center space-x-2 mb-6">
+                  {gameData.translatedLyrics.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors ${
+                        index < revealedLines
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-gray-200 text-gray-500 border-gray-300"
+                      }`}
                     >
-                      {tGame("lyricsDisplay.revealNext")}
-                    </button>
+                      {index + 1}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Action buttons */}
+                <div className="space-y-3">
+                  {revealedLines < gameData.translatedLyrics.length &&
+                    !gameOver && (
+                      <button
+                        onClick={revealNextLine}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                      >
+                        {tGame("lyricsDisplay.revealNext")}
+                      </button>
+                    )}
+
+                  {!gameOver && (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={currentGuess}
+                        onChange={(e) => setCurrentGuess(e.target.value)}
+                        placeholder={tGame("guessInput.placeholder")}
+                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onKeyPress={(e) => e.key === "Enter" && checkGuess()}
+                      />
+                      <button
+                        onClick={checkGuess}
+                        disabled={!currentGuess.trim()}
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                      >
+                        {tGame("guessInput.submitGuess")}
+                      </button>
+                    </div>
                   )}
+                </div>
 
-                {!gameOver && (
-                  <div className="space-y-2">
-                    <input
-                      type="text"
-                      value={currentGuess}
-                      onChange={(e) => setCurrentGuess(e.target.value)}
-                      placeholder={tGame("guessInput.placeholder")}
-                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      onKeyPress={(e) => e.key === "Enter" && checkGuess()}
-                    />
-                    <button
-                      onClick={checkGuess}
-                      disabled={!currentGuess.trim()}
-                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-                    >
-                      {tGame("guessInput.submitGuess")}
-                    </button>
+                {/* Attempts history */}
+                {attempts.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="text-xs text-gray-500 mb-2">
+                      Previous attempts:
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {attempts.map((attempt, index) => (
+                        <span
+                          key={index}
+                          className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-md"
+                        >
+                          {attempt}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
-
-              {/* Attempts history */}
-              {attempts.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="text-xs text-gray-500 mb-2">
-                    Previous attempts:
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {attempts.map((attempt, index) => (
-                      <span
-                        key={index}
-                        className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-md"
-                      >
-                        {attempt}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Hints section */}
@@ -494,7 +501,7 @@ export default function Home() {
                             disabled={gameOver}
                             className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md transition-colors"
                           >
-                            Reveal
+                            {tGame("revealHint")}
                           </button>
                         ) : (
                           <span className="text-xs text-blue-700 font-medium">

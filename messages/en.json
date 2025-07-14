@@ -69,6 +69,7 @@
     }
   },
   "game": {
+    "revealHint": "Reveal",
     "title": "🎮 Lyric Translation Game",
     "loading": "Loading game...",
     "noGamesAvailable": "No Games Available",
