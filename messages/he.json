@@ -24,6 +24,7 @@
     }
   },
   "admin": {
+    "title": "🎵 ממשק ניהול - יצירת משחק",
     "searchSongs": {
       "title": "חיפוש שירים",
       "description": "חפש שירים באמצעות מסד הנתונים של ספוטיפיי",
@@ -95,11 +96,11 @@
       "title": "רמזים",
       "description": "השתמש ברמזים באופן אסטרטגי כדי לעזור לך לנחש את השיר!",
       "used": "{used}/{total} בשימוש",
-      "reveal": "גלה",
+      "reveal": "חשף",
       "albumCover": "כיסוי אלבום",
-      "albumCoverValue": "חשוף תמונת אלבום",
-      "albumRevealed": "תמונת אלבום נחשפה!",
-      "artistName": "שם האמן",
+      "albumCoverValue": "חשף אמנות אלבום",
+      "albumRevealed": "אלבום נחשף! 🎨",
+      "artistName": "שם אמן",
       "popularity": "פופולריות",
       "album": "אלבום",
       "releaseYear": "שנת שחרור"
@@ -150,6 +151,9 @@
     "save": "שמור",
     "edit": "ערוך",
     "delete": "מחק",
-    "confirm": "אשר"
+    "confirm": "אשר",
+    "selectLanguage": "בחר שפה",
+    "hebrewOption": "עברית (Hebrew)",
+    "englishOption": "English"
   }
 }

@@ -24,6 +24,7 @@
     }
   },
   "admin": {
+    "title": "🎵 Admin Panel - Create Game",
     "searchSongs": {
       "title": "Search Songs",
       "description": "Search for songs using Spotify's database",
@@ -150,6 +151,9 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "selectLanguage": "Select Language",
+    "hebrewOption": "עברית (Hebrew)",
+    "englishOption": "English"
   }
 }

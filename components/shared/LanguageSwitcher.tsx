@@ -19,6 +19,7 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("shared.languages");
+  const tNav = useTranslations("shared");
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = (newLocale: string) => {
@@ -67,7 +68,7 @@ export default function LanguageSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px] sm:w-[180px]">
         <DropdownMenuLabel className="text-sm">
-          Select Language
+          {tNav("selectLanguage")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={locale} onValueChange={switchLocale}>
@@ -75,13 +76,13 @@ export default function LanguageSwitcher() {
             value="he"
             className="text-sm py-2.5 cursor-pointer touch-manipulation"
           >
-            עברית (Hebrew)
+            {tNav("hebrewOption")}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="en"
             className="text-sm py-2.5 cursor-pointer touch-manipulation"
           >
-            English
+            {tNav("englishOption")}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
