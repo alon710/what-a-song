@@ -3,7 +3,9 @@
   "nav": {
     "home": "Home",
     "admin": "Admin Panel",
-    "play": "Play"
+    "play": "Play",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
   },
   "home": {
     "title": "🎵 What a Song",

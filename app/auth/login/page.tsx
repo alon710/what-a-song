@@ -67,7 +67,7 @@ export default function LoginPage() {
         <div className="text-center space-y-2">
           <Logo
             href="/"
-            variant="with-text"
+            variant="icon-only"
             size="lg"
             className="justify-center"
           />

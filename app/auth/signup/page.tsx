@@ -62,7 +62,7 @@ export default function SignupPage() {
         <div className="text-center mb-8">
           <Logo
             href="/"
-            variant="with-text"
+            variant="icon-only"
             size="lg"
             className="justify-center"
           />

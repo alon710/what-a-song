@@ -31,7 +31,7 @@ export default function Navigation() {
               <Logo href="/" variant="icon-only" size="sm" />
             </div>
             <div className="hidden sm:block">
-              <Logo href="/" variant="with-text" size="md" />
+              <Logo href="/" variant="icon-only" size="md" />
             </div>
           </div>
 
@@ -49,7 +49,7 @@ export default function Navigation() {
                   <span className="hidden xs:inline sm:inline">
                     {t("admin")}
                   </span>
-                  <span className="xs:hidden sm:hidden">Admin</span>
+                  <span className="xs:hidden sm:hidden">{t("admin")}</span>
                 </Button>
               </Link>
             )}
@@ -73,7 +73,9 @@ export default function Navigation() {
                       className="text-gray-700 hover:bg-gray-100 text-xs sm:text-sm px-2 sm:px-3"
                     >
                       <LogOut className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                      <span className="hidden xs:inline sm:inline">יציאה</span>
+                      <span className="hidden xs:inline sm:inline">
+                        {t("signOut")}
+                      </span>
                     </Button>
                   </div>
                 ) : (
@@ -84,7 +86,9 @@ export default function Navigation() {
                       className="text-gray-700 hover:bg-gray-100 text-xs sm:text-sm px-2 sm:px-3"
                     >
                       <LogIn className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                      <span className="hidden xs:inline sm:inline">כניסה</span>
+                      <span className="hidden xs:inline sm:inline">
+                        {t("signIn")}
+                      </span>
                     </Button>
                   </Link>
                 )}
