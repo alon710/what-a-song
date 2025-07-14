@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SpotifyTrack } from "@/types";
+import Image from "next/image";
 
 interface SearchSongsProps {
   onSongSelect: (song: SpotifyTrack) => void;
@@ -86,9 +87,11 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     {song.album.images[0] && (
-                      <img
+                      <Image
                         src={song.album.images[0].url}
                         alt={song.album.name}
+                        width={48}
+                        height={48}
                         className="w-12 h-12 rounded"
                       />
                     )}

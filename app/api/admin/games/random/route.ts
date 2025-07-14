@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
+import { NextResponse } from "next/server";
+import { db, GameData } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const q = query(collection(db, "games"), where("isActive", "==", true));
     const querySnapshot = await getDocs(q);
@@ -14,9 +14,9 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const games: any[] = [];
+    const games: GameData[] = [];
     querySnapshot.forEach((doc) => {
-      games.push({ id: doc.id, ...doc.data() });
+      games.push({ id: doc.id, ...doc.data() } as unknown as GameData);
     });
 
     const randomGame = games[Math.floor(Math.random() * games.length)];

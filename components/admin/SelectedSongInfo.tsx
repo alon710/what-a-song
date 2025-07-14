@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Clock, Trophy, Calendar } from "lucide-react";
 import { SpotifyTrack } from "@/types";
+import Image from "next/image";
 
 interface SelectedSongInfoProps {
   song: SpotifyTrack;
@@ -23,9 +24,11 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
           {song.album.images[0] && (
-            <img
+            <Image
               src={song.album.images[0].url}
               alt={song.album.name}
+              width={80}
+              height={80}
               className="w-20 h-20 rounded"
             />
           )}

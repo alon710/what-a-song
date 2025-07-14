@@ -36,9 +36,9 @@ export default function LoginPage() {
     try {
       await signIn(email, password);
       router.push("/admin");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
-      setError(getErrorMessage(error.code));
+      setError(getErrorMessage(error instanceof Error ? error.message : ""));
     } finally {
       setIsLoading(false);
     }

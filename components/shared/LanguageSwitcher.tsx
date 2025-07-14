@@ -12,28 +12,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe, ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
   const t = useTranslations("shared.languages");
   const tNav = useTranslations("shared");
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = (newLocale: string) => {
     startTransition(() => {
-      // Store the selected locale in localStorage
       localStorage.setItem("preferred-locale", newLocale);
 
-      // Update document direction immediately for better UX
       const isRTL = newLocale === "he";
       const html = document.documentElement;
       html.setAttribute("lang", newLocale);
       html.setAttribute("dir", isRTL ? "rtl" : "ltr");
 
-      // Refresh the page to apply the new locale
       window.location.reload();
     });
   };

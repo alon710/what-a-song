@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Music, Calendar, Trophy, Users, Image } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { GameData } from "@/lib/firebase";
@@ -34,7 +34,7 @@ export default function Home() {
   const [attempts, setAttempts] = useState<string[]>([]);
   const [isAlbumBlurred, setIsAlbumBlurred] = useState(true);
 
-  const loadGame = async () => {
+  const loadGame = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -47,12 +47,12 @@ export default function Home() {
       setGameData(result.game);
       setGameStartTime(Date.now());
       resetGameState();
-    } catch (error: any) {
-      setError(error.message || "Failed to load game");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to load game");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const resetGameState = () => {
     setCurrentGuess("");
@@ -86,7 +86,7 @@ export default function Home() {
 
   useEffect(() => {
     loadGame();
-  }, []);
+  }, [loadGame]);
 
   const availableHints: Hint[] = gameData
     ? [
@@ -183,12 +183,6 @@ export default function Home() {
 
   const resetGame = () => {
     loadGame();
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   if (loading) {

@@ -27,14 +27,6 @@ export default function Navigation() {
           {/* Left side - Logo and Title */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <Logo href="/" variant="icon-only" />
-            <div className="min-w-0">
-              <Link
-                href="/"
-                className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
-              >
-                🎵 איזה שיר
-              </Link>
-            </div>
           </div>
 
           {/* Right side - Navigation and Auth */}

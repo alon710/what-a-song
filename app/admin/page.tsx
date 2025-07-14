@@ -3,12 +3,9 @@
 import { useState, useTransition, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createGameWithRedirect, CreateGameData } from "@/lib/actions";
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle } from "lucide-react";
 import { SpotifyTrack } from "@/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-// Import our reusable components
 import SearchSongs from "@/components/admin/SearchSongs";
 import AcceptableAnswers from "@/components/admin/AcceptableAnswers";
 import LanguageSettings from "@/components/admin/LanguageSettings";
@@ -35,7 +32,7 @@ function AdminContent() {
   useEffect(() => {
     if (searchParams.get("success") === "true") {
       setShowSuccess(true);
-      // Hide success message after 5 seconds
+
       const timer = setTimeout(() => setShowSuccess(false), 5000);
       return () => clearTimeout(timer);
     }
@@ -43,9 +40,9 @@ function AdminContent() {
 
   const handleSongSelect = (song: SpotifyTrack) => {
     setSelectedSong(song);
-    // Reset lyrics
+
     setTranslatedLyrics(["", "", "", "", ""]);
-    // Auto-populate first acceptable answer with song title
+
     setAcceptableAnswers([song.name]);
   };
 
@@ -86,12 +83,12 @@ function AdminContent() {
     startTransition(async () => {
       try {
         await createGameWithRedirect(gameData);
-        // The createGameWithRedirect function will handle the redirect
-        // Reset state will happen after redirect
+
         setSelectedSong(null);
         setTranslatedLyrics(["", "", "", "", ""]);
         setAcceptableAnswers([""]);
       } catch (error) {
+        console.error("Failed to save game", error);
         alert("Failed to save game. Please try again.");
       }
     });

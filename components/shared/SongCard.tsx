@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Music, Clock, Trophy, Calendar } from "lucide-react";
 import { SpotifyTrack } from "@/types";
+import Image from "next/image";
 
 interface SongCardProps {
   song: SpotifyTrack;
@@ -32,9 +33,11 @@ export default function SongCard({ song }: SongCardProps) {
         {/* Album Cover */}
         <div className="md:w-1/2">
           {albumImage && (
-            <img
+            <Image
               src={albumImage.url}
               alt={`${song.album.name} cover`}
+              width={albumImage.width || 300}
+              height={albumImage.height || 300}
               className="w-full h-full object-cover"
             />
           )}

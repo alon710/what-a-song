@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 interface AlbumCoverProps {
   albumCover?: string;
@@ -20,12 +21,14 @@ export default function AlbumCover({
     <Card className="relative">
       <CardContent className="p-4">
         <div className="relative">
-          <img
+          <Image
             src={
               albumCover ||
               "https://via.placeholder.com/300x300/4338ca/ffffff?text=Album"
             }
             alt={`${albumName} cover`}
+            width={300}
+            height={300}
             className={`w-full rounded-lg transition-all duration-700 ease-out transform ${
               isBlurred
                 ? "filter blur-lg scale-105"

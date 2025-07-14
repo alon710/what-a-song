@@ -21,6 +21,7 @@ import {
 import { useTranslations } from "next-intl";
 import { GameStats } from "@/types";
 import { GameData } from "@/lib/firebase";
+import Link from "next/link";
 
 interface ResultsDialogProps {
   open: boolean;
@@ -152,9 +153,9 @@ export default function ResultsDialog({
               {t("playAgain")}
             </Button>
             <Button variant="outline" className="flex-1" asChild>
-              <a href="/" className="text-center">
+              <Link href="/" className="text-center">
                 {t("home")}
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
