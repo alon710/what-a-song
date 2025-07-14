@@ -33,7 +33,8 @@
       "select": "בחר"
     },
     "selectedSong": {
-      "title": "שיר נבחר"
+      "title": "שיר נבחר",
+      "source": "ספוטיפיי"
     },
     "languageSettings": {
       "title": "הגדרות שפה",
@@ -50,9 +51,10 @@
     },
     "lyricsInput": {
       "title": "הוסף מילים מתורגמות",
-      "description": "הכנס עד 5 שורות של מילים מתורגמות למשחק",
+      "description": "הכנס בדיוק 5 שורות של מילים מתורגמות למשחק",
       "translatedLyrics": "מילים מתורגמות ({language})",
-      "placeholder": "שורה {number} (אופציונלי)"
+      "placeholder": "שורה {number} (נדרש)",
+      "allLinesRequired": "כל 5 השורות נדרשות למשחק."
     },
     "saveButton": "שמור משחק",
     "saving": "שומר...",
@@ -125,6 +127,38 @@
     "albumCover": {
       "hidden": "כיסוי אלבום מוסתר",
       "useHint": "השתמש ברמז \"כיסוי אלבום\" כדי לחשף"
+    },
+    "alreadyWon": {
+      "title": "כבר כבשת!",
+      "subtitle": "כבר זכית בשיר הזה! הנה הביצועים הקודמים שלך:",
+      "previousWin": "זכייה קודמת",
+      "stats": {
+        "score": "ניקוד",
+        "time": "זמן",
+        "tries": "ניסיונות",
+        "hints": "רמזים"
+      },
+      "wonOn": "זכית ב-{date}",
+      "finalScore": "זה הניקוד הסופי שלך לשיר הזה."
+    },
+    "alreadyPlayed": {
+      "title": "כבר שיחקת",
+      "subtitle": "כבר ניסית את השיר הזה. הנה הביצועים הקודמים שלך:",
+      "previousAttempt": "ניסיון קודם",
+      "stats": {
+        "time": "זמן",
+        "tries": "ניסיונות",
+        "hints": "רמזים"
+      },
+      "yourAttempts": "הניסיונות שלך",
+      "playedOn": "שיחקת ב-{date}",
+      "finalScore": "הניקוד הוא סופי - ניתן לשחק כל שיר פעם אחת בלבד."
+    },
+    "gameHeader": {
+      "triesRemaining": "{triesLeft} מתוך {maxTries} ניסיונות נותרו"
+    },
+    "attemptsHistory": {
+      "title": "ניסיונות קודמים:"
     },
     "results": {
       "win": "כל הכבוד! 🎉",

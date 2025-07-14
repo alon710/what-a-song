@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 interface GameHeaderProps {
   timeElapsed: number;
   triesLeft: number;
@@ -7,6 +9,8 @@ export default function GameHeader({
   timeElapsed,
   triesLeft,
 }: GameHeaderProps) {
+  const t = useTranslations("game.gameHeader");
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -15,7 +19,8 @@ export default function GameHeader({
 
   return (
     <div className="text-xs text-gray-500 text-center">
-      {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
+      {formatTime(timeElapsed)} •{" "}
+      {t("triesRemaining", { triesLeft, maxTries: 3 })}
     </div>
   );
 }

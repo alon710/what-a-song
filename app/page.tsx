@@ -9,8 +9,13 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { SongData } from "@/lib/firebase";
-import { getRandomSong, saveScore, SaveScoreData } from "@/lib/actions";
+import { SongData, ScoreData } from "@/lib/firebase";
+import {
+  getRandomSong,
+  saveScore,
+  SaveScoreData,
+  getUserScoreForSong,
+} from "@/lib/actions";
 import { GameStats, Hint } from "@/types";
 import { useAuth } from "@/components/shared/AuthProvider";
 
@@ -47,6 +52,11 @@ export default function Home() {
   const [attempts, setAttempts] = useState<string[]>([]);
   const [isAlbumBlurred, setIsAlbumBlurred] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
+  const [userPreviousScore, setUserPreviousScore] = useState<ScoreData | null>(
+    null
+  );
+  const [hasAlreadyPlayed, setHasAlreadyPlayed] = useState(false);
+  const [userHasWon, setUserHasWon] = useState(false);
 
   const loadGame = useCallback(async () => {
     setLoading(true);
@@ -59,13 +69,32 @@ export default function Home() {
       }
 
       setSongData(result.song);
+
+      // Check if user has already played this song
+      if (user?.uid) {
+        const scoreResult = await getUserScoreForSong(user.uid, result.song.id);
+        if (scoreResult.success && scoreResult.hasPlayed && scoreResult.score) {
+          setUserPreviousScore(scoreResult.score);
+          setHasAlreadyPlayed(true);
+          setUserHasWon(scoreResult.hasWon);
+        } else {
+          setUserPreviousScore(null);
+          setHasAlreadyPlayed(false);
+          setUserHasWon(false);
+        }
+      } else {
+        setUserPreviousScore(null);
+        setHasAlreadyPlayed(false);
+        setUserHasWon(false);
+      }
+
       resetGameState();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load game");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.uid]);
 
   const resetGameState = () => {
     setCurrentGuess("");
@@ -251,7 +280,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-4">
       <div className="max-w-2xl mx-auto">
-        {!gameStarted ? (
+        {hasAlreadyPlayed && userPreviousScore ? (
+          <ResultsDialog
+            open={true}
+            songData={songData}
+            previousScore={userPreviousScore}
+            mode={userHasWon ? "alreadyWon" : "alreadyPlayed"}
+          />
+        ) : !gameStarted ? (
           <WaitingScreen songData={songData} onStartGame={startGame} />
         ) : (
           <div className="space-y-4 py-8">
@@ -316,6 +352,7 @@ export default function Home() {
           open={showStats}
           songData={songData}
           stats={getGameStats()}
+          mode="justFinished"
           onRestart={resetGame}
         />
       </div>

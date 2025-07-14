@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, Clock, Trophy, Calendar } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SpotifyTrack } from "@/types";
 import Image from "next/image";
 
@@ -10,6 +11,8 @@ interface SelectedSongInfoProps {
 }
 
 export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
+  const t = useTranslations("admin.selectedSong");
+
   const formatDuration = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -19,7 +22,7 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-start">Selected Song</CardTitle>
+        <CardTitle className="text-start">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
@@ -56,7 +59,7 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
           </div>
           <div className="flex items-center gap-2">
             <Music className="w-4 h-4" />
-            <span>Spotify</span>
+            <span>{t("source")}</span>
           </div>
         </div>
       </CardContent>

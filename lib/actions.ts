@@ -283,3 +283,48 @@ export async function saveScore(scoreData: SaveScoreData) {
     };
   }
 }
+
+export async function getUserScoreForSong(userId: string, songId: string) {
+  try {
+    if (!userId || !songId) {
+      return { success: false, error: "Missing userId or songId" };
+    }
+
+    const scoresRef = collection(db, "scores");
+    const q = query(
+      scoresRef,
+      where("userId", "==", userId),
+      where("songId", "==", songId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return { success: true, hasPlayed: false, hasWon: false, score: null };
+    }
+
+    // Get the user's score (there should only be one per user per song)
+    const scores = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as ScoreData[];
+
+    const userScore = scores[0]; // Take the first (and should be only) score
+
+    return {
+      success: true,
+      hasPlayed: true,
+      hasWon: userScore.isWon,
+      score: userScore,
+    };
+  } catch (error) {
+    console.error("Error checking user score for song:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+      hasPlayed: false,
+      hasWon: false,
+      score: null,
+    };
+  }
+}

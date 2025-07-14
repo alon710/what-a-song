@@ -77,7 +77,7 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
         </div>
 
         {searchResults.length > 0 && (
-          <div className="space-y-2 max-h-96 overflow-y-auto">
+          <div className="space-y-2 overflow-y-auto">
             {searchResults.map((song) => (
               <Card
                 key={song.id}

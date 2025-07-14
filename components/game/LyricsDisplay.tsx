@@ -18,7 +18,7 @@ export default function LyricsDisplay({
               : "text-gray-400 filter blur-sm select-none"
           }`}
         >
-          {index < revealedLines ? lyric : "████████ ████ ████████"}
+          {lyric}
         </div>
       ))}
     </div>

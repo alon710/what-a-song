@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SpotifyTrack } from "@/types";
 
 interface AcceptableAnswersProps {
@@ -23,6 +24,8 @@ export default function AcceptableAnswers({
   onUpdate,
   selectedSong,
 }: AcceptableAnswersProps) {
+  const t = useTranslations("admin.acceptableAnswers");
+
   const updateAnswer = (index: number, value: string) => {
     const newAnswers = [...acceptableAnswers];
     newAnswers[index] = value;
@@ -43,19 +46,19 @@ export default function AcceptableAnswers({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-start">Acceptable Answers</CardTitle>
+        <CardTitle className="text-start">{t("title")}</CardTitle>
         <CardDescription className="text-start">
-          Add multiple valid ways to write the song title (e.g., with/without
-          parentheses, shortened versions)
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {acceptableAnswers.map((answer, index) => (
           <div key={index} className="flex gap-2">
             <Input
-              placeholder={`Answer ${index + 1} (e.g., "${
-                selectedSong?.name
-              }")`}
+              placeholder={t("placeholder", {
+                number: index + 1,
+                songName: selectedSong?.name || "",
+              })}
               value={answer}
               onChange={(e) => updateAnswer(index, e.target.value)}
               className="flex-1 text-start"
@@ -79,13 +82,9 @@ export default function AcceptableAnswers({
           className="w-full"
         >
           <Plus className="w-4 h-4 me-2" />
-          Add Another Answer
+          {t("addButton")}
         </Button>
-        <p className="text-xs text-muted-foreground text-start">
-          💡 Tip: Consider adding shortened versions, versions without
-          parentheses, common nicknames, or alternate spellings that players
-          might guess.
-        </p>
+        <p className="text-xs text-muted-foreground text-start">{t("tip")}</p>
       </CardContent>
     </Card>
   );
