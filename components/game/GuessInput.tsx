@@ -38,17 +38,15 @@ export default function GuessInput({
   const triesText = triesLeft === 1 ? t("tryText.one") : t("tryText.other");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-        <CardDescription>
+    <Card className="shadow-sm">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="text-lg sm:text-xl">{t("title")}</CardTitle>
+        <CardDescription className="text-sm sm:text-base">
           {t("description")}
           {triesLeft > 0 && (
             <span
-              className={`block mt-1 ${
-                triesLeft <= 2
-                  ? "text-red-600 font-medium"
-                  : "text-muted-foreground"
+              className={`block mt-1 text-sm font-medium ${
+                triesLeft <= 2 ? "text-red-600" : "text-muted-foreground"
               }`}
             >
               {t("triesRemaining", { tries: triesLeft, triesText })}
@@ -56,19 +54,22 @@ export default function GuessInput({
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         <Input
           placeholder={t("placeholder")}
           value={guess}
           onChange={(e) => onGuessChange(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={disabled}
+          className="h-11 sm:h-12 text-base"
         />
         <Button
           onClick={onSubmit}
           disabled={disabled || !guess.trim()}
-          className="w-full"
+          className="w-full h-11 sm:h-12 text-base font-medium touch-manipulation"
+          size="lg"
         >
+          <CheckCircle className="w-4 h-4 mr-2" />
           {t("submitGuess")}
         </Button>
       </CardContent>

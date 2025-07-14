@@ -29,19 +29,21 @@ export default function HintsSection({
   const t = useTranslations("game.hints");
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Lightbulb className="w-5 h-5" />
+    <Card className="shadow-sm">
+      <CardHeader className="pb-3 sm:pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+          <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5" />
           {t("title")}
-          <Badge variant="outline">
+          <Badge variant="outline" className="text-xs">
             {t("used", { used: usedHints.length, total: hints.length })}
           </Badge>
         </CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <CardDescription className="text-sm sm:text-base">
+          {t("description")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-3">
+        <div className="grid gap-2 sm:gap-3">
           {hints.map((hint) => {
             const isUsed = usedHints.includes(hint.id);
             const Icon = hint.icon;
@@ -67,14 +69,16 @@ export default function HintsSection({
             return (
               <div
                 key={hint.id}
-                className={`p-3 border rounded-lg ${
+                className={`p-3 sm:p-4 border rounded-lg ${
                   isUsed ? "bg-blue-50 border-blue-200" : "bg-gray-50"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Icon className="w-4 h-4" />
-                    <span className="font-medium">{getHintLabel(hint.id)}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <span className="font-medium text-sm sm:text-base truncate">
+                      {getHintLabel(hint.id)}
+                    </span>
                   </div>
                   {!isUsed ? (
                     <Button
@@ -82,12 +86,13 @@ export default function HintsSection({
                       size="sm"
                       variant="outline"
                       disabled={disabled}
+                      className="h-8 px-3 text-xs sm:text-sm touch-manipulation flex-shrink-0"
                     >
                       {t("reveal")}
                     </Button>
                   ) : (
                     <span
-                      className={`text-lg font-semibold ${
+                      className={`text-sm sm:text-base font-semibold flex-shrink-0 ${
                         hint.id === "albumCover"
                           ? "text-green-700"
                           : "text-blue-700"

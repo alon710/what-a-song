@@ -24,7 +24,6 @@
     }
   },
   "admin": {
-    "title": "🎵 ממשק ניהול - יצירת משחק",
     "searchSongs": {
       "title": "חיפוש שירים",
       "description": "חפש שירים באמצעות מסד הנתונים של ספוטיפיי",

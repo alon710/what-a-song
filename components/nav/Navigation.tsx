@@ -13,47 +13,33 @@ export default function Navigation() {
 
   return (
     <nav className="w-full bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
-      <div className="max-w-6xl mx-auto px-6 py-4">
+      <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Title */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <Logo />
-            <NavTitle />
+            <div className="min-w-0">
+              <NavTitle />
+            </div>
           </div>
 
-          {/* Center - Navigation Links */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Right side - Navigation and Language Switcher */}
+          <div className="flex items-center gap-2">
+            {/* Admin link - always visible but smaller on mobile */}
             <Link href="/admin">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-700 hover:bg-gray-100"
+                className="text-gray-700 hover:bg-gray-100 text-xs sm:text-sm px-2 sm:px-3"
               >
-                <Settings className="w-4 h-4 mr-2" />
-                {t("admin")}
+                <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline sm:inline">{t("admin")}</span>
+                <span className="xs:hidden sm:hidden">Admin</span>
               </Button>
             </Link>
-          </div>
 
-          {/* Right side - Language Switcher */}
-          <div className="flex items-center">
+            {/* Language Switcher */}
             <LanguageSwitcher />
-          </div>
-        </div>
-
-        {/* Mobile Navigation Links */}
-        <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
-          <div className="flex items-center gap-3">
-            <Link href="/admin">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-700 hover:bg-gray-100"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                {t("admin")}
-              </Button>
-            </Link>
           </div>
         </div>
       </div>

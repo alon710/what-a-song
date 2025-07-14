@@ -5,5 +5,5 @@ interface GameLayoutProps {
 }
 
 export default function GameLayout({ children }: GameLayoutProps) {
-  return <div className="max-w-7xl mx-auto">{children}</div>;
+  return <div className="w-full max-w-7xl mx-auto">{children}</div>;
 }

@@ -97,43 +97,55 @@ function AdminContent() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-3 sm:p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-          🎵 Admin Panel - Create Game
-        </h1>
-
         <SuccessMessage show={showSuccess} />
 
-        <div className="grid grid-cols-1 gap-8">
-          {/* Left Column - Song Search */}
-          <div className="space-y-6">
+        {/* Mobile-first layout: Single column on mobile, side-by-side on larger screens */}
+        <div className="space-y-4 sm:space-y-6 md:space-y-8">
+          {/* Song Search - Always first */}
+          <div className="w-full">
             <SearchSongs onSongSelect={handleSongSelect} />
-            {selectedSong && <SelectedSongInfo song={selectedSong} />}
           </div>
 
-          {/* Right Column - Game Configuration */}
-          <div className="space-y-6">
-            {selectedSong && (
-              <>
+          {/* Selected Song Info - Second on mobile */}
+          {selectedSong && (
+            <div className="w-full">
+              <SelectedSongInfo song={selectedSong} />
+            </div>
+          )}
+
+          {/* Game Configuration - Stack vertically on mobile, optimize for touch */}
+          {selectedSong && (
+            <div className="space-y-4 sm:space-y-6">
+              <div className="w-full">
                 <LanguageSettings
                   originalLanguage={originalLanguage}
                   onLanguageChange={setOriginalLanguage}
                 />
+              </div>
+
+              <div className="w-full">
                 <AcceptableAnswers
                   acceptableAnswers={acceptableAnswers}
                   onUpdate={setAcceptableAnswers}
                   selectedSong={selectedSong}
                 />
+              </div>
+
+              <div className="w-full">
                 <LyricsInput
                   translatedLyrics={translatedLyrics}
                   originalLanguage={originalLanguage}
                   onUpdate={setTranslatedLyrics}
                 />
+              </div>
+
+              <div className="w-full">
                 <SaveGameButton onSave={saveGame} isPending={isPending} />
-              </>
-            )}
-          </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -144,9 +156,9 @@ export default function AdminPanel() {
   return (
     <Suspense
       fallback={
-        <div className="p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-6 md:mb-8 text-center">
               🎵 Admin Panel - Loading...
             </h1>
           </div>

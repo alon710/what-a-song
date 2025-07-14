@@ -24,7 +24,6 @@
     }
   },
   "admin": {
-    "title": "🎵 Admin Panel - Create Game",
     "searchSongs": {
       "title": "Search Songs",
       "description": "Search for songs using Spotify's database",

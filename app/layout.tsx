@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "🎵 איזה שיר - What a Song",
+  title: "איזה שיר - What a Song",
   description: "משחק ניחוש שירים מתורגמים - Lyric Translation Guessing Game",
 };
 
@@ -37,9 +37,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <body>
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
             <Navigation />
-            <main>{children}</main>
+            <main className="flex-1 w-full overflow-x-hidden">{children}</main>
           </div>
         </body>
       </html>

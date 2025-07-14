@@ -41,27 +41,48 @@ export default function LanguageSwitcher() {
     return locale === "he" ? t("hebrew") : t("english");
   };
 
+  const getCurrentLanguageShort = () => {
+    return locale === "he" ? "עב" : "EN";
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex items-center gap-2 text-gray-700"
+          size="sm"
+          className="flex items-center gap-1 sm:gap-2 text-gray-700 h-8 px-2 sm:px-3 text-xs sm:text-sm min-w-[44px] touch-manipulation"
           disabled={isPending}
         >
-          <Globe className="h-4 w-4" />
-          <span>{getCurrentLanguageName()}</span>
-          <ChevronDown className="h-4 w-4" />
+          <Globe className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+          {/* Show short version on very small screens, full name on larger screens */}
+          <span className="hidden xs:inline sm:inline">
+            {getCurrentLanguageName()}
+          </span>
+          <span className="xs:hidden sm:hidden">
+            {getCurrentLanguageShort()}
+          </span>
+          <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[180px]">
-        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-[160px] sm:w-[180px]">
+        <DropdownMenuLabel className="text-sm">
+          Select Language
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup value={locale} onValueChange={switchLocale}>
-          <DropdownMenuRadioItem value="he">
+          <DropdownMenuRadioItem
+            value="he"
+            className="text-sm py-2.5 cursor-pointer touch-manipulation"
+          >
             עברית (Hebrew)
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            value="en"
+            className="text-sm py-2.5 cursor-pointer touch-manipulation"
+          >
+            English
+          </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

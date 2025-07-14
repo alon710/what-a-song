@@ -202,11 +202,29 @@ export default function Home() {
   if (!gameData) return null;
 
   return (
-    <div className="p-6">
+    <div className="p-3 sm:p-4 md:p-6">
       <GameLayout>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Game Area */}
-          <div className="lg:col-span-2 space-y-6">
+        {/* Mobile-first layout: Stack vertically on small screens, side-by-side on larger */}
+        <div className="flex flex-col space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+          {/* Sidebar - Shows first on mobile for quick game info */}
+          <div className="order-1 lg:order-2 lg:col-span-1">
+            <GameSidebar
+              albumCover={gameData.albumCover}
+              albumName={gameData.album}
+              hints={availableHints}
+              usedHints={usedHints}
+              onUseHint={useHint}
+              hintsUsed={usedHints.length}
+              linesRevealed={revealedLines}
+              timeElapsed={timeElapsed}
+              triesLeft={triesLeft}
+              gameOver={gameOver}
+              isAlbumBlurred={isAlbumBlurred}
+            />
+          </div>
+
+          {/* Main Game Area - Second on mobile */}
+          <div className="order-2 lg:order-1 lg:col-span-2 space-y-4">
             <LyricsDisplay
               lyrics={gameData.translatedLyrics}
               revealedLines={revealedLines}
@@ -223,21 +241,6 @@ export default function Home() {
               triesLeft={triesLeft}
             />
           </div>
-
-          {/* Sidebar */}
-          <GameSidebar
-            albumCover={gameData.albumCover}
-            albumName={gameData.album}
-            hints={availableHints}
-            usedHints={usedHints}
-            onUseHint={useHint}
-            hintsUsed={usedHints.length}
-            linesRevealed={revealedLines}
-            timeElapsed={timeElapsed}
-            triesLeft={triesLeft}
-            gameOver={gameOver}
-            isAlbumBlurred={isAlbumBlurred}
-          />
         </div>
 
         <ResultsDialog
