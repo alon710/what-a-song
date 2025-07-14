@@ -202,49 +202,51 @@ export default function Game() {
   if (!gameData) return null;
 
   return (
-    <GameLayout>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Game Area */}
-        <div className="lg:col-span-2 space-y-6">
-          <LyricsDisplay
-            lyrics={gameData.translatedLyrics}
-            revealedLines={revealedLines}
-            onRevealNext={revealNextLine}
-            canRevealMore={revealedLines < gameData.translatedLyrics.length}
-            originalLanguage={gameData.originalLanguage}
-          />
-          <AttemptsDisplay attempts={attempts} triesLeft={triesLeft} />
-          <GuessInput
-            guess={currentGuess}
-            onGuessChange={setCurrentGuess}
-            onSubmit={checkGuess}
-            disabled={gameOver}
+    <div className="p-6">
+      <GameLayout>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Game Area */}
+          <div className="lg:col-span-2 space-y-6">
+            <LyricsDisplay
+              lyrics={gameData.translatedLyrics}
+              revealedLines={revealedLines}
+              onRevealNext={revealNextLine}
+              canRevealMore={revealedLines < gameData.translatedLyrics.length}
+              originalLanguage={gameData.originalLanguage}
+            />
+            <AttemptsDisplay attempts={attempts} triesLeft={triesLeft} />
+            <GuessInput
+              guess={currentGuess}
+              onGuessChange={setCurrentGuess}
+              onSubmit={checkGuess}
+              disabled={gameOver}
+              triesLeft={triesLeft}
+            />
+          </div>
+
+          {/* Sidebar */}
+          <GameSidebar
+            albumCover={gameData.albumCover}
+            albumName={gameData.album}
+            hints={availableHints}
+            usedHints={usedHints}
+            onUseHint={useHint}
+            hintsUsed={usedHints.length}
+            linesRevealed={revealedLines}
+            timeElapsed={timeElapsed}
             triesLeft={triesLeft}
+            gameOver={gameOver}
+            isAlbumBlurred={isAlbumBlurred}
           />
         </div>
 
-        {/* Sidebar */}
-        <GameSidebar
-          albumCover={gameData.albumCover}
-          albumName={gameData.album}
-          hints={availableHints}
-          usedHints={usedHints}
-          onUseHint={useHint}
-          hintsUsed={usedHints.length}
-          linesRevealed={revealedLines}
-          timeElapsed={timeElapsed}
-          triesLeft={triesLeft}
-          gameOver={gameOver}
-          isAlbumBlurred={isAlbumBlurred}
+        <ResultsDialog
+          open={showStats}
+          gameData={gameData}
+          stats={getGameStats()}
+          onRestart={resetGame}
         />
-      </div>
-
-      <ResultsDialog
-        open={showStats}
-        gameData={gameData}
-        stats={getGameStats()}
-        onRestart={resetGame}
-      />
-    </GameLayout>
+      </GameLayout>
+    </div>
   );
 }

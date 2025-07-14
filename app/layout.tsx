@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import LocaleProvider from "@/components/shared/LocaleProvider";
+import Navigation from "@/components/nav/Navigation";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,7 +37,10 @@ export default async function RootLayout({
           hebrewMessages={hebrewMessages}
           englishMessages={englishMessages}
         >
-          {children}
+          <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+            <Navigation />
+            <main>{children}</main>
+          </div>
         </LocaleProvider>
       </body>
     </html>
