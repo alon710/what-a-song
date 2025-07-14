@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { UserPlus, Music } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Logo from "@/components/nav/Logo";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -59,10 +60,12 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Music className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">What A Song</h1>
-          </div>
+          <Logo
+            href="/"
+            variant="with-text"
+            size="lg"
+            className="justify-center"
+          />
         </div>
 
         <Card className="w-full shadow-xl">

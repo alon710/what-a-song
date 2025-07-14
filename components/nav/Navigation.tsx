@@ -26,7 +26,13 @@ export default function Navigation() {
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Title */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <Logo href="/" variant="icon-only" />
+            {/* Show icon only on mobile, icon with text on larger screens */}
+            <div className="block sm:hidden">
+              <Logo href="/" variant="icon-only" size="sm" />
+            </div>
+            <div className="hidden sm:block">
+              <Logo href="/" variant="with-text" size="md" />
+            </div>
           </div>
 
           {/* Right side - Navigation and Auth */}

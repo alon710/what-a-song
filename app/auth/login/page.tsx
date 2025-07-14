@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { LogIn, Music } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import Logo from "@/components/nav/Logo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -64,10 +65,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo and Title */}
         <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <Music className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-800">🎵 איזה שיר</h1>
-          </div>
+          <Logo
+            href="/"
+            variant="with-text"
+            size="lg"
+            className="justify-center"
+          />
           <p className="text-gray-600">{t("adminLogin")}</p>
         </div>
 
