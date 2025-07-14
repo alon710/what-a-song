@@ -55,14 +55,18 @@ export default function LocaleProvider({
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
-      <NextIntlClientProvider messages={hebrewMessages} locale="he">
+      <NextIntlClientProvider
+        messages={hebrewMessages}
+        locale="he"
+        timeZone="UTC"
+      >
         {children}
       </NextIntlClientProvider>
     );
   }
 
   return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
+    <NextIntlClientProvider messages={messages} locale={locale} timeZone="UTC">
       {children}
     </NextIntlClientProvider>
   );
