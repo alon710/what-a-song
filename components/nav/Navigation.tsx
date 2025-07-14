@@ -4,8 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
-import Logo from "./Logo";
-import NavTitle from "./NavTitle";
+import Logo from "@/components/nav/Logo";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 
 export default function Navigation() {
@@ -17,7 +16,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Title */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <Logo />
+            <Logo href="/" variant="icon-only" />
           </div>
 
           {/* Right side - Navigation and Language Switcher */}
