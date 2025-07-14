@@ -68,7 +68,6 @@ export default function Home() {
 
       setSongData(result.song);
 
-      // Check if user has already played this song
       if (user?.uid) {
         const scoreResult = await getUserScoreForSong(user.uid, result.song.id);
         if (scoreResult.success && scoreResult.hasPlayed && scoreResult.score) {
