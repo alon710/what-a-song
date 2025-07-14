@@ -10,13 +10,13 @@ import {
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { GameData } from "@/lib/firebase";
-import { getRandomGame, saveScore, SaveScoreData } from "@/lib/actions";
+import { SongData } from "@/lib/firebase";
+import { getRandomSong, saveScore, SaveScoreData } from "@/lib/actions";
 import { GameStats, Hint } from "@/types";
 import { useAuth } from "@/components/shared/AuthProvider";
 
-import LoadingState from "@/components/game/LoadingState";
-import ErrorState from "@/components/game/ErrorState";
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 import ResultsDialog from "@/components/game/ResultsDialog";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
   const tGame = useTranslations("game");
   const locale = useLocale();
   const { user, userData } = useAuth();
-  const [gameData, setGameData] = useState<GameData | null>(null);
+  const [songData, setSongData] = useState<SongData | null>(null);
   const [currentGuess, setCurrentGuess] = useState("");
   const [revealedLines, setRevealedLines] = useState(1);
   const [usedHints, setUsedHints] = useState<string[]>([]);
@@ -44,13 +44,13 @@ export default function Home() {
     setLoading(true);
     setError(null);
     try {
-      const result = await getRandomGame();
+      const result = await getRandomSong();
 
-      if (!result.success || !result.game) {
+      if (!result.success || !result.song) {
         throw new Error(result.error || "No game data received");
       }
 
-      setGameData(result.game);
+      setSongData(result.song);
       resetGameState();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load game");
@@ -98,7 +98,7 @@ export default function Home() {
     loadGame();
   }, [loadGame]);
 
-  const availableHints: Hint[] = gameData
+  const availableHints: Hint[] = songData
     ? [
         {
           id: "albumCover",
@@ -110,31 +110,31 @@ export default function Home() {
           id: "artist",
           label: t("artistName"),
           icon: Users,
-          value: gameData.artist,
+          value: songData.artist,
         },
         {
           id: "popularity",
           label: t("popularity"),
           icon: Trophy,
-          value: `${gameData.popularity}/100`,
+          value: `${songData.popularity}/100`,
         },
         {
           id: "album",
           label: t("album"),
           icon: Music,
-          value: gameData.album,
+          value: songData.album,
         },
         {
           id: "year",
           label: t("releaseYear"),
           icon: Calendar,
-          value: gameData.releaseYear.toString(),
+          value: songData.releaseYear.toString(),
         },
       ]
     : [];
 
   const checkGuess = () => {
-    if (!gameData || gameOver || triesLeft <= 0) return;
+    if (!songData || gameOver || triesLeft <= 0) return;
 
     const guessLower = currentGuess.toLowerCase().trim();
     if (!guessLower) return;
@@ -143,9 +143,9 @@ export default function Home() {
     setAttempts(newAttempts);
 
     const isCorrect =
-      gameData.acceptableAnswers?.some(
+      songData.acceptableAnswers?.some(
         (answer) => answer.toLowerCase().trim() === guessLower
-      ) || gameData.songTitle.toLowerCase().trim() === guessLower;
+      ) || songData.songTitle.toLowerCase().trim() === guessLower;
 
     const newTriesLeft = triesLeft - 1;
     setTriesLeft(newTriesLeft);
@@ -167,7 +167,7 @@ export default function Home() {
   };
 
   const revealNextLine = () => {
-    if (gameData && revealedLines < gameData.translatedLyrics.length) {
+    if (songData && revealedLines < songData.translatedLyrics.length) {
       setRevealedLines((prev) => prev + 1);
     }
   };
@@ -182,24 +182,33 @@ export default function Home() {
     }
   };
 
+  const revealNextHint = () => {
+    const nextHint = availableHints.find(
+      (hint) => !usedHints.includes(hint.id)
+    );
+    if (nextHint) {
+      revealHint(nextHint.id);
+    }
+  };
+
   const saveGameScore = async (
     won: boolean,
     finalAttempts: string[],
     finalUsedHints: string[]
   ) => {
-    if (!gameData) return;
+    if (!songData) return;
 
     try {
       const scoreData: SaveScoreData = {
-        gameId: gameData.id,
+        songId: songData.id,
         userId: user?.uid,
         userEmail: user?.email || undefined,
         userName: userData?.displayName || user?.displayName || undefined,
-        songTitle: gameData.songTitle,
-        artist: gameData.artist,
-        album: gameData.album,
-        releaseYear: gameData.releaseYear,
-        gameWon: won,
+        songTitle: songData.songTitle,
+        artist: songData.artist,
+        album: songData.album,
+        releaseYear: songData.releaseYear,
+        isWon: won,
         triesUsed: 3 - triesLeft,
         hintsUsed: finalUsedHints.length,
         linesRevealed: revealedLines,
@@ -240,7 +249,7 @@ export default function Home() {
     return <ErrorState error={error} />;
   }
 
-  if (!gameData) return null;
+  if (!songData) return null;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -263,47 +272,16 @@ export default function Home() {
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
               <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
                 <Image
-                  src={gameData.albumCover}
+                  src={songData.albumCover}
                   alt="Album cover"
                   fill
-                  className="object-cover filter blur-sm"
+                  className="object-cover filter blur-xl"
                 />
-                <div
-                  className={`absolute top-4 ${
-                    locale === "he" ? "right-4" : "left-4"
-                  } bg-white/80 backdrop-blur-sm rounded-lg p-3`}
-                >
-                  <div className="text-sm text-gray-600 font-medium">
-                    <span
-                      className={`transition-all duration-500 ${
-                        !usedHints.includes("artist")
-                          ? "filter blur-sm select-none"
-                          : ""
-                      }`}
-                    >
-                      {!usedHints.includes("artist")
-                        ? "████████"
-                        : gameData.artist}
-                    </span>
-                    {", "}
-                    <span
-                      className={`transition-all duration-500 ${
-                        !usedHints.includes("year")
-                          ? "filter blur-sm select-none"
-                          : ""
-                      }`}
-                    >
-                      {!usedHints.includes("year")
-                        ? "████"
-                        : gameData.releaseYear}
-                    </span>
-                  </div>
-                </div>
               </div>
 
               <div className="p-8">
                 <div className="space-y-2 mb-6">
-                  {gameData.translatedLyrics.slice(0, 3).map((_, index) => (
+                  {songData.translatedLyrics.slice(0, 3).map((_, index) => (
                     <div
                       key={index}
                       className="text-center py-2 text-gray-400 filter blur-sm select-none"
@@ -326,55 +304,69 @@ export default function Home() {
           <div className="space-y-4 py-8">
             {/* Header with artist info and album cover */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
+              {!gameOver && (
+                <div className="p-4 pb-0">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-2">
+                    {availableHints.map((hint) => {
+                      const isUsed = usedHints.includes(hint.id);
+                      const Icon = hint.icon;
+
+                      return (
+                        <button
+                          key={hint.id}
+                          onClick={() => revealHint(hint.id)}
+                          disabled={isUsed}
+                          className={`flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-colors ${
+                            isUsed
+                              ? "bg-green-100 text-green-700 cursor-default"
+                              : "bg-blue-600 hover:bg-blue-700 text-white"
+                          }`}
+                        >
+                          <Icon className="w-4 h-4 flex-shrink-0" />
+                          <span className="text-center leading-tight">
+                            {isUsed
+                              ? hint.id === "albumCover"
+                                ? "Revealed!"
+                                : hint.value
+                              : hint.id === "albumCover"
+                              ? t("albumCover")
+                              : hint.id === "artist"
+                              ? t("artistName")
+                              : hint.id === "popularity"
+                              ? t("popularity")
+                              : hint.id === "album"
+                              ? t("album")
+                              : hint.id === "year"
+                              ? t("releaseYear")
+                              : hint.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
                 <Image
-                  src={gameData.albumCover}
+                  src={songData.albumCover}
                   alt="Album cover"
                   fill
                   className={`object-cover transition-all duration-700 ${
-                    isAlbumBlurred ? "filter blur-lg" : "filter blur-none"
+                    isAlbumBlurred ? "filter blur-2xl" : "filter blur-none"
                   }`}
                 />
-                <div
-                  className={`absolute top-4 ${
-                    locale === "he" ? "right-4" : "left-4"
-                  } bg-white/80 backdrop-blur-sm rounded-lg p-3`}
-                >
-                  <div className="text-sm text-gray-600 font-medium">
-                    <span
-                      className={`transition-all duration-500 ${
-                        !usedHints.includes("artist")
-                          ? "filter blur-sm select-none"
-                          : ""
-                      }`}
-                    >
-                      {!usedHints.includes("artist")
-                        ? "████████"
-                        : gameData.artist}
-                    </span>
-                    {", "}
-                    <span
-                      className={`transition-all duration-500 ${
-                        !usedHints.includes("year")
-                          ? "filter blur-sm select-none"
-                          : ""
-                      }`}
-                    >
-                      {!usedHints.includes("year")
-                        ? "████"
-                        : gameData.releaseYear}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
-                  </div>
+              </div>
+
+              <div className="px-6 pb-2">
+                <div className="text-xs text-gray-500 text-center">
+                  {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
                 </div>
               </div>
 
               <div className="p-6">
                 {/* Lyrics display */}
                 <div className="space-y-3 mb-6">
-                  {gameData.translatedLyrics.map((lyric, index) => (
+                  {songData.translatedLyrics.map((lyric, index) => (
                     <div
                       key={index}
                       className={`text-center py-2 transition-all duration-500 ${
@@ -390,7 +382,7 @@ export default function Home() {
 
                 {/* Progress circles */}
                 <div className="flex justify-center space-x-2 mb-6">
-                  {gameData.translatedLyrics.map((_, index) => (
+                  {songData.translatedLyrics.map((_, index) => (
                     <div
                       key={index}
                       className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors ${
@@ -406,7 +398,7 @@ export default function Home() {
 
                 {/* Action buttons */}
                 <div className="space-y-3">
-                  {revealedLines < gameData.translatedLyrics.length &&
+                  {revealedLines < songData.translatedLyrics.length &&
                     !gameOver && (
                       <button
                         onClick={revealNextLine}
@@ -457,71 +449,12 @@ export default function Home() {
                 )}
               </div>
             </div>
-
-            {/* Hints section */}
-            {availableHints.length > 0 && (
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
-                  Hints ({usedHints.length}/{availableHints.length})
-                </h3>
-                <div className="grid grid-cols-1 gap-2">
-                  {availableHints.map((hint) => {
-                    const isUsed = usedHints.includes(hint.id);
-                    const Icon = hint.icon;
-
-                    return (
-                      <div
-                        key={hint.id}
-                        className={`flex items-center justify-between p-3 rounded-lg ${
-                          isUsed
-                            ? "bg-blue-50 border border-blue-200"
-                            : "bg-gray-50"
-                        }`}
-                      >
-                        <div className="flex items-center space-x-2">
-                          <Icon className="w-4 h-4 text-gray-600" />
-                          <span className="text-sm font-medium">
-                            {hint.id === "albumCover"
-                              ? t("albumCover")
-                              : hint.id === "artist"
-                              ? t("artistName")
-                              : hint.id === "popularity"
-                              ? t("popularity")
-                              : hint.id === "album"
-                              ? t("album")
-                              : hint.id === "year"
-                              ? t("releaseYear")
-                              : hint.label}
-                          </span>
-                        </div>
-
-                        {!isUsed ? (
-                          <button
-                            onClick={() => revealHint(hint.id)}
-                            disabled={gameOver}
-                            className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md transition-colors"
-                          >
-                            {tGame("revealHint")}
-                          </button>
-                        ) : (
-                          <span className="text-xs text-blue-700 font-medium">
-                            {hint.id === "albumCover"
-                              ? "Album Revealed!"
-                              : hint.value}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         )}
 
         <ResultsDialog
           open={showStats}
-          gameData={gameData}
+          songData={songData}
           stats={getGameStats()}
           onRestart={resetGame}
         />

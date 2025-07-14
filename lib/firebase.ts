@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-export interface GameData {
+export interface SongData {
   id: string;
   songTitle: string;
   acceptableAnswers: string[];
@@ -44,7 +44,7 @@ export interface UserData {
 
 export interface ScoreData {
   id: string;
-  gameId: string;
+  songId: string;
   userId?: string;
   userEmail?: string;
   userName?: string;
@@ -52,7 +52,7 @@ export interface ScoreData {
   artist: string;
   album: string;
   releaseYear: number;
-  gameWon: boolean;
+  isWon: boolean;
   triesUsed: number;
   hintsUsed: number;
   linesRevealed: number;

@@ -1,10 +1,10 @@
 "use server";
 
-import { db, GameData, ScoreData } from "./firebase";
+import { db, ScoreData, SongData } from "./firebase";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
-export interface CreateGameData {
+export interface CreateSongData {
   songTitle: string;
   acceptableAnswers: string[];
   artist: string;
@@ -19,7 +19,7 @@ export interface CreateGameData {
 }
 
 export interface SaveScoreData {
-  gameId: string;
+  songId: string;
   userId?: string;
   userEmail?: string;
   userName?: string;
@@ -27,7 +27,7 @@ export interface SaveScoreData {
   artist: string;
   album: string;
   releaseYear: number;
-  gameWon: boolean;
+  isWon: boolean;
   triesUsed: number;
   hintsUsed: number;
   linesRevealed: number;
@@ -36,7 +36,7 @@ export interface SaveScoreData {
   usedHintTypes: string[];
 }
 
-export async function createGame(formData: FormData) {
+export async function createSong(formData: FormData) {
   try {
     const songTitle = formData.get("songTitle") as string;
     const acceptableAnswersJson = formData.get("acceptableAnswers") as string;
@@ -62,7 +62,7 @@ export async function createGame(formData: FormData) {
       throw new Error("Missing required fields");
     }
 
-    const gameData: Omit<GameData, "id" | "createdAt" | "isActive"> = {
+    const songData: Omit<SongData, "id" | "createdAt" | "isActive"> = {
       songTitle,
       acceptableAnswers,
       artist,
@@ -76,17 +76,17 @@ export async function createGame(formData: FormData) {
       translatedLyrics,
     };
 
-    const docRef = await addDoc(collection(db, "games"), {
-      ...gameData,
+    const docRef = await addDoc(collection(db, "songs"), {
+      ...songData,
       createdAt: new Date().toISOString(),
       isActive: true,
     });
 
-    console.log("Game created with ID:", docRef.id);
+    console.log("Song created with ID:", docRef.id);
 
     return { success: true, id: docRef.id };
   } catch (error) {
-    console.error("Error creating game:", error);
+    console.error("Error creating song:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -94,54 +94,54 @@ export async function createGame(formData: FormData) {
   }
 }
 
-export async function createGameWithRedirect(gameData: CreateGameData) {
+export async function createSongWithRedirect(songData: CreateSongData) {
   try {
     if (
-      !gameData.songTitle ||
-      !gameData.artist ||
-      !gameData.acceptableAnswers.length ||
-      !gameData.translatedLyrics.length
+      !songData.songTitle ||
+      !songData.artist ||
+      !songData.acceptableAnswers.length ||
+      !songData.translatedLyrics.length
     ) {
       throw new Error("Missing required fields");
     }
 
-    const docRef = await addDoc(collection(db, "games"), {
-      ...gameData,
+    const docRef = await addDoc(collection(db, "songs"), {
+      ...songData,
       createdAt: new Date().toISOString(),
       isActive: true,
     });
 
-    console.log("Game created with ID:", docRef.id);
+    console.log("Song created with ID:", docRef.id);
   } catch (error) {
-    console.error("Error creating game:", error);
+    console.error("Error creating song:", error);
     throw error;
   }
 
   redirect("/admin?success=true");
 }
 
-export async function createGameOnly(gameData: CreateGameData) {
+export async function createSongOnly(songData: CreateSongData) {
   try {
     if (
-      !gameData.songTitle ||
-      !gameData.artist ||
-      !gameData.acceptableAnswers.length ||
-      !gameData.translatedLyrics.length
+      !songData.songTitle ||
+      !songData.artist ||
+      !songData.acceptableAnswers.length ||
+      !songData.translatedLyrics.length
     ) {
       throw new Error("Missing required fields");
     }
 
-    const docRef = await addDoc(collection(db, "games"), {
-      ...gameData,
+    const docRef = await addDoc(collection(db, "songs"), {
+      ...songData,
       createdAt: new Date().toISOString(),
       isActive: true,
     });
 
-    console.log("Game created with ID:", docRef.id);
+    console.log("Song created with ID:", docRef.id);
 
     return { success: true, id: docRef.id };
   } catch (error) {
-    console.error("Error creating game:", error);
+    console.error("Error creating song:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -149,27 +149,27 @@ export async function createGameOnly(gameData: CreateGameData) {
   }
 }
 
-export async function getRandomGame() {
+export async function getRandomSong() {
   try {
-    const gamesRef = collection(db, "games");
-    const q = query(gamesRef, where("isActive", "==", true));
+    const songsRef = collection(db, "songs");
+    const q = query(songsRef, where("isActive", "==", true));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      return { success: false, error: "No games available" };
+      return { success: false, error: "No songs available" };
     }
 
-    const games = querySnapshot.docs.map((doc) => ({
+    const songs = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as GameData[];
+    })) as SongData[];
 
-    const randomIndex = Math.floor(Math.random() * games.length);
-    const selectedGame = games[randomIndex];
+    const randomIndex = Math.floor(Math.random() * songs.length);
+    const selectedSong = songs[randomIndex];
 
-    return { success: true, game: selectedGame };
+    return { success: true, song: selectedSong };
   } catch (error) {
-    console.error("Error fetching random game:", error);
+    console.error("Error fetching random song:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -177,19 +177,20 @@ export async function getRandomGame() {
   }
 }
 
-export async function getAllGames() {
+export async function getAllSongs() {
+  const collectionName = "songs";
   try {
-    const gamesRef = collection(db, "games");
-    const querySnapshot = await getDocs(gamesRef);
+    const songsRef = collection(db, collectionName);
+    const querySnapshot = await getDocs(songsRef);
 
-    const games = querySnapshot.docs.map((doc) => ({
+    const songs = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as GameData[];
+    })) as SongData[];
 
-    return { success: true, games };
+    return { success: true, songs };
   } catch (error) {
-    console.error("Error fetching games:", error);
+    console.error("Error fetching songs:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -199,10 +200,27 @@ export async function getAllGames() {
 
 export async function saveScore(scoreData: SaveScoreData) {
   try {
+    console.log("Starting to save score...", {
+      songId: scoreData.songId,
+      userId: scoreData.userId,
+      songWon: scoreData.songWon,
+    });
+
+    // Validate required fields
+    if (!scoreData.songId) {
+      throw new Error("Missing songId");
+    }
+    if (!scoreData.songTitle) {
+      throw new Error("Missing songTitle");
+    }
+    if (!scoreData.artist) {
+      throw new Error("Missing artist");
+    }
+
     const calculateScore = () => {
       let score = 0;
 
-      if (scoreData.gameWon) {
+      if (scoreData.isWon) {
         score += 1000;
 
         const triesBonus = (3 - scoreData.triesUsed) * 200;
@@ -223,36 +241,49 @@ export async function saveScore(scoreData: SaveScoreData) {
     };
 
     const score = calculateScore();
+    console.log("Calculated score:", score);
 
     const scoreRecord: Omit<ScoreData, "id"> = {
-      gameId: scoreData.gameId,
-      userId: scoreData.userId,
-      userEmail: scoreData.userEmail,
-      userName: scoreData.userName,
+      songId: scoreData.songId,
+      userId: scoreData.userId || undefined,
+      userEmail: scoreData.userEmail || undefined,
+      userName: scoreData.userName || undefined,
       songTitle: scoreData.songTitle,
       artist: scoreData.artist,
-      album: scoreData.album,
-      releaseYear: scoreData.releaseYear,
-      gameWon: scoreData.gameWon,
+      album: scoreData.album || "",
+      releaseYear: scoreData.releaseYear || 0,
+      isWon: scoreData.isWon,
       triesUsed: scoreData.triesUsed,
       hintsUsed: scoreData.hintsUsed,
       linesRevealed: scoreData.linesRevealed,
       timeElapsed: scoreData.timeElapsed,
-      attempts: scoreData.attempts,
-      usedHintTypes: scoreData.usedHintTypes,
+      attempts: scoreData.attempts || [],
+      usedHintTypes: scoreData.usedHintTypes || [],
       completedAt: new Date().toISOString(),
       score,
     };
 
-    const docRef = await addDoc(collection(db, "scores"), scoreRecord);
-    console.log("Score saved with ID:", docRef.id);
+    console.log("Attempting to save score record to Firestore...");
 
-    return { success: true, id: docRef.id, score };
+    const docRef = await addDoc(collection(db, "scores"), scoreRecord);
+    console.log("Score saved successfully with ID:", docRef.id);
+
+    return { success: true, id: docRef.id, score: scoreRecord };
   } catch (error) {
-    console.error("Error saving score:", error);
+    console.error("Error saving score - Full error:", error);
+    console.error(
+      "Error message:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
+    console.error(
+      "Error stack:",
+      error instanceof Error ? error.stack : "No stack trace"
+    );
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
+      details: error instanceof Error ? error.stack : undefined,
     };
   }
 }

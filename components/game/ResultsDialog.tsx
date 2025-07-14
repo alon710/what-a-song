@@ -20,19 +20,19 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { GameStats } from "@/types";
-import { GameData } from "@/lib/firebase";
+import { SongData } from "@/lib/firebase";
 import Link from "next/link";
 
 interface ResultsDialogProps {
   open: boolean;
-  gameData: GameData | null;
+  songData: SongData | null;
   stats: GameStats;
   onRestart: () => void;
 }
 
 export default function ResultsDialog({
   open,
-  gameData,
+  songData,
   stats,
   onRestart,
 }: ResultsDialogProps) {
@@ -44,7 +44,7 @@ export default function ResultsDialog({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  if (!gameData) return null;
+  if (!songData) return null;
 
   return (
     <Dialog open={open}>
@@ -62,8 +62,8 @@ export default function ResultsDialog({
           </DialogTitle>
           <DialogDescription className="text-center">
             {stats.gameWon
-              ? t("winMessage", { songTitle: gameData.songTitle })
-              : t("loseMessage", { songTitle: gameData.songTitle })}
+              ? t("winMessage", { songTitle: songData.songTitle })
+              : t("loseMessage", { songTitle: songData.songTitle })}
           </DialogDescription>
         </DialogHeader>
 
@@ -95,7 +95,7 @@ export default function ResultsDialog({
                 <span className="text-sm font-medium">{t("stats.lines")}</span>
               </div>
               <Badge variant="outline" className="text-lg">
-                {stats.linesRevealed}/{gameData.translatedLyrics.length}
+                {stats.linesRevealed}/{songData.translatedLyrics.length}
               </Badge>
             </div>
 
@@ -139,11 +139,11 @@ export default function ResultsDialog({
           )}
 
           <div className="text-center text-sm text-muted-foreground">
-            <p>{t("songInfo", { artist: gameData.artist })}</p>
+            <p>{t("songInfo", { artist: songData.artist })}</p>
             <p>
               {t("albumInfo", {
-                album: gameData.album,
-                year: gameData.releaseYear,
+                album: songData.album,
+                year: songData.releaseYear,
               })}
             </p>
           </div>
