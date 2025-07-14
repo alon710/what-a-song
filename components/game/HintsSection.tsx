@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Hint } from "@/types";
 
 interface HintsSectionProps {
@@ -25,25 +26,43 @@ export default function HintsSection({
   onUseHint,
   disabled,
 }: HintsSectionProps) {
+  const t = useTranslations("game.hints");
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lightbulb className="w-5 h-5" />
-          Hints
+          {t("title")}
           <Badge variant="outline">
-            {usedHints.length}/{hints.length} used
+            {t("used", { used: usedHints.length, total: hints.length })}
           </Badge>
         </CardTitle>
-        <CardDescription>
-          Use hints strategically to help you guess the song!
-        </CardDescription>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-3">
           {hints.map((hint) => {
             const isUsed = usedHints.includes(hint.id);
             const Icon = hint.icon;
+
+            // Get translated hint label
+            const getHintLabel = (hintId: string) => {
+              switch (hintId) {
+                case "albumCover":
+                  return t("albumCover");
+                case "artist":
+                  return t("artistName");
+                case "popularity":
+                  return t("popularity");
+                case "album":
+                  return t("album");
+                case "year":
+                  return t("releaseYear");
+                default:
+                  return hint.label;
+              }
+            };
 
             return (
               <div
@@ -55,7 +74,7 @@ export default function HintsSection({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Icon className="w-4 h-4" />
-                    <span className="font-medium">{hint.label}</span>
+                    <span className="font-medium">{getHintLabel(hint.id)}</span>
                   </div>
                   {!isUsed ? (
                     <Button
@@ -64,7 +83,7 @@ export default function HintsSection({
                       variant="outline"
                       disabled={disabled}
                     >
-                      Reveal
+                      {t("reveal")}
                     </Button>
                   ) : (
                     <span
@@ -75,7 +94,7 @@ export default function HintsSection({
                       }`}
                     >
                       {hint.id === "albumCover"
-                        ? "Album Revealed! 🎨"
+                        ? t("albumRevealed")
                         : hint.value}
                     </span>
                   )}

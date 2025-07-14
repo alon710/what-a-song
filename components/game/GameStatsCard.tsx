@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GameStatsCardProps {
   hintsUsed: number;
@@ -17,6 +18,8 @@ export default function GameStatsCard({
   timeElapsed,
   triesLeft,
 }: GameStatsCardProps) {
+  const t = useTranslations("game.stats");
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -28,12 +31,12 @@ export default function GameStatsCard({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Clock className="w-5 h-5" />
-          Current Stats
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-between">
-          <span>Tries Left:</span>
+          <span>{t("triesLeft")}:</span>
           <Badge
             variant={
               triesLeft <= 1
@@ -47,15 +50,15 @@ export default function GameStatsCard({
           </Badge>
         </div>
         <div className="flex justify-between">
-          <span>Hints Used:</span>
+          <span>{t("hintsUsed")}:</span>
           <Badge>{hintsUsed}</Badge>
         </div>
         <div className="flex justify-between">
-          <span>Lines Revealed:</span>
+          <span>{t("linesRevealed")}:</span>
           <Badge>{linesRevealed}</Badge>
         </div>
         <div className="flex justify-between">
-          <span>Time:</span>
+          <span>{t("time")}:</span>
           <Badge>{formatTime(timeElapsed)}</Badge>
         </div>
       </CardContent>

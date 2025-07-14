@@ -11,7 +11,9 @@ A Next.js application that creates engaging lyric translation guessing games.
 - **✅ Multiple Valid Answers**: Support for different ways to write song titles
 - **🔍 Spotify Integration**: Search and select songs with rich metadata
 - **🔥 Firebase Backend**: Secure game data storage and retrieval
-- **🌐 Multi-language Support**: Hebrew ↔ English translation support
+- **🌐 Full Internationalization (i18n)**: Complete Hebrew and English interface with RTL support
+- **🔄 Language Switching**: Dynamic language switching with URL routing
+- **📱 RTL Layout**: Proper right-to-left layout support for Hebrew users
 - **🎨 Modern UI**: Beautiful responsive design with shadcn/ui components
 
 ## Tech Stack
@@ -19,7 +21,27 @@ A Next.js application that creates engaging lyric translation guessing games.
 - **Frontend**: Next.js 15+, TypeScript, Tailwind CSS, shadcn/ui
 - **Backend**: Next.js Server Actions, Firebase Firestore
 - **Music Data**: Spotify Web API
+- **Internationalization**: next-intl with Hebrew (default) and English
 - **Deployment**: Vercel-ready
+
+## Internationalization (i18n)
+
+The application supports full internationalization with:
+
+- **Hebrew (עברית)**: Default language with RTL layout support
+- **English**: Alternative language with LTR layout
+- **Dynamic Switching**: Language switcher in the UI
+- **URL Routing**:
+  - Hebrew (default): `/`, `/play`, `/admin`
+  - English: `/en`, `/en/play`, `/en/admin`
+- **RTL Support**: Complete right-to-left layout for Hebrew interface
+- **Translated Content**: All UI text, messages, and feedback in both languages
+
+### Language Files
+
+- `messages/he.json`: Hebrew translations
+- `messages/en.json`: English translations
+- Configuration: `i18n.ts` and `middleware.ts`
 
 ## Environment Variables
 

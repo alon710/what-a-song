@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Music } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface LyricsDisplayProps {
   lyrics: string[];
@@ -26,16 +27,21 @@ export default function LyricsDisplay({
   canRevealMore,
   originalLanguage,
 }: LyricsDisplayProps) {
+  const t = useTranslations("game.lyricsDisplay");
+  const tShared = useTranslations("shared.languages");
+
+  const targetLanguage =
+    originalLanguage === "en" ? tShared("hebrew") : tShared("english");
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Music className="w-5 h-5" />
-          Translated Lyrics
+          {t("title")}
         </CardTitle>
         <CardDescription>
-          Guess the song title from these translated lyrics (
-          {originalLanguage === "en" ? "Hebrew" : "English"})
+          {t("description", { language: targetLanguage })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -47,13 +53,16 @@ export default function LyricsDisplay({
 
         <div className="flex justify-between items-center">
           <Badge variant="outline">
-            {revealedLines} of {lyrics.length} lines revealed
+            {t("linesRevealed", {
+              revealed: revealedLines,
+              total: lyrics.length,
+            })}
           </Badge>
 
           {canRevealMore && (
             <Button variant="outline" onClick={onRevealNext}>
               <Eye className="w-4 h-4 mr-2" />
-              Reveal Next Line
+              {t("revealNext")}
             </Button>
           )}
         </div>

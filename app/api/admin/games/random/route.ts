@@ -4,7 +4,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 export async function GET(req: NextRequest) {
   try {
-    // Get all active games
     const q = query(collection(db, "games"), where("isActive", "==", true));
     const querySnapshot = await getDocs(q);
 
@@ -20,7 +19,6 @@ export async function GET(req: NextRequest) {
       games.push({ id: doc.id, ...doc.data() });
     });
 
-    // Return a random game
     const randomGame = games[Math.floor(Math.random() * games.length)];
 
     return NextResponse.json({ game: randomGame });

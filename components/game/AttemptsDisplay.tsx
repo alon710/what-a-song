@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { History } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface AttemptsDisplayProps {
   attempts: string[];
@@ -19,19 +20,23 @@ export default function AttemptsDisplay({
   attempts,
   triesLeft,
 }: AttemptsDisplayProps) {
+  const t = useTranslations("game.attempts");
+
   if (attempts.length === 0) {
     return null;
   }
+
+  const usedTries = 5 - triesLeft;
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="w-5 h-5" />
-          Previous Attempts
+          {t("title")}
         </CardTitle>
         <CardDescription>
-          Your previous guesses ({5 - triesLeft} of 5 used)
+          {t("description", { used: usedTries })}
         </CardDescription>
       </CardHeader>
       <CardContent>

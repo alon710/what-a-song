@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Music, Calendar, Trophy, Users, Image } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { GameData } from "@/lib/firebase";
 import { getRandomGame } from "@/lib/actions";
 import { GameStats, Hint } from "@/types";
@@ -17,6 +18,7 @@ import GameSidebar from "@/components/game/GameSidebar";
 import ResultsDialog from "@/components/game/ResultsDialog";
 
 export default function Game() {
+  const t = useTranslations("game.hints");
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [currentGuess, setCurrentGuess] = useState("");
   const [revealedLines, setRevealedLines] = useState(1);
@@ -90,26 +92,31 @@ export default function Game() {
     ? [
         {
           id: "albumCover",
-          label: "Album Cover",
+          label: t("albumCover"),
           icon: Image,
-          value: "Reveal album artwork",
+          value: t("albumCoverValue"),
         },
         {
           id: "artist",
-          label: "Artist Name",
+          label: t("artistName"),
           icon: Users,
           value: gameData.artist,
         },
         {
           id: "popularity",
-          label: "Popularity",
+          label: t("popularity"),
           icon: Trophy,
           value: `${gameData.popularity}/100`,
         },
-        { id: "album", label: "Album", icon: Music, value: gameData.album },
+        {
+          id: "album",
+          label: t("album"),
+          icon: Music,
+          value: gameData.album,
+        },
         {
           id: "year",
-          label: "Release Year",
+          label: t("releaseYear"),
           icon: Calendar,
           value: gameData.releaseYear.toString(),
         },

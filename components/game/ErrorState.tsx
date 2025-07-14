@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 interface ErrorStateProps {
@@ -10,6 +11,8 @@ interface ErrorStateProps {
 }
 
 export default function ErrorState({ error }: ErrorStateProps) {
+  const t = useTranslations("game");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-8">
       <div className="max-w-4xl mx-auto">
@@ -18,16 +21,16 @@ export default function ErrorState({ error }: ErrorStateProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-red-600">
                 <AlertTriangle className="w-5 h-5" />
-                No Games Available
+                {t("noGamesAvailable")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p>{error}</p>
               <p className="text-sm text-muted-foreground">
-                Create some games in the admin panel to start playing!
+                {t("noGamesMessage")}
               </p>
               <Link href="/admin">
-                <Button className="w-full">Go to Admin Panel</Button>
+                <Button className="w-full">{t("goToAdmin")}</Button>
               </Link>
             </CardContent>
           </Card>

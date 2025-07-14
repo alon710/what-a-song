@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GuessInputProps {
   guess: string;
@@ -26,18 +27,22 @@ export default function GuessInput({
   disabled,
   triesLeft,
 }: GuessInputProps) {
+  const t = useTranslations("game.guessInput");
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !disabled) {
       onSubmit();
     }
   };
 
+  const triesText = triesLeft === 1 ? t("tryText.one") : t("tryText.other");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Guess</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
         <CardDescription>
-          What song do you think this is? Enter the song title below.
+          {t("description")}
           {triesLeft > 0 && (
             <span
               className={`block mt-1 ${
@@ -46,14 +51,14 @@ export default function GuessInput({
                   : "text-muted-foreground"
               }`}
             >
-              {triesLeft} {triesLeft === 1 ? "try" : "tries"} remaining
+              {t("triesRemaining", { tries: triesLeft, triesText })}
             </span>
           )}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Input
-          placeholder="Enter the song title..."
+          placeholder={t("placeholder")}
           value={guess}
           onChange={(e) => onGuessChange(e.target.value)}
           onKeyPress={handleKeyPress}
@@ -64,7 +69,7 @@ export default function GuessInput({
           disabled={disabled || !guess.trim()}
           className="w-full"
         >
-          Submit Guess
+          {t("submitGuess")}
         </Button>
       </CardContent>
     </Card>

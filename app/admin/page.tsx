@@ -105,27 +105,7 @@ function AdminContent() {
 
         <SuccessMessage show={showSuccess} />
 
-        {/* Copyright Warning */}
-        <Card className="mb-8 border-orange-200 bg-orange-50">
-          <CardContent className="text-orange-700">
-            <p className="mb-2">
-              <strong>
-                Only add lyrics that you have legal rights to use.
-              </strong>
-            </p>
-            <ul className="list-disc ml-6 space-y-1">
-              <li>Public domain songs</li>
-              <li>Your own original compositions</li>
-              <li>Songs with proper licensing agreements</li>
-              <li>Content with explicit permission from copyright holders</li>
-            </ul>
-            <p className="mt-2 font-medium">
-              Do not add copyrighted lyrics without proper authorization.
-            </p>
-          </CardContent>
-        </Card>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8">
           {/* Left Column - Song Search */}
           <div className="space-y-6">
             <SearchSongs onSongSelect={handleSongSelect} />

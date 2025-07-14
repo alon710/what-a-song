@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "home": "Home",
+    "admin": "Admin Panel",
+    "play": "Play"
+  },
+  "home": {
+    "title": "🎵 What a Song",
+    "subtitle": "Lyric Translation Guessing Game",
+    "playButton": "Play Game",
+    "adminButton": "Admin Panel",
+    "loading": "Loading song...",
+    "error": "Error",
+    "noSongFound": "No song found",
+    "songInfo": {
+      "trackId": "Track ID",
+      "explicit": "Explicit",
+      "album": "Album",
+      "duration": "Duration",
+      "release": "Release",
+      "popularity": "Popularity",
+      "preview": "Preview",
+      "openInSpotify": "Open in Spotify"
+    }
+  },
+  "admin": {
+    "title": "🎵 Admin Panel - Create Game",
+    "searchSongs": {
+      "title": "Search Songs",
+      "description": "Search for songs using Spotify's database",
+      "placeholder": "Search for a song...",
+      "select": "Select"
+    },
+    "selectedSong": {
+      "title": "Selected Song"
+    },
+    "languageSettings": {
+      "title": "Language Settings",
+      "originalLanguage": "Original Language",
+      "english": "English",
+      "hebrew": "Hebrew"
+    },
+    "acceptableAnswers": {
+      "title": "Acceptable Answers",
+      "description": "Add multiple valid ways to write the song title (e.g., with/without parentheses, shortened versions)",
+      "placeholder": "Answer {number} (e.g., \"{songName}\")",
+      "addButton": "Add Another Answer",
+      "tip": "💡 Tip: Consider adding shortened versions, versions without parentheses, common nicknames, or alternate spellings that players might guess."
+    },
+    "lyricsInput": {
+      "title": "Add Translated Lyrics",
+      "description": "Enter up to 5 lines of translated lyrics for the game",
+      "translatedLyrics": "Translated Lyrics ({language})",
+      "placeholder": "Line {number} (optional)"
+    },
+    "saveButton": "Save Game",
+    "saving": "Saving...",
+    "successMessage": "Game saved successfully! It's now available for players.",
+    "copyrightWarning": {
+      "title": "Only add lyrics that you have legal rights to use.",
+      "items": [
+        "Public domain songs",
+        "Your own original compositions",
+        "Songs with proper licensing agreements",
+        "Content with explicit permission from copyright holders"
+      ],
+      "warning": "Do not add copyrighted lyrics without proper authorization."
+    }
+  },
+  "game": {
+    "title": "🎮 Lyric Translation Game",
+    "loading": "Loading game...",
+    "noGamesAvailable": "No Games Available",
+    "noGamesMessage": "Create some games in the admin panel to start playing!",
+    "goToAdmin": "Go to Admin Panel",
+    "newGame": "New Game",
+    "backToHome": "Back to Home",
+    "lyricsDisplay": {
+      "title": "Translated Lyrics",
+      "description": "Guess the song title from these translated lyrics ({language})",
+      "linesRevealed": "{revealed} of {total} lines revealed",
+      "revealNext": "Reveal Next Line"
+    },
+    "guessInput": {
+      "title": "Your Guess",
+      "description": "What song do you think this is? Enter the song title below.",
+      "placeholder": "Enter the song title...",
+      "triesRemaining": "{tries} {triesText} remaining",
+      "tryText": {
+        "one": "try",
+        "other": "tries"
+      },
+      "submitGuess": "Submit Guess"
+    },
+    "hints": {
+      "title": "Hints",
+      "description": "Use hints strategically to help you guess the song!",
+      "used": "{used}/{total} used",
+      "reveal": "Reveal",
+      "albumCover": "Album Cover",
+      "albumCoverValue": "Reveal album artwork",
+      "albumRevealed": "Album Revealed! 🎨",
+      "artistName": "Artist Name",
+      "popularity": "Popularity",
+      "album": "Album",
+      "releaseYear": "Release Year"
+    },
+    "attempts": {
+      "title": "Previous Attempts",
+      "description": "Your previous guesses ({used} of 5 used)"
+    },
+    "stats": {
+      "title": "Current Stats",
+      "triesLeft": "Tries Left",
+      "hintsUsed": "Hints Used",
+      "linesRevealed": "Lines Revealed",
+      "time": "Time"
+    },
+    "albumCover": {
+      "hidden": "Album Cover Hidden",
+      "useHint": "Use the \"Album Cover\" hint to reveal"
+    },
+    "results": {
+      "win": "Congratulations! 🎉",
+      "lose": "Game Over 😔",
+      "winMessage": "You correctly guessed: {songTitle}",
+      "loseMessage": "The song was: {songTitle}",
+      "stats": {
+        "time": "Time",
+        "tries": "Tries",
+        "lines": "Lines",
+        "hints": "Hints",
+        "result": "Result"
+      },
+      "attempts": "Your Attempts:",
+      "songInfo": "by {artist}",
+      "albumInfo": "from \"{album}\" ({year})",
+      "playAgain": "Play Again",
+      "home": "Home"
+    }
+  },
+  "shared": {
+    "languages": {
+      "hebrew": "Hebrew",
+      "english": "English"
+    },
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  }
+}

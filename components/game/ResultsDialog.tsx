@@ -18,6 +18,7 @@ import {
   Trophy,
   Target,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { GameStats } from "@/types";
 import { GameData } from "@/lib/firebase";
 
@@ -34,6 +35,8 @@ export default function ResultsDialog({
   stats,
   onRestart,
 }: ResultsDialogProps) {
+  const t = useTranslations("game.results");
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -54,18 +57,12 @@ export default function ResultsDialog({
             )}
           </div>
           <DialogTitle className="text-center text-2xl">
-            {stats.gameWon ? "Congratulations! 🎉" : "Game Over 😔"}
+            {stats.gameWon ? t("win") : t("lose")}
           </DialogTitle>
           <DialogDescription className="text-center">
-            {stats.gameWon ? (
-              <>
-                You correctly guessed: <strong>{gameData.songTitle}</strong>
-              </>
-            ) : (
-              <>
-                The song was: <strong>{gameData.songTitle}</strong>
-              </>
-            )}
+            {stats.gameWon
+              ? t("winMessage", { songTitle: gameData.songTitle })
+              : t("loseMessage", { songTitle: gameData.songTitle })}
           </DialogDescription>
         </DialogHeader>
 
@@ -74,7 +71,7 @@ export default function ResultsDialog({
             <div className="text-center p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Clock className="w-4 h-4" />
-                <span className="text-sm font-medium">Time</span>
+                <span className="text-sm font-medium">{t("stats.time")}</span>
               </div>
               <Badge variant="outline" className="text-lg">
                 {formatTime(stats.timeElapsed)}
@@ -84,7 +81,7 @@ export default function ResultsDialog({
             <div className="text-center p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Target className="w-4 h-4" />
-                <span className="text-sm font-medium">Tries</span>
+                <span className="text-sm font-medium">{t("stats.tries")}</span>
               </div>
               <Badge variant="outline" className="text-lg">
                 {stats.triesUsed}/5
@@ -94,7 +91,7 @@ export default function ResultsDialog({
             <div className="text-center p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Eye className="w-4 h-4" />
-                <span className="text-sm font-medium">Lines</span>
+                <span className="text-sm font-medium">{t("stats.lines")}</span>
               </div>
               <Badge variant="outline" className="text-lg">
                 {stats.linesRevealed}/{gameData.translatedLyrics.length}
@@ -104,7 +101,7 @@ export default function ResultsDialog({
             <div className="text-center p-4 bg-slate-50 rounded-lg">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Lightbulb className="w-4 h-4" />
-                <span className="text-sm font-medium">Hints</span>
+                <span className="text-sm font-medium">{t("stats.hints")}</span>
               </div>
               <Badge variant="outline" className="text-lg">
                 {stats.hintsUsed}/5
@@ -115,7 +112,7 @@ export default function ResultsDialog({
           <div className="text-center p-4 bg-slate-50 rounded-lg">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Trophy className="w-4 h-4" />
-              <span className="text-sm font-medium">Result</span>
+              <span className="text-sm font-medium">{t("stats.result")}</span>
             </div>
             <Badge
               variant={stats.gameWon ? "default" : "secondary"}
@@ -128,7 +125,7 @@ export default function ResultsDialog({
           {stats.attempts.length > 0 && (
             <div className="space-y-2">
               <h4 className="font-medium text-sm text-muted-foreground">
-                Your Attempts:
+                {t("attempts")}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {stats.attempts.map((attempt, index) => (
@@ -141,19 +138,22 @@ export default function ResultsDialog({
           )}
 
           <div className="text-center text-sm text-muted-foreground">
-            <p>by {gameData.artist}</p>
+            <p>{t("songInfo", { artist: gameData.artist })}</p>
             <p>
-              from "{gameData.album}" ({gameData.releaseYear})
+              {t("albumInfo", {
+                album: gameData.album,
+                year: gameData.releaseYear,
+              })}
             </p>
           </div>
 
           <div className="flex gap-2">
             <Button onClick={onRestart} className="flex-1">
-              Play Again
+              {t("playAgain")}
             </Button>
             <Button variant="outline" className="flex-1" asChild>
               <a href="/" className="text-center">
-                Home
+                {t("home")}
               </a>
             </Button>
           </div>

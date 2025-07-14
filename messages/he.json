@@ -1,0 +1,156 @@
+{
+  "nav": {
+    "home": "בית",
+    "admin": "ממשק ניהול",
+    "play": "שחק"
+  },
+  "home": {
+    "title": "🎵 איזה שיר",
+    "subtitle": "משחק ניחוש שירים מתורגמים",
+    "playButton": "שחק עכשיו",
+    "adminButton": "ממשק ניהול",
+    "loading": "טוען שיר...",
+    "error": "שגיאה",
+    "noSongFound": "לא נמצא שיר",
+    "songInfo": {
+      "trackId": "מזהה רצועה",
+      "explicit": "מפורש",
+      "album": "אלבום",
+      "duration": "משך",
+      "release": "שחרור",
+      "popularity": "פופולריות",
+      "preview": "תצוגה מקדימה",
+      "openInSpotify": "פתח בספוטיפיי"
+    }
+  },
+  "admin": {
+    "title": "🎵 ממשק ניהול - יצירת משחק",
+    "searchSongs": {
+      "title": "חיפוש שירים",
+      "description": "חפש שירים באמצעות מסד הנתונים של ספוטיפיי",
+      "placeholder": "חפש שיר...",
+      "select": "בחר"
+    },
+    "selectedSong": {
+      "title": "שיר נבחר"
+    },
+    "languageSettings": {
+      "title": "הגדרות שפה",
+      "originalLanguage": "שפה מקורית",
+      "english": "אנגלית",
+      "hebrew": "עברית"
+    },
+    "acceptableAnswers": {
+      "title": "תשובות מקובלות",
+      "description": "הוסף דרכים שונות לכתוב את שם השיר (למשל, עם/בלי סוגריים, גרסאות מקוצרות)",
+      "placeholder": "תשובה {number} (למשל, \"{songName}\")",
+      "addButton": "הוסף תשובה נוספת",
+      "tip": "💡 טיפ: שקול להוסיף גרסאות מקוצרות, גרסאות בלי סוגריים, כינויים נפוצים, או איות חלופיים שהשחקנים עשויים לנחש."
+    },
+    "lyricsInput": {
+      "title": "הוסף מילים מתורגמות",
+      "description": "הכנס עד 5 שורות של מילים מתורגמות למשחק",
+      "translatedLyrics": "מילים מתורגמות ({language})",
+      "placeholder": "שורה {number} (אופציונלי)"
+    },
+    "saveButton": "שמור משחק",
+    "saving": "שומר...",
+    "successMessage": "המשחק נשמר בהצלחה! הוא זמין עכשיו לשחקנים.",
+    "copyrightWarning": {
+      "title": "הוסף רק מילים שיש לך זכויות חוקיות להשתמש בהן.",
+      "items": [
+        "שירים ברשות הציבור",
+        "יצירות מקוריות שלך",
+        "שירים עם הסכמי רישוי מתאימים",
+        "תוכן עם אישור מפורש מבעלי זכויות היוצרים"
+      ],
+      "warning": "אל תוסיף מילים המוגנות בזכויות יוצרים ללא הרשאה מתאימה."
+    }
+  },
+  "game": {
+    "title": "🎮 משחק תרגום מילים",
+    "loading": "טוען משחק...",
+    "noGamesAvailable": "אין משחקים זמינים",
+    "noGamesMessage": "צור כמה משחקים בממשק הניהול כדי להתחיל לשחק!",
+    "goToAdmin": "עבור לממשק ניהול",
+    "newGame": "משחק חדש",
+    "backToHome": "חזור לבית",
+    "lyricsDisplay": {
+      "title": "מילים מתורגמות",
+      "description": "נחש את שם השיר מהמילים המתורגמות האלה ({language})",
+      "linesRevealed": "{revealed} מתוך {total} שורות נחשפו",
+      "revealNext": "חשף שורה הבאה"
+    },
+    "guessInput": {
+      "title": "הניחוש שלך",
+      "description": "איזה שיר אתה חושב שזה? הכנס את שם השיר למטה.",
+      "placeholder": "הכנס את שם השיר...",
+      "triesRemaining": "{tries} {triesText} נותרו",
+      "tryText": {
+        "one": "ניסיון",
+        "other": "ניסיונות"
+      },
+      "submitGuess": "שלח ניחוש"
+    },
+    "hints": {
+      "title": "רמזים",
+      "description": "השתמש ברמזים באופן אסטרטגי כדי לעזור לך לנחש את השיר!",
+      "used": "{used}/{total} בשימוש",
+      "reveal": "חשף",
+      "albumCover": "כיסוי אלבום",
+      "albumCoverValue": "חשף אמנות אלבום",
+      "albumRevealed": "אלבום נחשף! 🎨",
+      "artistName": "שם אמן",
+      "popularity": "פופולריות",
+      "album": "אלבום",
+      "releaseYear": "שנת שחרור"
+    },
+    "attempts": {
+      "title": "ניסיונות קודמים",
+      "description": "הניחושים הקודמים שלך ({used} מתוך 5 בשימוש)"
+    },
+    "stats": {
+      "title": "סטטיסטיקות נוכחיות",
+      "triesLeft": "ניסיונות נותרו",
+      "hintsUsed": "רמזים בשימוש",
+      "linesRevealed": "שורות נחשפו",
+      "time": "זמן"
+    },
+    "albumCover": {
+      "hidden": "כיסוי אלבום מוסתר",
+      "useHint": "השתמש ברמז \"כיסוי אלבום\" כדי לחשף"
+    },
+    "results": {
+      "win": "כל הכבוד! 🎉",
+      "lose": "המשחק נגמר 😔",
+      "winMessage": "ניחשת נכון: {songTitle}",
+      "loseMessage": "השיר היה: {songTitle}",
+      "stats": {
+        "time": "זמן",
+        "tries": "ניסיונות",
+        "lines": "שורות",
+        "hints": "רמזים",
+        "result": "תוצאה"
+      },
+      "attempts": "הניסיונות שלך:",
+      "songInfo": "של {artist}",
+      "albumInfo": "מהאלבום \"{album}\" ({year})",
+      "playAgain": "שחק שוב",
+      "home": "בית"
+    }
+  },
+  "shared": {
+    "languages": {
+      "hebrew": "עברית",
+      "english": "אנגלית"
+    },
+    "loading": "טוען...",
+    "error": "שגיאה",
+    "success": "הצלחה",
+    "cancel": "ביטול",
+    "save": "שמור",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "confirm": "אשר"
+  }
+}
