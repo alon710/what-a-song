@@ -30,14 +30,14 @@ export default function LyricsInput({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Translated Lyrics</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-start">Add Translated Lyrics</CardTitle>
+        <CardDescription className="text-start">
           Enter up to 5 lines of translated lyrics for the game
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <Label className="text-lg font-medium">
+          <Label className="text-lg font-medium text-start">
             Translated Lyrics (
             {originalLanguage === "en" ? "Hebrew" : "English"})
           </Label>
@@ -48,6 +48,7 @@ export default function LyricsInput({
                 placeholder={`Line ${index + 1} (optional)`}
                 value={line}
                 onChange={(e) => updateLyric(index, e.target.value)}
+                className="text-start"
               />
             ))}
           </div>

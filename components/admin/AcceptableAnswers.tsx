@@ -43,8 +43,8 @@ export default function AcceptableAnswers({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Acceptable Answers</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-start">Acceptable Answers</CardTitle>
+        <CardDescription className="text-start">
           Add multiple valid ways to write the song title (e.g., with/without
           parentheses, shortened versions)
         </CardDescription>
@@ -58,7 +58,7 @@ export default function AcceptableAnswers({
               }")`}
               value={answer}
               onChange={(e) => updateAnswer(index, e.target.value)}
-              className="flex-1"
+              className="flex-1 text-start"
             />
             {acceptableAnswers.length > 1 && (
               <Button
@@ -78,10 +78,10 @@ export default function AcceptableAnswers({
           size="sm"
           className="w-full"
         >
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 me-2" />
           Add Another Answer
         </Button>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground text-start">
           💡 Tip: Consider adding shortened versions, versions without
           parentheses, common nicknames, or alternate spellings that players
           might guess.

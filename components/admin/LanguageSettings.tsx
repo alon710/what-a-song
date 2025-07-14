@@ -16,10 +16,10 @@ export default function LanguageSettings({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Language Settings</CardTitle>
+        <CardTitle className="text-start">Language Settings</CardTitle>
       </CardHeader>
       <CardContent>
-        <Label>Original Language</Label>
+        <Label className="text-start">Original Language</Label>
         <div className="flex gap-2 mt-2">
           <Button
             variant={originalLanguage === "en" ? "default" : "outline"}

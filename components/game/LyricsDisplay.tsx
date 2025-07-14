@@ -36,18 +36,18 @@ export default function LyricsDisplay({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-start">
           <Music className="w-5 h-5" />
           {t("title")}
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-start">
           {t("description", { language: targetLanguage })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {lyrics.slice(0, revealedLines).map((line, index) => (
           <div key={index} className="p-4 bg-slate-100 rounded-lg">
-            <p className="text-lg font-medium">{line}</p>
+            <p className="text-lg font-medium text-start">{line}</p>
           </div>
         ))}
 
@@ -61,7 +61,7 @@ export default function LyricsDisplay({
 
           {canRevealMore && (
             <Button variant="outline" onClick={onRevealNext}>
-              <Eye className="w-4 h-4 mr-2" />
+              <Eye className="w-4 h-4 me-2" />
               {t("revealNext")}
             </Button>
           )}

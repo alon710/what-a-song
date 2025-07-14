@@ -31,11 +31,11 @@ export default function AttemptsDisplay({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-start">
           <History className="w-5 h-5" />
           {t("title")}
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-start">
           {t("description", { used: usedTries })}
         </CardDescription>
       </CardHeader>

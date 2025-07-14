@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,37 +44,38 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.969 0 0);
+  --secondary-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.969 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
+  --accent: oklch(0.969 0 0);
+  --accent-foreground: oklch(0.145 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.898 0 0);
+  --input: oklch(0.898 0 0);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.969 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.969 0 0);
+  --sidebar-accent-foreground: oklch(0.145 0 0);
+  --sidebar-border: oklch(0.898 0 0);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 .dark {
@@ -130,104 +130,6 @@ html[dir="ltr"] {
   direction: ltr;
 }
 
-/* RTL-specific layout adjustments */
-html[dir="rtl"] .flex {
-  flex-direction: row-reverse;
-}
-
-html[dir="rtl"] .flex-col {
-  flex-direction: column;
-}
-
-html[dir="rtl"] .grid {
-  direction: rtl;
-}
-
-/* Text alignment adjustments */
-html[dir="rtl"] .text-left {
-  text-align: right;
-}
-
-html[dir="rtl"] .text-right {
-  text-align: left;
-}
-
-/* Margin and padding adjustments */
-html[dir="rtl"] .ml-auto {
-  margin-left: unset;
-  margin-right: auto;
-}
-
-html[dir="rtl"] .mr-auto {
-  margin-right: unset;
-  margin-left: auto;
-}
-
-html[dir="rtl"] .ml-2 {
-  margin-left: unset;
-  margin-right: 0.5rem;
-}
-
-html[dir="rtl"] .mr-2 {
-  margin-right: unset;
-  margin-left: 0.5rem;
-}
-
-html[dir="rtl"] .ml-4 {
-  margin-left: unset;
-  margin-right: 1rem;
-}
-
-html[dir="rtl"] .mr-4 {
-  margin-right: unset;
-  margin-left: 1rem;
-}
-
-html[dir="rtl"] .ml-8 {
-  margin-left: unset;
-  margin-right: 2rem;
-}
-
-html[dir="rtl"] .mr-8 {
-  margin-right: unset;
-  margin-left: 2rem;
-}
-
-html[dir="rtl"] .pl-2 {
-  padding-left: unset;
-  padding-right: 0.5rem;
-}
-
-html[dir="rtl"] .pr-2 {
-  padding-right: unset;
-  padding-left: 0.5rem;
-}
-
-html[dir="rtl"] .pl-4 {
-  padding-left: unset;
-  padding-right: 1rem;
-}
-
-html[dir="rtl"] .pr-4 {
-  padding-right: unset;
-  padding-left: 1rem;
-}
-
-html[dir="rtl"] .pl-6 {
-  padding-left: unset;
-  padding-right: 1.5rem;
-}
-
-html[dir="rtl"] .pr-6 {
-  padding-right: unset;
-  padding-left: 1.5rem;
-}
-
-/* Smooth transitions for direction changes */
-* {
-  transition: margin 0.3s ease, padding 0.3s ease, text-align 0.3s ease;
-}
-
 /* Hebrew typography improvements */
 html[dir="rtl"] {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -246,4 +148,86 @@ html[dir="rtl"] * {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL Utility Classes */
+@layer utilities {
+  /* Flex row reverse for RTL */
+  html[dir="rtl"] .flex-row-rtl {
+    flex-direction: row-reverse;
+  }
+
+  html[dir="ltr"] .flex-row-rtl {
+    flex-direction: row;
+  }
+
+  /* Justify between with proper RTL support */
+  html[dir="rtl"] .justify-between-rtl {
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
+
+  html[dir="ltr"] .justify-between-rtl {
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  /* Text alignment */
+  html[dir="rtl"] .text-start {
+    text-align: right;
+  }
+
+  html[dir="ltr"] .text-start {
+    text-align: left;
+  }
+
+  html[dir="rtl"] .text-end {
+    text-align: left;
+  }
+
+  html[dir="ltr"] .text-end {
+    text-align: right;
+  }
+
+  /* Margin utilities for RTL */
+  html[dir="rtl"] .mr-auto-rtl {
+    margin-left: auto;
+    margin-right: unset;
+  }
+
+  html[dir="ltr"] .mr-auto-rtl {
+    margin-right: auto;
+    margin-left: unset;
+  }
+
+  html[dir="rtl"] .ml-auto-rtl {
+    margin-right: auto;
+    margin-left: unset;
+  }
+
+  html[dir="ltr"] .ml-auto-rtl {
+    margin-left: auto;
+    margin-right: unset;
+  }
+
+  /* Spacing utilities for RTL */
+  html[dir="rtl"] .me-2 {
+    margin-left: 0.5rem;
+    margin-right: unset;
+  }
+
+  html[dir="ltr"] .me-2 {
+    margin-right: 0.5rem;
+    margin-left: unset;
+  }
+
+  html[dir="rtl"] .ms-2 {
+    margin-right: 0.5rem;
+    margin-left: unset;
+  }
+
+  html[dir="ltr"] .ms-2 {
+    margin-left: 0.5rem;
+    margin-right: unset;
+  }
 }

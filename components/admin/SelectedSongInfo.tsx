@@ -18,7 +18,7 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Selected Song</CardTitle>
+        <CardTitle className="text-start">Selected Song</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
@@ -29,7 +29,7 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
               className="w-20 h-20 rounded"
             />
           )}
-          <div>
+          <div className="text-start">
             <h3 className="text-lg font-bold">{song.name}</h3>
             <p className="text-muted-foreground">
               {song.artists.map((a) => a.name).join(", ")}
@@ -41,19 +41,19 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            {formatDuration(song.duration_ms)}
+            <span>{formatDuration(song.duration_ms)}</span>
           </div>
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
-            {song.popularity}/100
+            <span>{song.popularity}/100</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            {new Date(song.album.release_date).getFullYear()}
+            <span>{new Date(song.album.release_date).getFullYear()}</span>
           </div>
           <div className="flex items-center gap-2">
             <Music className="w-4 h-4" />
-            Spotify
+            <span>Spotify</span>
           </div>
         </div>
       </CardContent>

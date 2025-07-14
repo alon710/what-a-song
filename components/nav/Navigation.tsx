@@ -18,9 +18,6 @@ export default function Navigation() {
           {/* Left side - Logo and Title */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <Logo />
-            <div className="min-w-0">
-              <NavTitle />
-            </div>
           </div>
 
           {/* Right side - Navigation and Language Switcher */}

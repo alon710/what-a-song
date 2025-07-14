@@ -31,14 +31,16 @@ export default function HintsSection({
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-3 sm:pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-          <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5" />
-          {t("title")}
+        <CardTitle className="flex items-center justify-between text-lg sm:text-xl">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>{t("title")}</span>
+          </div>
           <Badge variant="outline" className="text-xs">
             {t("used", { used: usedHints.length, total: hints.length })}
           </Badge>
         </CardTitle>
-        <CardDescription className="text-sm sm:text-base">
+        <CardDescription className="text-sm sm:text-base text-start">
           {t("description")}
         </CardDescription>
       </CardHeader>
@@ -73,10 +75,10 @@ export default function HintsSection({
                   isUsed ? "bg-blue-50 border-blue-200" : "bg-gray-50"
                 }`}
               >
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="font-medium text-sm sm:text-base truncate">
+                    <Icon className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    <span className="font-medium text-sm sm:text-base text-start break-words">
                       {getHintLabel(hint.id)}
                     </span>
                   </div>
@@ -91,13 +93,7 @@ export default function HintsSection({
                       {t("reveal")}
                     </Button>
                   ) : (
-                    <span
-                      className={`text-sm sm:text-base font-semibold flex-shrink-0 ${
-                        hint.id === "albumCover"
-                          ? "text-green-700"
-                          : "text-blue-700"
-                      }`}
-                    >
+                    <span className="text-xs sm:text-sm font-medium flex-shrink-0 text-start text-primary break-words max-w-[50%]">
                       {hint.id === "albumCover"
                         ? t("albumRevealed")
                         : hint.value}

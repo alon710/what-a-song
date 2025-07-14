@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SpotifyTrack } from "@/types";
 
 interface SearchSongsProps {
@@ -21,6 +22,7 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("admin.searchSongs");
 
   const searchSongs = async () => {
     if (!searchQuery.trim()) return;
@@ -51,21 +53,22 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-start">
           <Search className="w-5 h-5" />
-          Search Songs
+          {t("title")}
         </CardTitle>
-        <CardDescription>
-          Search for songs using Spotify's database
+        <CardDescription className="text-start">
+          {t("description")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <Input
-            placeholder="Search for a song..."
+            placeholder={t("placeholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && searchSongs()}
+            className="text-start"
           />
           <Button onClick={searchSongs} disabled={loading}>
             {loading ? "..." : <Search className="w-4 h-4" />}
@@ -89,13 +92,13 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
                         className="w-12 h-12 rounded"
                       />
                     )}
-                    <div className="flex-1">
+                    <div className="flex-1 text-start">
                       <h3 className="font-medium">{song.name}</h3>
                       <p className="text-sm text-muted-foreground">
                         {song.artists.map((a) => a.name).join(", ")}
                       </p>
                     </div>
-                    <Button size="sm">Select</Button>
+                    <Button size="sm">{t("select")}</Button>
                   </div>
                 </CardContent>
               </Card>

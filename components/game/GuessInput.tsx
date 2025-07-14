@@ -40,12 +40,14 @@ export default function GuessInput({
   return (
     <Card className="shadow-sm">
       <CardHeader className="pb-3 sm:pb-4">
-        <CardTitle className="text-lg sm:text-xl">{t("title")}</CardTitle>
-        <CardDescription className="text-sm sm:text-base">
+        <CardTitle className="text-lg sm:text-xl text-start">
+          {t("title")}
+        </CardTitle>
+        <CardDescription className="text-sm sm:text-base text-start">
           {t("description")}
           {triesLeft > 0 && (
             <span
-              className={`block mt-1 text-sm font-medium ${
+              className={`block mt-1 text-sm font-medium text-start ${
                 triesLeft <= 2 ? "text-red-600" : "text-muted-foreground"
               }`}
             >
@@ -61,7 +63,7 @@ export default function GuessInput({
           onChange={(e) => onGuessChange(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={disabled}
-          className="h-11 sm:h-12 text-base"
+          className="h-11 sm:h-12 text-base text-start"
         />
         <Button
           onClick={onSubmit}
@@ -69,7 +71,7 @@ export default function GuessInput({
           className="w-full h-11 sm:h-12 text-base font-medium touch-manipulation"
           size="lg"
         >
-          <CheckCircle className="w-4 h-4 mr-2" />
+          <CheckCircle className="w-4 h-4 me-2" />
           {t("submitGuess")}
         </Button>
       </CardContent>
