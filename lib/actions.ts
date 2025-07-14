@@ -21,8 +21,6 @@ export interface CreateSongData {
 export interface SaveScoreData {
   songId: string;
   userId?: string;
-  userEmail?: string;
-  userName?: string;
   songTitle: string;
   artist: string;
   album: string;
@@ -203,7 +201,7 @@ export async function saveScore(scoreData: SaveScoreData) {
     console.log("Starting to save score...", {
       songId: scoreData.songId,
       userId: scoreData.userId,
-      songWon: scoreData.songWon,
+      isWon: scoreData.isWon,
     });
 
     // Validate required fields
@@ -245,9 +243,7 @@ export async function saveScore(scoreData: SaveScoreData) {
 
     const scoreRecord: Omit<ScoreData, "id"> = {
       songId: scoreData.songId,
-      userId: scoreData.userId || undefined,
-      userEmail: scoreData.userEmail || undefined,
-      userName: scoreData.userName || undefined,
+      userId: scoreData.userId || "",
       songTitle: scoreData.songTitle,
       artist: scoreData.artist,
       album: scoreData.album || "",

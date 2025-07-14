@@ -9,7 +9,6 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import Image from "next/image";
 import { SongData } from "@/lib/firebase";
 import { getRandomSong, saveScore, SaveScoreData } from "@/lib/actions";
 import { GameStats, Hint } from "@/types";
@@ -18,6 +17,15 @@ import { useAuth } from "@/components/shared/AuthProvider";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import ResultsDialog from "@/components/game/ResultsDialog";
+import WaitingScreen from "@/components/game/WaitingScreen";
+import GameHeader from "@/components/game/GameHeader";
+import HintsGrid from "@/components/game/HintsGrid";
+import AlbumCover from "@/components/game/AlbumCover";
+import LyricsDisplay from "@/components/game/LyricsDisplay";
+import ProgressIndicator from "@/components/game/ProgressIndicator";
+import GameControls from "@/components/game/GameControls";
+import AttemptsHistory from "@/components/game/AttemptsHistory";
+import RevealButton from "@/components/game/RevealButton";
 
 export default function Home() {
   const t = useTranslations("game.hints");
@@ -182,15 +190,6 @@ export default function Home() {
     }
   };
 
-  const revealNextHint = () => {
-    const nextHint = availableHints.find(
-      (hint) => !usedHints.includes(hint.id)
-    );
-    if (nextHint) {
-      revealHint(nextHint.id);
-    }
-  };
-
   const saveGameScore = async (
     won: boolean,
     finalAttempts: string[],
@@ -202,8 +201,6 @@ export default function Home() {
       const scoreData: SaveScoreData = {
         songId: songData.id,
         userId: user?.uid,
-        userEmail: user?.email || undefined,
-        userName: userData?.displayName || user?.displayName || undefined,
         songTitle: songData.songTitle,
         artist: songData.artist,
         album: songData.album,
@@ -251,202 +248,65 @@ export default function Home() {
 
   if (!songData) return null;
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-4">
       <div className="max-w-2xl mx-auto">
         {!gameStarted ? (
-          <div className="text-center space-y-8 py-16">
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold text-gray-800">
-                {tGame("title")}
-              </h1>
-              <p className="text-gray-600">{tGame("waitingToStart")}</p>
-            </div>
-
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
-              <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
-                <Image
-                  src={songData.albumCover}
-                  alt="Album cover"
-                  fill
-                  className="object-cover filter blur-xl"
-                />
-              </div>
-
-              <div className="p-8">
-                <div className="space-y-2 mb-6">
-                  {songData.translatedLyrics.slice(0, 3).map((_, index) => (
-                    <div
-                      key={index}
-                      className="text-center py-2 text-gray-400 filter blur-sm select-none"
-                    >
-                      ████████ ████ ████████
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={startGame}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-                >
-                  {tGame("startGame")}
-                </button>
-              </div>
-            </div>
-          </div>
+          <WaitingScreen songData={songData} onStartGame={startGame} />
         ) : (
           <div className="space-y-4 py-8">
-            {/* Header with artist info and album cover */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
               {!gameOver && (
                 <div className="p-4 pb-0">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-2">
-                    {availableHints.map((hint) => {
-                      const isUsed = usedHints.includes(hint.id);
-                      const Icon = hint.icon;
-
-                      return (
-                        <button
-                          key={hint.id}
-                          onClick={() => revealHint(hint.id)}
-                          disabled={isUsed}
-                          className={`flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-colors ${
-                            isUsed
-                              ? "bg-green-100 text-green-700 cursor-default"
-                              : "bg-blue-600 hover:bg-blue-700 text-white"
-                          }`}
-                        >
-                          <Icon className="w-4 h-4 flex-shrink-0" />
-                          <span className="text-center leading-tight">
-                            {isUsed
-                              ? hint.id === "albumCover"
-                                ? "Revealed!"
-                                : hint.value
-                              : hint.id === "albumCover"
-                              ? t("albumCover")
-                              : hint.id === "artist"
-                              ? t("artistName")
-                              : hint.id === "popularity"
-                              ? t("popularity")
-                              : hint.id === "album"
-                              ? t("album")
-                              : hint.id === "year"
-                              ? t("releaseYear")
-                              : hint.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <HintsGrid
+                    hints={availableHints}
+                    usedHints={usedHints}
+                    onRevealHint={revealHint}
+                  />
                 </div>
               )}
-              <div className="relative aspect-square m-4 rounded-xl overflow-hidden">
-                <Image
-                  src={songData.albumCover}
-                  alt="Album cover"
-                  fill
-                  className={`object-cover transition-all duration-700 ${
-                    isAlbumBlurred ? "filter blur-2xl" : "filter blur-none"
-                  }`}
-                />
-              </div>
+
+              <AlbumCover
+                src={songData.albumCover}
+                alt="Album cover"
+                isBlurred={isAlbumBlurred}
+              />
 
               <div className="px-6 pb-2">
-                <div className="text-xs text-gray-500 text-center">
-                  {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
-                </div>
+                <GameHeader timeElapsed={timeElapsed} triesLeft={triesLeft} />
               </div>
 
               <div className="p-6">
-                {/* Lyrics display */}
-                <div className="space-y-3 mb-6">
-                  {songData.translatedLyrics.map((lyric, index) => (
-                    <div
-                      key={index}
-                      className={`text-center py-2 transition-all duration-500 ${
-                        index < revealedLines
-                          ? "text-gray-800 font-medium"
-                          : "text-gray-400 filter blur-sm select-none"
-                      }`}
-                    >
-                      {index < revealedLines ? lyric : "████████ ████ ████████"}
-                    </div>
-                  ))}
-                </div>
+                <LyricsDisplay
+                  lyrics={songData.translatedLyrics}
+                  revealedLines={revealedLines}
+                />
 
-                {/* Progress circles */}
-                <div className="flex justify-center space-x-2 mb-6">
-                  {songData.translatedLyrics.map((_, index) => (
-                    <div
-                      key={index}
-                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors ${
-                        index < revealedLines
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "bg-gray-200 text-gray-500 border-gray-300"
-                      }`}
-                    >
-                      {index + 1}
-                    </div>
-                  ))}
-                </div>
+                <ProgressIndicator
+                  totalLines={songData.translatedLyrics.length}
+                  revealedLines={revealedLines}
+                />
 
-                {/* Action buttons */}
                 <div className="space-y-3">
-                  {revealedLines < songData.translatedLyrics.length &&
-                    !gameOver && (
-                      <button
-                        onClick={revealNextLine}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-                      >
-                        {tGame("lyricsDisplay.revealNext")}
-                      </button>
-                    )}
+                  <RevealButton
+                    onRevealNext={revealNextLine}
+                    canReveal={
+                      revealedLines < songData.translatedLyrics.length &&
+                      !gameOver
+                    }
+                  />
 
                   {!gameOver && (
-                    <div className="space-y-2">
-                      <input
-                        type="text"
-                        value={currentGuess}
-                        onChange={(e) => setCurrentGuess(e.target.value)}
-                        placeholder={tGame("guessInput.placeholder")}
-                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        onKeyPress={(e) => e.key === "Enter" && checkGuess()}
-                      />
-                      <button
-                        onClick={checkGuess}
-                        disabled={!currentGuess.trim()}
-                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-                      >
-                        {tGame("guessInput.submitGuess")}
-                      </button>
-                    </div>
+                    <GameControls
+                      currentGuess={currentGuess}
+                      onGuessChange={setCurrentGuess}
+                      onSubmitGuess={checkGuess}
+                      disabled={gameOver}
+                    />
                   )}
                 </div>
 
-                {/* Attempts history */}
-                {attempts.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="text-xs text-gray-500 mb-2">
-                      Previous attempts:
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {attempts.map((attempt, index) => (
-                        <span
-                          key={index}
-                          className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-md"
-                        >
-                          {attempt}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <AttemptsHistory attempts={attempts} />
               </div>
             </div>
           </div>
