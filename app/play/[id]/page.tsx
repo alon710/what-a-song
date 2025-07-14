@@ -29,6 +29,21 @@ import GameControls from "@/components/game/GameControls";
 import AttemptsHistory from "@/components/game/AttemptsHistory";
 import RevealButton from "@/components/game/RevealButton";
 
+interface GameState {
+  currentGuess: string;
+  revealedLines: number;
+  usedHints: string[];
+  gameStartTime: number;
+  timeElapsed: number;
+  gameWon: boolean;
+  gameOver: boolean;
+  triesLeft: number;
+  attempts: string[];
+  isAlbumBlurred: boolean;
+  gameStarted: boolean;
+  savedAt: number;
+}
+
 export default function PlayGame() {
   const params = useParams();
   const songId = params.id as string;
@@ -56,6 +71,93 @@ export default function PlayGame() {
   const [hasAlreadyPlayed, setHasAlreadyPlayed] = useState(false);
   const [userHasWon, setUserHasWon] = useState(false);
 
+  const getStorageKey = () => `whatASong_game_${songId}`;
+
+  const saveGameState = useCallback(() => {
+    if (!songId || !gameStarted) return;
+
+    const gameState: GameState = {
+      currentGuess,
+      revealedLines,
+      usedHints,
+      gameStartTime,
+      timeElapsed,
+      gameWon,
+      gameOver,
+      triesLeft,
+      attempts,
+      isAlbumBlurred,
+      gameStarted,
+      savedAt: Date.now(),
+    };
+
+    try {
+      localStorage.setItem(getStorageKey(), JSON.stringify(gameState));
+    } catch (error) {
+      console.warn("Failed to save game state to localStorage:", error);
+    }
+  }, [
+    songId,
+    currentGuess,
+    revealedLines,
+    usedHints,
+    gameStartTime,
+    timeElapsed,
+    gameWon,
+    gameOver,
+    triesLeft,
+    attempts,
+    isAlbumBlurred,
+    gameStarted,
+  ]);
+
+  const loadGameState = useCallback(() => {
+    if (!songId) return null;
+
+    try {
+      const saved = localStorage.getItem(getStorageKey());
+      if (!saved) return null;
+
+      const gameState: GameState = JSON.parse(saved);
+
+      const maxAge = 24 * 60 * 60 * 1000;
+      if (Date.now() - gameState.savedAt > maxAge) {
+        localStorage.removeItem(getStorageKey());
+        return null;
+      }
+
+      return gameState;
+    } catch (error) {
+      console.warn("Failed to load game state from localStorage:", error);
+
+      localStorage.removeItem(getStorageKey());
+      return null;
+    }
+  }, [songId]);
+
+  const clearGameState = useCallback(() => {
+    if (!songId) return;
+    localStorage.removeItem(getStorageKey());
+  }, [songId]);
+
+  const restoreGameState = useCallback((gameState: GameState) => {
+    setCurrentGuess(gameState.currentGuess);
+    setRevealedLines(gameState.revealedLines);
+    setUsedHints(gameState.usedHints);
+    setGameStartTime(gameState.gameStartTime);
+    setTimeElapsed(gameState.timeElapsed);
+    setGameWon(gameState.gameWon);
+    setGameOver(gameState.gameOver);
+    setTriesLeft(gameState.triesLeft);
+    setAttempts(gameState.attempts);
+    setIsAlbumBlurred(gameState.isAlbumBlurred);
+    setGameStarted(gameState.gameStarted);
+
+    if (gameState.gameOver) {
+      setShowStats(true);
+    }
+  }, []);
+
   const loadGame = useCallback(async () => {
     if (!songId) return;
 
@@ -70,31 +172,43 @@ export default function PlayGame() {
 
       setSongData(result.song);
 
-      // Check if user has already played this song
       if (user?.uid) {
         const scoreResult = await getUserScoreForSong(user.uid, result.song.id);
         if (scoreResult.success && scoreResult.hasPlayed && scoreResult.score) {
           setUserPreviousScore(scoreResult.score);
           setHasAlreadyPlayed(true);
           setUserHasWon(scoreResult.hasWon);
+          clearGameState();
         } else {
           setUserPreviousScore(null);
           setHasAlreadyPlayed(false);
           setUserHasWon(false);
+
+          const savedState = loadGameState();
+          if (savedState && savedState.gameStarted) {
+            restoreGameState(savedState);
+          } else {
+            resetGameState();
+          }
         }
       } else {
         setUserPreviousScore(null);
         setHasAlreadyPlayed(false);
         setUserHasWon(false);
-      }
 
-      resetGameState();
+        const savedState = loadGameState();
+        if (savedState && savedState.gameStarted) {
+          restoreGameState(savedState);
+        } else {
+          resetGameState();
+        }
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load game");
     } finally {
       setLoading(false);
     }
-  }, [songId, user?.uid]);
+  }, [songId, user?.uid, loadGameState, clearGameState, restoreGameState]);
 
   const resetGameState = () => {
     setCurrentGuess("");
@@ -108,12 +222,17 @@ export default function PlayGame() {
     setAttempts([]);
     setIsAlbumBlurred(true);
     setGameStarted(false);
+    clearGameState();
   };
 
   const startGame = () => {
     setGameStarted(true);
     setGameStartTime(Date.now());
   };
+
+  useEffect(() => {
+    saveGameState();
+  }, [saveGameState]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -192,12 +311,14 @@ export default function PlayGame() {
       setGameWon(true);
       setGameOver(true);
       setShowStats(true);
+      clearGameState();
 
       saveGameScore(true, newAttempts, usedHints);
     } else if (newTriesLeft <= 0) {
       setGameWon(false);
       setGameOver(true);
       setShowStats(true);
+      clearGameState();
 
       saveGameScore(false, newAttempts, usedHints);
     }
