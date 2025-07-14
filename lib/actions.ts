@@ -1,6 +1,6 @@
 "use server";
 
-import { db, GameData } from "./firebase";
+import { db, GameData, ScoreData } from "./firebase";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
@@ -18,9 +18,26 @@ export interface CreateGameData {
   translatedLyrics: string[];
 }
 
+export interface SaveScoreData {
+  gameId: string;
+  userId?: string;
+  userEmail?: string;
+  userName?: string;
+  songTitle: string;
+  artist: string;
+  album: string;
+  releaseYear: number;
+  gameWon: boolean;
+  triesUsed: number;
+  hintsUsed: number;
+  linesRevealed: number;
+  timeElapsed: number;
+  attempts: string[];
+  usedHintTypes: string[];
+}
+
 export async function createGame(formData: FormData) {
   try {
-    // Extract data from FormData
     const songTitle = formData.get("songTitle") as string;
     const acceptableAnswersJson = formData.get("acceptableAnswers") as string;
     const artist = formData.get("artist") as string;
@@ -33,11 +50,9 @@ export async function createGame(formData: FormData) {
     const spotifyUrl = formData.get("spotifyUrl") as string;
     const translatedLyricsJson = formData.get("translatedLyrics") as string;
 
-    // Parse JSON fields
     const acceptableAnswers = JSON.parse(acceptableAnswersJson);
     const translatedLyrics = JSON.parse(translatedLyricsJson);
 
-    // Validate required fields
     if (
       !songTitle ||
       !artist ||
@@ -47,7 +62,6 @@ export async function createGame(formData: FormData) {
       throw new Error("Missing required fields");
     }
 
-    // Create game data object
     const gameData: Omit<GameData, "id" | "createdAt" | "isActive"> = {
       songTitle,
       acceptableAnswers,
@@ -62,7 +76,6 @@ export async function createGame(formData: FormData) {
       translatedLyrics,
     };
 
-    // Save to Firebase
     const docRef = await addDoc(collection(db, "games"), {
       ...gameData,
       createdAt: new Date().toISOString(),
@@ -83,7 +96,6 @@ export async function createGame(formData: FormData) {
 
 export async function createGameWithRedirect(gameData: CreateGameData) {
   try {
-    // Validate required fields
     if (
       !gameData.songTitle ||
       !gameData.artist ||
@@ -93,7 +105,6 @@ export async function createGameWithRedirect(gameData: CreateGameData) {
       throw new Error("Missing required fields");
     }
 
-    // Save to Firebase
     const docRef = await addDoc(collection(db, "games"), {
       ...gameData,
       createdAt: new Date().toISOString(),
@@ -106,13 +117,11 @@ export async function createGameWithRedirect(gameData: CreateGameData) {
     throw error;
   }
 
-  // Redirect to admin panel with success message
   redirect("/admin?success=true");
 }
 
 export async function createGameOnly(gameData: CreateGameData) {
   try {
-    // Validate required fields
     if (
       !gameData.songTitle ||
       !gameData.artist ||
@@ -122,7 +131,6 @@ export async function createGameOnly(gameData: CreateGameData) {
       throw new Error("Missing required fields");
     }
 
-    // Save to Firebase
     const docRef = await addDoc(collection(db, "games"), {
       ...gameData,
       createdAt: new Date().toISOString(),
@@ -182,6 +190,66 @@ export async function getAllGames() {
     return { success: true, games };
   } catch (error) {
     console.error("Error fetching games:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function saveScore(scoreData: SaveScoreData) {
+  try {
+    const calculateScore = () => {
+      let score = 0;
+
+      if (scoreData.gameWon) {
+        score += 1000;
+
+        const triesBonus = (3 - scoreData.triesUsed) * 200;
+        score += triesBonus;
+
+        const hintsBonus = (5 - scoreData.hintsUsed) * 100;
+        score += hintsBonus;
+
+        const linesBonus = Math.max(0, (5 - scoreData.linesRevealed) * 50);
+        score += linesBonus;
+
+        if (scoreData.timeElapsed <= 30) score += 300;
+        else if (scoreData.timeElapsed <= 60) score += 200;
+        else if (scoreData.timeElapsed <= 120) score += 100;
+      }
+
+      return Math.max(0, score);
+    };
+
+    const score = calculateScore();
+
+    const scoreRecord: Omit<ScoreData, "id"> = {
+      gameId: scoreData.gameId,
+      userId: scoreData.userId,
+      userEmail: scoreData.userEmail,
+      userName: scoreData.userName,
+      songTitle: scoreData.songTitle,
+      artist: scoreData.artist,
+      album: scoreData.album,
+      releaseYear: scoreData.releaseYear,
+      gameWon: scoreData.gameWon,
+      triesUsed: scoreData.triesUsed,
+      hintsUsed: scoreData.hintsUsed,
+      linesRevealed: scoreData.linesRevealed,
+      timeElapsed: scoreData.timeElapsed,
+      attempts: scoreData.attempts,
+      usedHintTypes: scoreData.usedHintTypes,
+      completedAt: new Date().toISOString(),
+      score,
+    };
+
+    const docRef = await addDoc(collection(db, "scores"), scoreRecord);
+    console.log("Score saved with ID:", docRef.id);
+
+    return { success: true, id: docRef.id, score };
+  } catch (error) {
+    console.error("Error saving score:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

@@ -76,6 +76,10 @@
     "goToAdmin": "Go to Admin Panel",
     "newGame": "New Game",
     "backToHome": "Back to Home",
+    "startGame": "Start Game",
+    "waitingToStart": "Click 'Start Game' to begin",
+    "scoreSaved": "Score saved!",
+    "maxAttempts": "3",
     "lyricsDisplay": {
       "title": "Translated Lyrics",
       "description": "Guess the song title from these translated lyrics ({language})",
@@ -189,7 +193,7 @@
     "delete": "Delete",
     "confirm": "Confirm",
     "selectLanguage": "Select Language",
-    "hebrewOption": "עברית (Hebrew)",
-    "englishOption": "English"
+    "hebrewOption": "🇮🇱 עברית",
+    "englishOption": "🇺🇸 English"
   }
 }

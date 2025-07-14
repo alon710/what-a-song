@@ -1,24 +1,28 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Music, Calendar, Trophy, Users, Image } from "lucide-react";
+import {
+  Music,
+  Calendar,
+  Trophy,
+  Users,
+  Image as ImageIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { GameData } from "@/lib/firebase";
-import { getRandomGame } from "@/lib/actions";
+import { getRandomGame, saveScore, SaveScoreData } from "@/lib/actions";
 import { GameStats, Hint } from "@/types";
+import { useAuth } from "@/components/shared/AuthProvider";
 
-// Import our reusable components
 import LoadingState from "@/components/game/LoadingState";
 import ErrorState from "@/components/game/ErrorState";
-import GameLayout from "@/components/game/GameLayout";
-import LyricsDisplay from "@/components/game/LyricsDisplay";
-import GuessInput from "@/components/game/GuessInput";
-import AttemptsDisplay from "@/components/game/AttemptsDisplay";
-import GameSidebar from "@/components/game/GameSidebar";
 import ResultsDialog from "@/components/game/ResultsDialog";
 
 export default function Home() {
   const t = useTranslations("game.hints");
+  const tGame = useTranslations("game");
+  const { user, userData } = useAuth();
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [currentGuess, setCurrentGuess] = useState("");
   const [revealedLines, setRevealedLines] = useState(1);
@@ -30,9 +34,10 @@ export default function Home() {
   const [showStats, setShowStats] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [triesLeft, setTriesLeft] = useState(5);
+  const [triesLeft, setTriesLeft] = useState(3);
   const [attempts, setAttempts] = useState<string[]>([]);
   const [isAlbumBlurred, setIsAlbumBlurred] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const loadGame = useCallback(async () => {
     setLoading(true);
@@ -45,7 +50,6 @@ export default function Home() {
       }
 
       setGameData(result.game);
-      setGameStartTime(Date.now());
       resetGameState();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to load game");
@@ -62,16 +66,21 @@ export default function Home() {
     setGameOver(false);
     setShowStats(false);
     setTimeElapsed(0);
-    setTriesLeft(5);
+    setTriesLeft(3);
     setAttempts([]);
     setIsAlbumBlurred(true);
+    setGameStarted(false);
   };
 
-  // Automatic timer effect
+  const startGame = () => {
+    setGameStarted(true);
+    setGameStartTime(Date.now());
+  };
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (gameStartTime > 0 && !gameOver && !loading) {
+    if (gameStartTime > 0 && !gameOver && !loading && gameStarted) {
       interval = setInterval(() => {
         setTimeElapsed(Math.floor((Date.now() - gameStartTime) / 1000));
       }, 1000);
@@ -82,7 +91,7 @@ export default function Home() {
         clearInterval(interval);
       }
     };
-  }, [gameStartTime, gameOver, loading]);
+  }, [gameStartTime, gameOver, loading, gameStarted]);
 
   useEffect(() => {
     loadGame();
@@ -93,7 +102,7 @@ export default function Home() {
         {
           id: "albumCover",
           label: t("albumCover"),
-          icon: Image,
+          icon: ImageIcon,
           value: t("albumCoverValue"),
         },
         {
@@ -129,15 +138,13 @@ export default function Home() {
     const guessLower = currentGuess.toLowerCase().trim();
     if (!guessLower) return;
 
-    // Add attempt to history
     const newAttempts = [...attempts, currentGuess];
     setAttempts(newAttempts);
 
-    // Check against all acceptable answers
     const isCorrect =
       gameData.acceptableAnswers?.some(
         (answer) => answer.toLowerCase().trim() === guessLower
-      ) || gameData.songTitle.toLowerCase().trim() === guessLower; // Fallback to songTitle for backward compatibility
+      ) || gameData.songTitle.toLowerCase().trim() === guessLower;
 
     const newTriesLeft = triesLeft - 1;
     setTriesLeft(newTriesLeft);
@@ -147,11 +154,14 @@ export default function Home() {
       setGameWon(true);
       setGameOver(true);
       setShowStats(true);
+
+      saveGameScore(true, newAttempts, usedHints);
     } else if (newTriesLeft <= 0) {
-      // Game over - no more tries
       setGameWon(false);
       setGameOver(true);
       setShowStats(true);
+
+      saveGameScore(false, newAttempts, usedHints);
     }
   };
 
@@ -161,14 +171,50 @@ export default function Home() {
     }
   };
 
-  const useHint = (hintId: string) => {
+  const revealHint = (hintId: string) => {
     if (!usedHints.includes(hintId)) {
       setUsedHints((prev) => [...prev, hintId]);
 
-      // Handle special hint effects
       if (hintId === "albumCover") {
         setIsAlbumBlurred(false);
       }
+    }
+  };
+
+  const saveGameScore = async (
+    won: boolean,
+    finalAttempts: string[],
+    finalUsedHints: string[]
+  ) => {
+    if (!gameData) return;
+
+    try {
+      const scoreData: SaveScoreData = {
+        gameId: gameData.id,
+        userId: user?.uid,
+        userEmail: user?.email || undefined,
+        userName: userData?.displayName || user?.displayName || undefined,
+        songTitle: gameData.songTitle,
+        artist: gameData.artist,
+        album: gameData.album,
+        releaseYear: gameData.releaseYear,
+        gameWon: won,
+        triesUsed: 3 - triesLeft,
+        hintsUsed: finalUsedHints.length,
+        linesRevealed: revealedLines,
+        timeElapsed,
+        attempts: finalAttempts,
+        usedHintTypes: finalUsedHints,
+      };
+
+      const result = await saveScore(scoreData);
+      if (result.success) {
+        console.log("Score saved successfully:", result.score);
+      } else {
+        console.error("Failed to save score:", result.error);
+      }
+    } catch (error) {
+      console.error("Error saving score:", error);
     }
   };
 
@@ -177,7 +223,7 @@ export default function Home() {
     linesRevealed: revealedLines,
     timeElapsed,
     gameWon,
-    triesUsed: 5 - triesLeft,
+    triesUsed: 3 - triesLeft,
     attempts,
   });
 
@@ -195,47 +241,276 @@ export default function Home() {
 
   if (!gameData) return null;
 
-  return (
-    <div className="p-3 sm:p-4 md:p-6">
-      <GameLayout>
-        {/* Mobile-first layout: Stack vertically on small screens, side-by-side on larger */}
-        <div className="flex flex-col space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
-          {/* Sidebar - Shows first on mobile for quick game info */}
-          <div className="order-1 lg:order-2 lg:col-span-1">
-            <GameSidebar
-              albumCover={gameData.albumCover}
-              albumName={gameData.album}
-              hints={availableHints}
-              usedHints={usedHints}
-              onUseHint={useHint}
-              hintsUsed={usedHints.length}
-              linesRevealed={revealedLines}
-              timeElapsed={timeElapsed}
-              triesLeft={triesLeft}
-              gameOver={gameOver}
-              isAlbumBlurred={isAlbumBlurred}
-            />
-          </div>
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
-          {/* Main Game Area - Second on mobile */}
-          <div className="order-2 lg:order-1 lg:col-span-2 space-y-4">
-            <LyricsDisplay
-              lyrics={gameData.translatedLyrics}
-              revealedLines={revealedLines}
-              onRevealNext={revealNextLine}
-              canRevealMore={revealedLines < gameData.translatedLyrics.length}
-              originalLanguage={gameData.originalLanguage}
-            />
-            <AttemptsDisplay attempts={attempts} triesLeft={triesLeft} />
-            <GuessInput
-              guess={currentGuess}
-              onGuessChange={setCurrentGuess}
-              onSubmit={checkGuess}
-              disabled={gameOver}
-              triesLeft={triesLeft}
-            />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-4">
+      <div className="max-w-2xl mx-auto">
+        {!gameStarted ? (
+          <div className="text-center space-y-8 py-16">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold text-gray-800">
+                {tGame("title")}
+              </h1>
+              <p className="text-gray-600">{tGame("waitingToStart")}</p>
+            </div>
+
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-left">
+                  <div className="text-sm text-gray-600 font-medium">
+                    <span
+                      className={`transition-all duration-500 ${
+                        !usedHints.includes("artist")
+                          ? "filter blur-sm select-none"
+                          : ""
+                      }`}
+                    >
+                      {!usedHints.includes("artist")
+                        ? "████████"
+                        : gameData.artist}
+                    </span>
+                    {", "}
+                    <span
+                      className={`transition-all duration-500 ${
+                        !usedHints.includes("year")
+                          ? "filter blur-sm select-none"
+                          : ""
+                      }`}
+                    >
+                      {!usedHints.includes("year")
+                        ? "████"
+                        : gameData.releaseYear}
+                    </span>
+                  </div>
+                </div>
+                <div className="w-16 h-16 rounded-lg overflow-hidden filter blur-sm">
+                  <Image
+                    src={gameData.albumCover}
+                    alt="Album cover"
+                    width={64}
+                    height={64}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-6">
+                {gameData.translatedLyrics.slice(0, 3).map((_, index) => (
+                  <div
+                    key={index}
+                    className="text-center py-2 text-gray-400 filter blur-sm select-none"
+                  >
+                    ████████ ████ ████████
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={startGame}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+              >
+                {tGame("startGame")}
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-4 py-8">
+            {/* Header with artist info and album cover */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-left">
+                  <div className="text-sm text-gray-600 font-medium">
+                    <span
+                      className={`transition-all duration-500 ${
+                        !usedHints.includes("artist")
+                          ? "filter blur-sm select-none"
+                          : ""
+                      }`}
+                    >
+                      {!usedHints.includes("artist")
+                        ? "████████"
+                        : gameData.artist}
+                    </span>
+                    {", "}
+                    <span
+                      className={`transition-all duration-500 ${
+                        !usedHints.includes("year")
+                          ? "filter blur-sm select-none"
+                          : ""
+                      }`}
+                    >
+                      {!usedHints.includes("year")
+                        ? "████"
+                        : gameData.releaseYear}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {formatTime(timeElapsed)} • {triesLeft} of 3 tries left
+                  </div>
+                </div>
+                <div className="w-16 h-16 rounded-lg overflow-hidden">
+                  <Image
+                    src={gameData.albumCover}
+                    alt="Album cover"
+                    width={64}
+                    height={64}
+                    className={`w-full h-full object-cover transition-all duration-700 ${
+                      isAlbumBlurred ? "filter blur-lg" : "filter blur-none"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Lyrics display */}
+              <div className="space-y-3 mb-6">
+                {gameData.translatedLyrics.map((lyric, index) => (
+                  <div
+                    key={index}
+                    className={`text-center py-2 transition-all duration-500 ${
+                      index < revealedLines
+                        ? "text-gray-800 font-medium"
+                        : "text-gray-400 filter blur-sm select-none"
+                    }`}
+                  >
+                    {index < revealedLines ? lyric : "████████ ████ ████████"}
+                  </div>
+                ))}
+              </div>
+
+              {/* Progress circles */}
+              <div className="flex justify-center space-x-2 mb-6">
+                {gameData.translatedLyrics.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-medium transition-colors ${
+                      index < revealedLines
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-gray-200 text-gray-500 border-gray-300"
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+                ))}
+              </div>
+
+              {/* Action buttons */}
+              <div className="space-y-3">
+                {revealedLines < gameData.translatedLyrics.length &&
+                  !gameOver && (
+                    <button
+                      onClick={revealNextLine}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                    >
+                      {tGame("lyricsDisplay.revealNext")}
+                    </button>
+                  )}
+
+                {!gameOver && (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={currentGuess}
+                      onChange={(e) => setCurrentGuess(e.target.value)}
+                      placeholder={tGame("guessInput.placeholder")}
+                      className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onKeyPress={(e) => e.key === "Enter" && checkGuess()}
+                    />
+                    <button
+                      onClick={checkGuess}
+                      disabled={!currentGuess.trim()}
+                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                    >
+                      {tGame("guessInput.submitGuess")}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Attempts history */}
+              {attempts.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <div className="text-xs text-gray-500 mb-2">
+                    Previous attempts:
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {attempts.map((attempt, index) => (
+                      <span
+                        key={index}
+                        className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-md"
+                      >
+                        {attempt}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Hints section */}
+            {availableHints.length > 0 && (
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  Hints ({usedHints.length}/{availableHints.length})
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {availableHints.map((hint) => {
+                    const isUsed = usedHints.includes(hint.id);
+                    const Icon = hint.icon;
+
+                    return (
+                      <div
+                        key={hint.id}
+                        className={`flex items-center justify-between p-3 rounded-lg ${
+                          isUsed
+                            ? "bg-blue-50 border border-blue-200"
+                            : "bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2">
+                          <Icon className="w-4 h-4 text-gray-600" />
+                          <span className="text-sm font-medium">
+                            {hint.id === "albumCover"
+                              ? t("albumCover")
+                              : hint.id === "artist"
+                              ? t("artistName")
+                              : hint.id === "popularity"
+                              ? t("popularity")
+                              : hint.id === "album"
+                              ? t("album")
+                              : hint.id === "year"
+                              ? t("releaseYear")
+                              : hint.label}
+                          </span>
+                        </div>
+
+                        {!isUsed ? (
+                          <button
+                            onClick={() => revealHint(hint.id)}
+                            disabled={gameOver}
+                            className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md transition-colors"
+                          >
+                            Reveal
+                          </button>
+                        ) : (
+                          <span className="text-xs text-blue-700 font-medium">
+                            {hint.id === "albumCover"
+                              ? "Album Revealed!"
+                              : hint.value}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <ResultsDialog
           open={showStats}
@@ -243,7 +518,7 @@ export default function Home() {
           stats={getGameStats()}
           onRestart={resetGame}
         />
-      </GameLayout>
+      </div>
     </div>
   );
 }

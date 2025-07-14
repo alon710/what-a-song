@@ -76,6 +76,10 @@
     "goToAdmin": "עבור לממשק ניהול",
     "newGame": "משחק חדש",
     "backToHome": "חזור לבית",
+    "startGame": "התחל משחק",
+    "waitingToStart": "לחץ על 'התחל משחק' כדי להתחיל",
+    "scoreSaved": "הניקוד נשמר!",
+    "maxAttempts": "3",
     "lyricsDisplay": {
       "title": "מילים מתורגמות",
       "description": "נחש את שם השיר מהמילים המתורגמות האלה ({language})",

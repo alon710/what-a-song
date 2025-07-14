@@ -25,7 +25,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Load both Hebrew and English messages
   const hebrewMessages = (await import("../messages/he.json")).default;
   const englishMessages = (await import("../messages/en.json")).default;
 

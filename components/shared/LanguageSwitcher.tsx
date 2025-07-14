@@ -5,18 +5,15 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Globe, ChevronDown } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { Globe } from "lucide-react";
+import { useLocale } from "next-intl";
 import { useTransition } from "react";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const tNav = useTranslations("shared");
   const [isPending, startTransition] = useTransition();
 
   const switchLocale = (newLocale: string) => {
@@ -33,7 +30,7 @@ export default function LanguageSwitcher() {
   };
 
   const getLanguageWithFlag = (lang: string) => {
-    return lang === "he" ? "🇮🇱 עברית" : "🇺🇸 English";
+    return lang === "he" ? "🇮🇱" : "🇺🇸";
   };
 
   return (
@@ -42,28 +39,23 @@ export default function LanguageSwitcher() {
         <Button
           variant="outline"
           size="sm"
-          className="flex items-center gap-1 text-gray-700 h-8 px-2 min-w-[44px] touch-manipulation"
+          className="flex items-center gap-1 text-gray-700 h-8 touch-manipulation"
           disabled={isPending}
         >
           <Globe className="h-4 w-4 flex-shrink-0" />
-          <ChevronDown className="h-3 w-3 flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[140px]">
-        <DropdownMenuLabel className="text-sm">
-          {tNav("selectLanguage")}
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-12 min-w-0 p-1">
         <DropdownMenuRadioGroup value={locale} onValueChange={switchLocale}>
           <DropdownMenuRadioItem
             value="he"
-            className="text-sm py-2.5 cursor-pointer touch-manipulation"
+            className="justify-center p-2 cursor-pointer focus:bg-accent list-none"
           >
             {getLanguageWithFlag("he")}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             value="en"
-            className="text-sm py-2.5 cursor-pointer touch-manipulation"
+            className="justify-center p-2 cursor-pointer focus:bg-accent list-none"
           >
             {getLanguageWithFlag("en")}
           </DropdownMenuRadioItem>

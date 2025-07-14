@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 
 interface LocaleProviderProps {
   children: React.ReactNode;
-  hebrewMessages: Record<string, string>;
-  englishMessages: Record<string, string>;
+  hebrewMessages: Record<string, unknown>;
+  englishMessages: Record<string, unknown>;
 }
 
 export default function LocaleProvider({

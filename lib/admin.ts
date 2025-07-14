@@ -7,13 +7,7 @@ export async function makeUserAdmin(
   email: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    // You'll need to implement this based on your user lookup strategy
-    // For now, this is a placeholder that shows the concept
     console.log(`Making user ${email} an admin`);
-
-    // In a real implementation, you'd:
-    // 1. Find the user by email in your users collection
-    // 2. Update their role to "admin"
 
     return {
       success: true,
