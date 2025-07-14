@@ -71,7 +71,7 @@ export default function PlayGame() {
   const [hasAlreadyPlayed, setHasAlreadyPlayed] = useState(false);
   const [userHasWon, setUserHasWon] = useState(false);
 
-  const getStorageKey = () => `whatASong_game_${songId}`;
+  const getStorageKey = useCallback(() => `whatASong_game_${songId}`, [songId]);
 
   const saveGameState = useCallback(() => {
     if (!songId || !gameStarted) return;
@@ -109,6 +109,7 @@ export default function PlayGame() {
     attempts,
     isAlbumBlurred,
     gameStarted,
+    getStorageKey,
   ]);
 
   const loadGameState = useCallback(() => {
@@ -133,12 +134,12 @@ export default function PlayGame() {
       localStorage.removeItem(getStorageKey());
       return null;
     }
-  }, [songId]);
+  }, [songId, getStorageKey]);
 
   const clearGameState = useCallback(() => {
     if (!songId) return;
     localStorage.removeItem(getStorageKey());
-  }, [songId]);
+  }, [songId, getStorageKey]);
 
   const restoreGameState = useCallback((gameState: GameState) => {
     setCurrentGuess(gameState.currentGuess);
@@ -157,6 +158,21 @@ export default function PlayGame() {
       setShowStats(true);
     }
   }, []);
+
+  const resetGameState = useCallback(() => {
+    setCurrentGuess("");
+    setRevealedLines(1);
+    setUsedHints([]);
+    setGameWon(false);
+    setGameOver(false);
+    setShowStats(false);
+    setTimeElapsed(0);
+    setTriesLeft(3);
+    setAttempts([]);
+    setIsAlbumBlurred(true);
+    setGameStarted(false);
+    clearGameState();
+  }, [clearGameState]);
 
   const loadGame = useCallback(async () => {
     if (!songId) return;
@@ -208,22 +224,14 @@ export default function PlayGame() {
     } finally {
       setLoading(false);
     }
-  }, [songId, user?.uid, loadGameState, clearGameState, restoreGameState]);
-
-  const resetGameState = () => {
-    setCurrentGuess("");
-    setRevealedLines(1);
-    setUsedHints([]);
-    setGameWon(false);
-    setGameOver(false);
-    setShowStats(false);
-    setTimeElapsed(0);
-    setTriesLeft(3);
-    setAttempts([]);
-    setIsAlbumBlurred(true);
-    setGameStarted(false);
-    clearGameState();
-  };
+  }, [
+    songId,
+    user?.uid,
+    loadGameState,
+    clearGameState,
+    restoreGameState,
+    resetGameState,
+  ]);
 
   const startGame = () => {
     setGameStarted(true);
