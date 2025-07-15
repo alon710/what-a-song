@@ -2,48 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getLyrics, getSong } from "genius-lyrics-api";
 
 async function getGeniusAccessToken(): Promise<string | null> {
-  const clientId = process.env.GENIUS_CLIENT_ID;
-  const clientSecret = process.env.GENIUS_CLIENT_SECRET;
   const directAccessToken = process.env.GENIUS_ACCESS_TOKEN;
 
-  // If we have direct access token, use it
+  // Return the direct access token if available
   if (directAccessToken) {
     return directAccessToken;
   }
 
-  // If we have client credentials, get access token via OAuth
-  if (clientId && clientSecret) {
-    try {
-      const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString(
-        "base64"
-      );
-
-      const response = await fetch("https://api.genius.com/oauth/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${credentials}`,
-        },
-        body: new URLSearchParams({
-          grant_type: "client_credentials",
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.access_token;
-      } else {
-        console.error(
-          "Failed to get Genius access token:",
-          await response.text()
-        );
-      }
-    } catch (error) {
-      console.error("Error getting Genius access token:", error);
-    }
-  }
-
-  // Return null if no credentials available - library will attempt scraping
+  // Return null if no access token available - library will attempt scraping
   return null;
 }
 

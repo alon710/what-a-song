@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const query = searchParams.get("q") || "";
   const limit = parseInt(searchParams.get("limit") || "20", 10);
+  const offset = parseInt(searchParams.get("offset") || "0", 10);
 
   if (!query) {
     return NextResponse.json(
@@ -23,8 +24,14 @@ export async function GET(req: NextRequest) {
     const data = await spotifyApi.clientCredentialsGrant();
     spotifyApi.setAccessToken(data.body.access_token);
 
-    const results = await spotifyApi.searchTracks(query, { limit });
-    return NextResponse.json({ tracks: results.body.tracks?.items || [] });
+    const results = await spotifyApi.searchTracks(query, { limit, offset });
+    const tracks = results.body.tracks;
+
+    return NextResponse.json({
+      tracks: tracks?.items || [],
+      total: tracks?.total || 0,
+      hasMore: tracks ? offset + limit < tracks.total : false,
+    });
   } catch (error) {
     console.error("Spotify API Error:", error);
     return NextResponse.json(
