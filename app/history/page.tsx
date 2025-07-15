@@ -31,8 +31,20 @@ export default function History() {
         throw new Error(songsResult.error || "Failed to load games");
       }
 
+      // Get today's date at midnight for comparison
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Filter songs to only include those from yesterday and older
+      const pastSongs = (songsResult.songs || []).filter((song) => {
+        if (!song.gameDate) return false;
+        const gameDate = new Date(song.gameDate);
+        gameDate.setHours(0, 0, 0, 0);
+        return gameDate.getTime() < today.getTime();
+      });
+
       // Sort songs by game date (most recent first)
-      const sortedSongs = (songsResult.songs || []).sort((a, b) => {
+      const sortedSongs = pastSongs.sort((a, b) => {
         if (!a.gameDate || !b.gameDate) return 0;
         return new Date(b.gameDate).getTime() - new Date(a.gameDate).getTime();
       });
