@@ -39,7 +39,7 @@ export default function LanguageSwitcher() {
           className="flex items-center gap-1 text-gray-700 h-8 touch-manipulation"
           disabled={isPending}
         >
-          <Globe className="h-4 w-4 flex-shrink-0" />
+          <Globe className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-12 min-w-0 p-1">
