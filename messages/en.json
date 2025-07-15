@@ -2,6 +2,7 @@
   "siteName": "What A Song",
   "nav": {
     "home": "Home",
+    "history": "History",
     "admin": "Admin Panel",
     "play": "Play",
     "signIn": "Sign In",
@@ -10,6 +11,14 @@
   "home": {
     "title": "🎵 What a Song",
     "subtitle": "Lyric Translation Guessing Game",
+    "todaysChallenge": "Today's Song Challenge",
+    "canYouGuess": "Can you guess today's song from the translated lyrics?",
+    "noGameToday": "No Game Today",
+    "noGameTodayMessage": "There's no song challenge available for today.",
+    "checkBackTomorrow": "Check back tomorrow or visit our history to play previous games!",
+    "startNow": "Start Now",
+    "wantToPrevious": "Want to play previous games?",
+    "viewHistory": "View Game History",
     "playButton": "Play Game",
     "adminButton": "Admin Panel",
     "loading": "Loading song...",
@@ -70,7 +79,27 @@
         "Content with explicit permission from copyright holders"
       ],
       "warning": "Do not add copyrighted lyrics without proper authorization."
+    },
+    "datePicker": {
+      "title": "Game Date",
+      "label": "Select the date for this game",
+      "description": "You can schedule games for both future and past dates. Each date can only have one game."
     }
+  },
+  "history": {
+    "title": "Game History",
+    "subtitle": "All song challenges, past and present",
+    "description": "Replay any game or discover songs you might have missed",
+    "showingSongs": "Showing {count} song",
+    "showingSongsPlural": "Showing {count} songs",
+    "backToToday": "← Back to Today's Game",
+    "noGamesYet": "No Games Yet",
+    "noGamesMessage": "No song challenges have been created yet.",
+    "checkBackSoon": "Check back soon for new games to play!"
+  },
+  "songCard": {
+    "completed": "Completed",
+    "attempted": "Attempted"
   },
   "game": {
     "revealHint": "Reveal",

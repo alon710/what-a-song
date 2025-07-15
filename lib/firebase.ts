@@ -29,6 +29,7 @@ export interface SongData {
   spotifyId: string;
   spotifyUrl: string;
   translatedLyrics: string[];
+  gameDate: string;
   createdAt: string;
   isActive: boolean;
 }

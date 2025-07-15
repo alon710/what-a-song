@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Settings, LogIn, LogOut, Shield } from "lucide-react";
+import { Settings, LogIn, LogOut, Shield, History } from "lucide-react";
 import { useAuth } from "@/components/shared/AuthProvider";
 import Logo from "./Logo";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
@@ -37,6 +37,20 @@ export default function Navigation() {
 
           {/* Right side - Navigation and Auth */}
           <div className="flex items-center gap-2">
+            {/* History Link */}
+            <Link href="/history">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-700 hover:bg-gray-100 text-xs sm:text-sm px-2 sm:px-3"
+              >
+                <History className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline sm:inline">
+                  {t("history")}
+                </span>
+              </Button>
+            </Link>
+
             {/* Admin Panel Link - Only show to admins */}
             {isAdmin && (
               <Link href="/admin">

@@ -24,6 +24,7 @@ export interface CreateSongData {
   spotifyId: string;
   spotifyUrl: string;
   translatedLyrics: string[];
+  gameDate: string;
 }
 
 export async function createSong(formData: FormData) {
@@ -52,6 +53,8 @@ export async function createSong(formData: FormData) {
       throw new Error("Missing required fields");
     }
 
+    const gameDate = formData.get("gameDate") as string;
+
     const songData: Omit<SongData, "id" | "createdAt" | "isActive"> = {
       songTitle,
       acceptableAnswers,
@@ -64,6 +67,7 @@ export async function createSong(formData: FormData) {
       spotifyId,
       spotifyUrl,
       translatedLyrics,
+      gameDate,
     };
 
     const docRef = await addDoc(collection(db, "songs"), {
@@ -90,9 +94,17 @@ export async function createSongWithRedirect(songData: CreateSongData) {
       !songData.songTitle ||
       !songData.artist ||
       !songData.acceptableAnswers.length ||
-      !songData.translatedLyrics.length
+      !songData.translatedLyrics.length ||
+      !songData.gameDate
     ) {
       throw new Error("Missing required fields");
+    }
+
+    const gameExists = await checkGameExistsForDate(songData.gameDate);
+    if (gameExists) {
+      throw new Error(
+        `A game already exists for ${songData.gameDate}. Please choose a different date.`
+      );
     }
 
     const docRef = await addDoc(collection(db, "songs"), {
@@ -110,15 +122,40 @@ export async function createSongWithRedirect(songData: CreateSongData) {
   redirect("/admin?success=true");
 }
 
+export async function checkGameExistsForDate(gameDate: string) {
+  try {
+    const songsRef = collection(db, "songs");
+    const q = query(
+      songsRef,
+      where("gameDate", "==", gameDate),
+      where("isActive", "==", true)
+    );
+    const querySnapshot = await getDocs(q);
+
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error checking game date:", error);
+    throw error;
+  }
+}
+
 export async function createSongOnly(songData: CreateSongData) {
   try {
     if (
       !songData.songTitle ||
       !songData.artist ||
       !songData.acceptableAnswers.length ||
-      !songData.translatedLyrics.length
+      !songData.translatedLyrics.length ||
+      !songData.gameDate
     ) {
       throw new Error("Missing required fields");
+    }
+
+    const gameExists = await checkGameExistsForDate(songData.gameDate);
+    if (gameExists) {
+      throw new Error(
+        `A game already exists for ${songData.gameDate}. Please choose a different date.`
+      );
     }
 
     const docRef = await addDoc(collection(db, "songs"), {
@@ -212,6 +249,36 @@ export async function getSongById(songId: string) {
     return { success: true, song: songData };
   } catch (error) {
     console.error("Error fetching song by ID:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function getTodaysSong() {
+  try {
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    const songsRef = collection(db, "songs");
+    const q = query(
+      songsRef,
+      where("gameDate", "==", today),
+      where("isActive", "==", true)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return { success: false, error: "No game available for today" };
+    }
+
+    const song = {
+      id: querySnapshot.docs[0].id,
+      ...querySnapshot.docs[0].data(),
+    } as SongData;
+
+    return { success: true, song };
+  } catch (error) {
+    console.error("Error fetching today's song:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

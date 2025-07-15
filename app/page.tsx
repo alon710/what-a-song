@@ -1,70 +1,51 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { SongData, ScoreData } from "@/lib/firebase";
-import { getActiveSongs } from "@/lib/songs";
-import { getUserScores } from "@/lib/scores";
-import { useAuth } from "@/components/shared/AuthProvider";
+import { useTranslations } from "next-intl";
+import { SongData } from "@/lib/firebase";
+import { getTodaysSong } from "@/lib/songs";
+import { format } from "date-fns";
+import Link from "next/link";
 
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import SongCard from "@/components/shared/SongCard";
-
-interface UserScoreMap {
-  [songId: string]: {
-    hasPlayed: boolean;
-    hasWon: boolean;
-    score: ScoreData;
-  };
-}
+import PageHeader from "@/components/shared/PageHeader";
+import CenteredLayout from "@/components/shared/CenteredLayout";
+import { Button } from "@/components/ui/button";
+import { useUserScores } from "@/hooks/useUserScores";
 
 export default function Home() {
-  const { user } = useAuth();
-  const [songs, setSongs] = useState<SongData[]>([]);
-  const [userScores, setUserScores] = useState<UserScoreMap>({});
+  const t = useTranslations("home");
+  const [todaysSong, setTodaysSong] = useState<SongData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadGames = useCallback(async () => {
+  const { getUserScoreForSong } = useUserScores();
+
+  const loadTodaysGame = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Fetch all active songs
-      const songsResult = await getActiveSongs();
-      if (!songsResult.success) {
-        throw new Error(songsResult.error || "Failed to load games");
+      const songResult = await getTodaysSong();
+      if (!songResult.success) {
+        throw new Error(songResult.error || "No game available for today");
       }
 
-      setSongs(songsResult.songs || []);
-
-      // Fetch user scores if logged in
-      if (user?.uid) {
-        const scoresResult = await getUserScores(user.uid);
-        if (scoresResult.success && scoresResult.scores) {
-          const scoreMap: UserScoreMap = {};
-          scoresResult.scores.forEach((score) => {
-            scoreMap[score.songId] = {
-              hasPlayed: true,
-              hasWon: score.isWon,
-              score,
-            };
-          });
-          setUserScores(scoreMap);
-        }
-      } else {
-        setUserScores({});
-      }
+      setTodaysSong(songResult.song || null);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to load games");
+      setError(
+        error instanceof Error ? error.message : "Failed to load today's game"
+      );
     } finally {
       setLoading(false);
     }
-  }, [user?.uid]);
+  }, []);
 
   useEffect(() => {
-    loadGames();
-  }, [loadGames]);
+    loadTodaysGame();
+  }, [loadTodaysGame]);
 
   if (loading) {
     return <LoadingState />;
@@ -74,29 +55,52 @@ export default function Home() {
     return <ErrorState error={error} />;
   }
 
+  const today = new Date();
+  const userScore = todaysSong ? getUserScoreForSong(todaysSong.id) : null;
+
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-7xl mx-auto">
-        {songs.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-600">No games available</p>
+    <CenteredLayout>
+      <PageHeader
+        title={t("todaysChallenge")}
+        subtitle={format(today, "EEEE, MMMM do, yyyy")}
+        description={t("canYouGuess")}
+      />
+
+      {!todaysSong ? (
+        <div className="text-center py-16">
+          <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
+            <h2 className="text-xl font-semibold mb-2">{t("noGameToday")}</h2>
+            <p className="text-gray-600 mb-4">{t("noGameTodayMessage")}</p>
+            <p className="text-sm text-gray-500">{t("checkBackTomorrow")}</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {songs.map((song) => {
-              const userScore = userScores[song.id];
-              return (
-                <SongCard
-                  key={song.id}
-                  song={song}
-                  userHasPlayed={userScore?.hasPlayed || false}
-                  userHasWon={userScore?.hasWon || false}
-                />
-              );
-            })}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center space-y-6">
+          <div className="w-full max-w-xs">
+            <SongCard
+              song={todaysSong}
+              userHasPlayed={userScore?.hasPlayed || false}
+              userHasWon={userScore?.hasWon || false}
+              showDate={false}
+            />
           </div>
-        )}
+          <Link href={`/play/${todaysSong.id}`}>
+            <Button size="lg" className="text-lg px-8 py-6">
+              {t("startNow")}
+            </Button>
+          </Link>
+        </div>
+      )}
+
+      <div className="text-center mt-12">
+        <p className="text-sm text-gray-500 mb-2">{t("wantToPrevious")}</p>
+        <Link
+          href="/history"
+          className="text-blue-600 hover:text-blue-800 underline font-medium"
+        >
+          {t("viewHistory")}
+        </Link>
       </div>
-    </div>
+    </CenteredLayout>
   );
 }

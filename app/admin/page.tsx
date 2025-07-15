@@ -12,6 +12,7 @@ import LyricsInput from "@/components/admin/LyricsInput";
 import SelectedSongInfo from "@/components/admin/SelectedSongInfo";
 import SuccessMessage from "@/components/admin/SuccessMessage";
 import SaveGameButton from "@/components/admin/SaveGameButton";
+import DatePicker from "@/components/admin/DatePicker";
 import { CreateSongData, createSongOnly } from "@/lib/songs";
 import LoadingState from "@/components/common/LoadingState";
 
@@ -27,6 +28,7 @@ function AdminContent() {
   ]);
   const [originalLanguage, setOriginalLanguage] = useState<"en" | "he">("en");
   const [acceptableAnswers, setAcceptableAnswers] = useState<string[]>([""]);
+  const [gameDate, setGameDate] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -45,6 +47,8 @@ function AdminContent() {
     setTranslatedLyrics(["", "", "", "", ""]);
 
     setAcceptableAnswers([song.name]);
+
+    setGameDate("");
   };
 
   const saveGame = async () => {
@@ -67,6 +71,11 @@ function AdminContent() {
       return;
     }
 
+    if (!gameDate) {
+      alert("Please select a game date");
+      return;
+    }
+
     const songData: CreateSongData = {
       songTitle: selectedSong.name,
       acceptableAnswers: filteredAnswers,
@@ -79,6 +88,7 @@ function AdminContent() {
       spotifyId: selectedSong.id,
       spotifyUrl: selectedSong.external_urls.spotify,
       translatedLyrics: filteredTranslated,
+      gameDate,
     };
 
     startTransition(async () => {
@@ -91,6 +101,7 @@ function AdminContent() {
           setSelectedSong(null);
           setTranslatedLyrics(["", "", "", "", ""]);
           setAcceptableAnswers([""]);
+          setGameDate("");
 
           setTimeout(() => setShowSuccess(false), 5000);
         } else {
@@ -121,6 +132,10 @@ function AdminContent() {
 
           {selectedSong && (
             <div className="space-y-4 sm:space-y-6">
+              <div className="w-full">
+                <DatePicker gameDate={gameDate} onDateChange={setGameDate} />
+              </div>
+
               <div className="w-full">
                 <LanguageSettings
                   originalLanguage={originalLanguage}
