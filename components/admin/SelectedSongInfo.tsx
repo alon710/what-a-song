@@ -25,41 +25,45 @@ export default function SelectedSongInfo({ song }: SelectedSongInfoProps) {
         <CardTitle className="text-start">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
           {song.album.images[0] && (
             <Image
               src={song.album.images[0].url}
               alt={song.album.name}
-              width={80}
-              height={80}
-              className="w-20 h-20 rounded"
+              width={64}
+              height={64}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded"
             />
           )}
-          <div className="text-start">
-            <h3 className="text-lg font-bold">{song.name}</h3>
-            <p className="text-muted-foreground">
+          <div className="text-start min-w-0 flex-1">
+            <h3 className="text-base sm:text-lg font-bold truncate">
+              {song.name}
+            </h3>
+            <p className="text-muted-foreground text-sm truncate">
               {song.artists.map((a) => a.name).join(", ")}
             </p>
-            <p className="text-sm">{song.album.name}</p>
+            <p className="text-xs sm:text-sm truncate">{song.album.name}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            <span>{formatDuration(song.duration_ms)}</span>
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="truncate">{formatDuration(song.duration_ms)}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4" />
-            <span>{song.popularity}/100</span>
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+            <Trophy className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="truncate">{song.popularity}/100</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date(song.album.release_date).getFullYear()}</span>
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="truncate">
+              {new Date(song.album.release_date).getFullYear()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Music className="w-4 h-4" />
-            <span>{t("source")}</span>
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+            <Music className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <span className="truncate">{t("source")}</span>
           </div>
         </div>
       </CardContent>

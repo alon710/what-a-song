@@ -21,7 +21,7 @@ export default function CenteredLayout({
   };
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen p-2 sm:p-4 md:p-6">
       <div className={`${maxWidthClasses[maxWidth]} mx-auto ${className}`}>
         {children}
       </div>

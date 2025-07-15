@@ -407,7 +407,7 @@ export default function PlayGame() {
   if (!songData) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-2 sm:p-4">
       <div className="max-w-2xl mx-auto">
         {hasAlreadyPlayed && userPreviousScore ? (
           <ResultsDialog
@@ -419,10 +419,10 @@ export default function PlayGame() {
         ) : !gameStarted ? (
           <WaitingScreen songData={songData} onStartGame={startGame} />
         ) : (
-          <div className="space-y-4 py-8">
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
+          <div className="space-y-2 sm:space-y-4 py-2 sm:py-4 md:py-8">
+            <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden shadow-lg">
               {!gameOver && (
-                <div className="p-4 pb-0">
+                <div className="p-2 sm:p-3 md:p-4 pb-0">
                   <HintsGrid
                     hints={availableHints}
                     usedHints={usedHints}
@@ -437,11 +437,11 @@ export default function PlayGame() {
                 isBlurred={isAlbumBlurred}
               />
 
-              <div className="px-6 pb-2">
+              <div className="px-3 sm:px-4 md:px-6 pb-1 sm:pb-2">
                 <GameHeader timeElapsed={timeElapsed} triesLeft={triesLeft} />
               </div>
 
-              <div className="p-6">
+              <div className="p-3 sm:p-4 md:p-6">
                 <LyricsDisplay
                   lyrics={songData.translatedLyrics}
                   revealedLines={revealedLines}
