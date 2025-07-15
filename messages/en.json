@@ -208,8 +208,31 @@
       "playedOn": "Played on {date}",
       "finalScore": "Scores are final - you can only play each song once."
     },
+    "justWon": {
+      "previousWin": "Previous Win",
+      "stats": {
+        "score": "Score",
+        "time": "Time",
+        "tries": "Tries",
+        "hints": "Hints"
+      },
+      "wonOn": "Won on {date}",
+      "finalScore": "This is your final score for this song."
+    },
+    "justPlayed": {
+      "previousAttempt": "Previous Attempt",
+      "stats": {
+        "time": "Time",
+        "tries": "Tries",
+        "hints": "Hints"
+      },
+      "yourAttempts": "Your attempts",
+      "playedOn": "Played on {date}",
+      "finalScore": "Scores are final - you can only play each song once."
+    },
     "gameHeader": {
-      "triesRemaining": "{triesLeft} of {maxTries} tries left"
+      "triesRemaining": "{triesLeft} of {maxTries} tries left",
+      "hintsUsed": "{hintsUsed}/{totalHints} hints"
     },
     "attemptsHistory": {
       "title": "Previous attempts:"
@@ -267,6 +290,10 @@
       "loginFailed": "Login failed. Please try again",
       "signupFailed": "Account creation failed. Please try again"
     }
+  },
+  "common": {
+    "albumCover": "Album Cover",
+    "by": "by {artist}"
   },
   "shared": {
     "languages": {

@@ -140,7 +140,7 @@
       "title": "מילים מתורגמות",
       "description": "נחש את שם השיר מהמילים המתורגמות האלה ({language})",
       "linesRevealed": "{revealed} מתוך {total} שורות נחשפו",
-      "revealNext": "חשף שורה הבאה"
+      "revealNext": "שורה הבאה"
     },
     "guessInput": {
       "title": "הניחוש שלך",
@@ -207,8 +207,31 @@
       "playedOn": "שיחקת ב-{date}",
       "finalScore": "הניקוד הוא סופי - ניתן לשחק כל שיר פעם אחת בלבד."
     },
+    "justWon": {
+      "previousWin": "זכייה קודמת",
+      "stats": {
+        "score": "ניקוד",
+        "time": "זמן",
+        "tries": "ניסיונות",
+        "hints": "רמזים"
+      },
+      "wonOn": "זכית ב-{date}",
+      "finalScore": "זה הניקוד הסופי שלך לשיר הזה."
+    },
+    "justPlayed": {
+      "previousAttempt": "ניסיון קודם",
+      "stats": {
+        "time": "זמן",
+        "tries": "ניסיונות",
+        "hints": "רמזים"
+      },
+      "yourAttempts": "הניסיונות שלך",
+      "playedOn": "שיחקת ב-{date}",
+      "finalScore": "הניקוד הוא סופי - ניתן לשחק כל שיר פעם אחת בלבד."
+    },
     "gameHeader": {
-      "triesRemaining": "{triesLeft} מתוך {maxTries} ניסיונות נותרו"
+      "triesRemaining": "{triesLeft} מתוך {maxTries} ניסיונות נותרו",
+      "hintsUsed": "{hintsUsed}/{totalHints} רמזים"
     },
     "attemptsHistory": {
       "title": "ניסיונות קודמים:"
@@ -266,6 +289,10 @@
       "loginFailed": "ההתחברות נכשלה. נסה שוב",
       "signupFailed": "יצירת החשבון נכשלה. נסה שוב"
     }
+  },
+  "common": {
+    "albumCover": "כיסוי אלבום",
+    "by": "מאת {artist}"
   },
   "shared": {
     "languages": {

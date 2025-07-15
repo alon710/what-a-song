@@ -9,7 +9,7 @@ import NavbarButton from "@/components/nav/NavbarButton";
 
 export default function Navigation() {
   const t = useTranslations("nav");
-  const { user, userData, isAdmin, logout, loading } = useAuth();
+  const { user, isAdmin, logout, loading } = useAuth();
 
   const handleLogout = async () => {
     try {

@@ -2,32 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import {
-  Music,
-  Calendar,
-  Trophy,
-  Users,
-  Image as ImageIcon,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
 import { SongData, ScoreData } from "@/lib/firebase";
 import { getSongById } from "@/lib/songs";
 import { saveScore, getUserScoreForSong, SaveScoreData } from "@/lib/scores";
-import { Hint } from "@/types";
 import { useAuth } from "@/components/shared/AuthProvider";
 
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import ResultsDialog from "@/components/game/ResultsDialog";
 import WaitingScreen from "@/components/game/WaitingScreen";
-import GameHeader from "@/components/game/GameHeader";
-import HintsGrid from "@/components/game/HintsGrid";
-import AlbumCover from "@/components/game/AlbumCover";
-import LyricsDisplay from "@/components/game/LyricsDisplay";
-import ProgressIndicator from "@/components/game/ProgressIndicator";
-import GameControls from "@/components/game/GameControls";
-import AttemptsHistory from "@/components/game/AttemptsHistory";
-import RevealButton from "@/components/game/RevealButton";
+import GameplayScreen from "@/components/game/GameplayScreen";
 
 interface GameState {
   currentGuess: string;
@@ -47,7 +31,6 @@ interface GameState {
 export default function PlayGame() {
   const params = useParams();
   const songId = params.id as string;
-  const t = useTranslations("game.hints");
   const { user } = useAuth();
 
   const [songData, setSongData] = useState<SongData | null>(null);
@@ -262,41 +245,6 @@ export default function PlayGame() {
     loadGame();
   }, [loadGame]);
 
-  const availableHints: Hint[] = songData
-    ? [
-        {
-          id: "albumCover",
-          label: t("albumCover"),
-          icon: ImageIcon,
-          value: t("albumCoverValue"),
-        },
-        {
-          id: "artist",
-          label: t("artistName"),
-          icon: Users,
-          value: songData.artist,
-        },
-        {
-          id: "popularity",
-          label: t("popularity"),
-          icon: Trophy,
-          value: `${songData.popularity}/100`,
-        },
-        {
-          id: "album",
-          label: t("album"),
-          icon: Music,
-          value: songData.album,
-        },
-        {
-          id: "year",
-          label: t("releaseYear"),
-          icon: Calendar,
-          value: songData.releaseYear.toString(),
-        },
-      ]
-    : [];
-
   const checkGuess = () => {
     if (!songData || gameOver || triesLeft <= 0) return;
 
@@ -394,8 +342,9 @@ export default function PlayGame() {
   if (!songData) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-green-200 to-yellow-300 p-2 sm:p-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-4">
+      <div className="max-w-lg mx-auto">
+        {/* Component 1: Before Started */}
         {hasAlreadyPlayed && userPreviousScore ? (
           <ResultsDialog
             open={true}
@@ -406,64 +355,25 @@ export default function PlayGame() {
         ) : !gameStarted ? (
           <WaitingScreen songData={songData} onStartGame={startGame} />
         ) : (
-          <div className="space-y-2 sm:space-y-4 py-2 sm:py-4 md:py-8">
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden shadow-lg">
-              {!gameOver && (
-                <div className="p-2 sm:p-3 md:p-4 pb-0">
-                  <HintsGrid
-                    hints={availableHints}
-                    usedHints={usedHints}
-                    onRevealHint={revealHint}
-                  />
-                </div>
-              )}
-
-              <AlbumCover
-                src={songData.albumCover}
-                alt="Album cover"
-                isBlurred={isAlbumBlurred}
-              />
-
-              <div className="px-3 sm:px-4 md:px-6 pb-1 sm:pb-2">
-                <GameHeader timeElapsed={timeElapsed} triesLeft={triesLeft} />
-              </div>
-
-              <div className="p-3 sm:p-4 md:p-6">
-                <LyricsDisplay
-                  lyrics={songData.translatedLyrics}
-                  revealedLines={revealedLines}
-                />
-
-                <ProgressIndicator
-                  totalLines={songData.translatedLyrics.length}
-                  revealedLines={revealedLines}
-                />
-
-                <div className="space-y-3">
-                  <RevealButton
-                    onRevealNext={revealNextLine}
-                    canReveal={
-                      revealedLines < songData.translatedLyrics.length &&
-                      !gameOver
-                    }
-                  />
-
-                  {!gameOver && (
-                    <GameControls
-                      currentGuess={currentGuess}
-                      onGuessChange={setCurrentGuess}
-                      onSubmitGuess={checkGuess}
-                      disabled={gameOver}
-                    />
-                  )}
-                </div>
-
-                <AttemptsHistory attempts={attempts} />
-              </div>
-            </div>
-          </div>
+          /* Component 2: While Playing */
+          <GameplayScreen
+            songData={songData}
+            currentGuess={currentGuess}
+            revealedLines={revealedLines}
+            usedHints={usedHints}
+            timeElapsed={timeElapsed}
+            gameOver={gameOver}
+            triesLeft={triesLeft}
+            attempts={attempts}
+            isAlbumBlurred={isAlbumBlurred}
+            onGuessChange={setCurrentGuess}
+            onSubmitGuess={checkGuess}
+            onRevealNextLine={revealNextLine}
+            onRevealHint={revealHint}
+          />
         )}
 
+        {/* Component 3: When Done */}
         <ResultsDialog
           open={showStats}
           songData={songData}

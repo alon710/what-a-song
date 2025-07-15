@@ -3,11 +3,15 @@ import { useTranslations } from "next-intl";
 interface GameHeaderProps {
   timeElapsed: number;
   triesLeft: number;
+  hintsUsed: number;
+  totalHints: number;
 }
 
 export default function GameHeader({
   timeElapsed,
   triesLeft,
+  hintsUsed,
+  totalHints,
 }: GameHeaderProps) {
   const t = useTranslations("game.gameHeader");
 
@@ -18,9 +22,12 @@ export default function GameHeader({
   };
 
   return (
-    <div className="text-xs text-gray-500 text-center">
-      {formatTime(timeElapsed)} •{" "}
-      {t("triesRemaining", { triesLeft, maxTries: 3 })}
+    <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+      <span>{formatTime(timeElapsed)}</span>
+      <span>•</span>
+      <span>{t("triesRemaining", { triesLeft, maxTries: 3 })}</span>
+      <span>•</span>
+      <span>{t("hintsUsed", { hintsUsed, totalHints })}</span>
     </div>
   );
 }

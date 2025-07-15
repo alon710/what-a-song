@@ -3,21 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/shared/AuthProvider";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-import { LogIn, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import Logo from "@/components/nav/Logo";
 
 interface AuthFormProps {
   mode: "login" | "signup";
@@ -83,118 +75,96 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   };
 
-  const icon = isLogin ? LogIn : UserPlus;
-  const IconComponent = icon;
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md space-y-4 sm:space-y-6">
-        {/* Logo and Title */}
-        <div className="text-center space-y-1 sm:space-y-2">
-          <Logo
-            href="/"
-            variant="icon-only"
-            size="lg"
-            className="justify-center"
-          />
-          {isLogin && <p className="text-gray-600">{t("adminLogin")}</p>}
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 to-slate-100">
+      <Card className="w-full max-w-md shadow-xl border-0">
+        <CardHeader className="space-y-1 pb-6">
+          <CardTitle className="text-xl text-center flex items-center justify-center gap-2">
+            {isLogin ? t("signIn") : t("createAccount")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert className="border-red-200 bg-red-50">
+                <p className="text-red-800 text-sm">{error}</p>
+              </Alert>
+            )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-start flex items-center gap-2">
-              <IconComponent className="w-5 h-5" />
-              {isLogin ? t("signIn") : t("createAccount")}
-            </CardTitle>
-            <CardDescription className="text-start">
-              {isLogin ? t("enterCredentials") : t("enterSignupDetails")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <Alert className="border-red-200 bg-red-50">
-                  <p className="text-red-800 text-sm">{error}</p>
-                </Alert>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-start">
-                  {t("email")}
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("emailPlaceholder")}
-                  required
-                  className="text-start"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-start">
-                  {t("password")}
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t("passwordPlaceholder")}
-                  required
-                  className="text-start"
-                />
-              </div>
-
-              {isSignup && (
-                <div className="space-y-2">
-                  <Label htmlFor="displayName" className="text-start">
-                    {t("displayName")}
-                  </Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder={t("displayNamePlaceholder")}
-                    className="text-start"
-                  />
-                </div>
-              )}
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading
-                  ? isLogin
-                    ? t("signingIn")
-                    : t("signingUp")
-                  : isLogin
-                  ? t("signIn")
-                  : t("signUp")}
-              </Button>
-            </form>
-
-            <div className="mt-4 pt-4 border-t text-center space-y-2">
-              <p className="text-sm text-gray-600">
-                {isLogin ? t("dontHaveAccount") : t("alreadyHaveAccount")}{" "}
-                <Link
-                  href={isLogin ? "/auth/signup" : "/auth/login"}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  {isLogin ? t("signUp") : t("signIn")}
-                </Link>
-              </p>
-              <Link
-                href="/"
-                className="text-blue-600 hover:text-blue-800 text-sm block"
-              >
-                ← {t("backToGame")}
-              </Link>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                {t("email")}
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("emailPlaceholder")}
+                required
+                className="h-11"
+              />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">
+                {t("password")}
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("passwordPlaceholder")}
+                required
+                className="h-11"
+              />
+            </div>
+
+            {isSignup && (
+              <div className="space-y-2">
+                <Label htmlFor="displayName" className="text-sm font-medium">
+                  {t("displayName")}
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder={t("displayNamePlaceholder")}
+                  className="h-11"
+                />
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full h-11 font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+              disabled={isLoading}
+            >
+              {isLoading
+                ? isLogin
+                  ? t("signingIn")
+                  : t("signingUp")
+                : isLogin
+                ? t("signIn")
+                : t("signUp")}
+            </Button>
+          </form>
+
+          <div className="text-center">
+            <p className="text-sm text-slate-600">
+              {isLogin ? t("dontHaveAccount") : t("alreadyHaveAccount")}{" "}
+              <Link
+                href={isLogin ? "/auth/signup" : "/auth/login"}
+                className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                {isLogin ? t("signUp") : t("signIn")}
+              </Link>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

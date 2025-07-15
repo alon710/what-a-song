@@ -45,17 +45,18 @@ export default function ResultsDialog({
   const t = isWon ? tJustWon : tJustPlayed;
 
   return (
-    <div className="text-center space-y-8 py-16">
-      <div className="bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg">
+    <div className="py-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg border border-white/20">
         <AlbumCover
           src={songData.albumCover}
           alt={tCommon("albumCover")}
           isBlurred={false}
         />
 
-        <div className="p-8">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
+        <div className="p-6">
+          {/* Song Info */}
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-1">
               {songData.songTitle}
             </h2>
             <p className="text-gray-600">
@@ -63,11 +64,13 @@ export default function ResultsDialog({
             </p>
           </div>
 
-          {/* Previous Score Stats */}
+          {/* Result Status */}
           <div
             className={`${
-              isWon ? "bg-green-50" : "bg-red-50"
-            } rounded-xl p-6 mb-6`}
+              isWon
+                ? "bg-green-50 border-green-200"
+                : "bg-red-50 border-red-200"
+            } rounded-xl p-4 mb-6 border`}
           >
             <div className="flex items-center justify-center gap-2 mb-4">
               {isWon ? (
@@ -84,23 +87,8 @@ export default function ResultsDialog({
               </h3>
             </div>
 
-            <div
-              className={`grid ${isWon ? "grid-cols-2" : "grid-cols-3"} gap-4`}
-            >
-              {isWon && (
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Trophy className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm text-gray-600">
-                      {t("stats.score")}
-                    </span>
-                  </div>
-                  <div className="text-2xl font-bold text-gray-800">
-                    {previousScore.score.toLocaleString()}
-                  </div>
-                </div>
-              )}
-
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Clock className="w-4 h-4 text-blue-500" />
@@ -108,7 +96,7 @@ export default function ResultsDialog({
                     {t("stats.time")}
                   </span>
                 </div>
-                <div className="text-2xl font-bold text-gray-800">
+                <div className="text-lg font-bold text-gray-800">
                   {formatTime(previousScore.timeElapsed)}
                 </div>
               </div>
@@ -120,7 +108,7 @@ export default function ResultsDialog({
                     {t("stats.tries")}
                   </span>
                 </div>
-                <div className="text-2xl font-bold text-gray-800">
+                <div className="text-lg font-bold text-gray-800">
                   {previousScore.triesUsed}/3
                 </div>
               </div>
@@ -132,18 +120,32 @@ export default function ResultsDialog({
                     {t("stats.hints")}
                   </span>
                 </div>
-                <div className="text-2xl font-bold text-gray-800">
+                <div className="text-lg font-bold text-gray-800">
                   {previousScore.hintsUsed}/5
                 </div>
               </div>
+
+              {isWon && (
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Trophy className="w-4 h-4 text-yellow-500" />
+                    <span className="text-sm text-gray-600">
+                      {t("stats.score")}
+                    </span>
+                  </div>
+                  <div className="text-lg font-bold text-gray-800">
+                    {previousScore.score.toLocaleString()}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Show user's attempts for failed games */}
+            {/* Show attempts for failed games */}
             {!isWon &&
               previousScore.attempts &&
               previousScore.attempts.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-red-200">
-                  <div className="text-xs text-gray-600 mb-2">
+                <div className="pt-4 border-t border-red-200">
+                  <div className="text-xs text-gray-600 mb-2 text-center">
                     {tJustPlayed("yourAttempts")}:
                   </div>
                   <div className="flex flex-wrap gap-1 justify-center">
@@ -159,6 +161,7 @@ export default function ResultsDialog({
                 </div>
               )}
 
+            {/* Date */}
             <div
               className={`mt-4 pt-4 border-t ${
                 isWon ? "border-green-200" : "border-red-200"
@@ -179,10 +182,9 @@ export default function ResultsDialog({
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 text-center">
-              {t("finalScore")}
-            </p>
+          {/* Final Score Message */}
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
+            <p className="text-sm text-gray-600">{t("finalScore")}</p>
           </div>
         </div>
       </div>
