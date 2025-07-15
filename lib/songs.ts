@@ -208,13 +208,13 @@ export async function createOrUpdateSong(songData: CreateSongData) {
       originalLanguage: songData.originalLanguage,
       spotifyTrackId: songData.spotifyTrackId,
       translatedLyrics: songData.translatedLyrics,
-      originalLyricsLines: originalLyricsLines,
       gameDate: songData.gameDate,
       id: songData.spotifyId,
       createdAt: isUpdate
         ? existingSong.song?.createdAt
         : new Date().toISOString(),
       isActive: true,
+      ...(originalLyricsLines && { originalLyricsLines }),
     };
 
     await setDoc(doc(db, "songs", songData.spotifyId), dataToSave);
