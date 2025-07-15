@@ -1,26 +1,15 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { SongWithLyrics } from "@/types";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-
+import ProtectedPageLayout from "@/components/shared/ProtectedPageLayout";
 import SearchSongs from "@/components/admin/SearchSongs";
 import SuccessMessage from "@/components/admin/SuccessMessage";
-import LoadingState from "@/components/common/LoadingState";
+import { useSuccessMessage } from "@/hooks/useSuccessMessage";
 
 function AdminContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get("success") === "true") {
-      setShowSuccess(true);
-      const timer = setTimeout(() => setShowSuccess(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [searchParams]);
+  const { showSuccess } = useSuccessMessage();
 
   const handleSongSelect = async (song: SongWithLyrics) => {
     // Navigate directly to the Spotify ID-based URL
@@ -45,10 +34,8 @@ function AdminContent() {
 
 export default function AdminPage() {
   return (
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingState />}>
-        <AdminContent />
-      </Suspense>
-    </ProtectedRoute>
+    <ProtectedPageLayout>
+      <AdminContent />
+    </ProtectedPageLayout>
   );
 }

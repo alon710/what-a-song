@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  useState,
-  useTransition,
-  useEffect,
-  useCallback,
-  Suspense,
-} from "react";
+import { useState, useTransition, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { SongWithLyrics } from "@/types";
 import { SongData } from "@/lib/firebase";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import ProtectedPageLayout from "@/components/shared/ProtectedPageLayout";
+import { useSuccessMessage } from "@/hooks/useSuccessMessage";
 
 import AcceptableAnswers from "@/components/admin/AcceptableAnswers";
 import LanguageSettings from "@/components/admin/LanguageSettings";
@@ -47,7 +42,7 @@ function SongEditContent() {
   const [acceptableAnswers, setAcceptableAnswers] = useState<string[]>([""]);
   const [gameDate, setGameDate] = useState<string>("");
   const [isPending, startTransition] = useTransition();
-  const [showSuccess, setShowSuccess] = useState(false);
+  const { showSuccess, triggerSuccess } = useSuccessMessage();
 
   const loadSongData = useCallback(async () => {
     if (!spotifyId) return;
@@ -242,8 +237,7 @@ function SongEditContent() {
         const result = await createOrUpdateSong(createSongData);
 
         if (result.success) {
-          setShowSuccess(true);
-          setTimeout(() => setShowSuccess(false), 5000);
+          triggerSuccess();
           // Reload data to get updated information
           loadSongData();
         } else {
@@ -366,10 +360,8 @@ function SongEditContent() {
 
 export default function SongEditPage() {
   return (
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingState />}>
-        <SongEditContent />
-      </Suspense>
-    </ProtectedRoute>
+    <ProtectedPageLayout>
+      <SongEditContent />
+    </ProtectedPageLayout>
   );
 }
