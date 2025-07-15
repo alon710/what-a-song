@@ -10,15 +10,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
+import { Textarea } from "@/components/ui/textarea";
+import { AlertCircle, Music } from "lucide-react";
 
 interface LyricsInputProps {
   translatedLyrics: string[];
+  originalLyrics?: string;
+  lyricsError?: string;
   originalLanguage: "en" | "he";
   onUpdate: (lyrics: string[]) => void;
 }
 
 export default function LyricsInput({
   translatedLyrics,
+  originalLyrics,
+  lyricsError,
   originalLanguage,
   onUpdate,
 }: LyricsInputProps) {
@@ -40,6 +46,39 @@ export default function LyricsInput({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Original Lyrics Section */}
+        {originalLyrics && (
+          <div>
+            <Label className="text-lg font-medium text-start flex items-center gap-2">
+              <Music className="w-5 h-5" />
+              {t("originalLyricsTitle")} (
+              {originalLanguage === "en"
+                ? tShared("english")
+                : tShared("hebrew")}
+              )
+            </Label>
+            <Textarea
+              value={originalLyrics}
+              className="mt-2 min-h-[120px] bg-gray-50 text-start"
+              readOnly
+              placeholder={t("originalLyricsPlaceholder")}
+            />
+          </div>
+        )}
+
+        {/* Error message if lyrics couldn't be fetched */}
+        {lyricsError && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <AlertCircle className="w-5 h-5" />
+              <span className="text-sm">
+                {lyricsError}. {t("errorCanContinue")}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Translated Lyrics Section */}
         <div>
           <Label className="text-lg font-medium text-start">
             {t("translatedLyrics", {

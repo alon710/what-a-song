@@ -10,19 +10,20 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Music } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { SpotifyTrack } from "@/types";
+import { SpotifyTrack, SongWithLyrics } from "@/types";
 import Image from "next/image";
 
 interface SearchSongsProps {
-  onSongSelect: (song: SpotifyTrack) => void;
+  onSongSelect: (song: SongWithLyrics) => void;
 }
 
 export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SpotifyTrack[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetchingLyrics, setFetchingLyrics] = useState<string | null>(null);
   const t = useTranslations("admin.searchSongs");
 
   const searchSongs = async () => {
@@ -45,10 +46,54 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
     }
   };
 
-  const handleSongSelect = (song: SpotifyTrack) => {
-    onSongSelect(song);
-    setSearchResults([]);
-    setSearchQuery("");
+  const fetchLyrics = async (song: SpotifyTrack): Promise<SongWithLyrics> => {
+    const artistName = song.artists.map((a) => a.name).join(", ");
+
+    try {
+      const res = await fetch(
+        `/api/genius-lyrics?title=${encodeURIComponent(
+          song.name
+        )}&artist=${encodeURIComponent(artistName)}`
+      );
+      const data = await res.json();
+
+      if (data.success && data.lyrics) {
+        return {
+          ...song,
+          originalLyrics: data.lyrics,
+        };
+      } else {
+        return {
+          ...song,
+          lyricsError: t("lyricsNotFound"),
+        };
+      }
+    } catch (error) {
+      console.error("Failed to fetch lyrics:", error);
+      return {
+        ...song,
+        lyricsError: t("lyricsFetchFailed"),
+      };
+    }
+  };
+
+  const handleSongSelect = async (song: SpotifyTrack) => {
+    setFetchingLyrics(song.id);
+
+    try {
+      const songWithLyrics = await fetchLyrics(song);
+      onSongSelect(songWithLyrics);
+      setSearchResults([]);
+      setSearchQuery("");
+    } catch (error) {
+      console.error("Error selecting song:", error);
+      // Still pass the song even if lyrics fetch failed
+      onSongSelect(song);
+      setSearchResults([]);
+      setSearchQuery("");
+    } finally {
+      setFetchingLyrics(null);
+    }
   };
 
   return (
@@ -101,7 +146,16 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
                         {song.artists.map((a) => a.name).join(", ")}
                       </p>
                     </div>
-                    <Button size="sm">{t("select")}</Button>
+                    <div className="flex items-center gap-2">
+                      {fetchingLyrics === song.id ? (
+                        <div className="flex items-center gap-1 text-sm text-blue-600">
+                          <Music className="w-4 h-4 animate-spin" />
+                          {t("fetchingLyrics")}
+                        </div>
+                      ) : (
+                        <Button size="sm">{t("select")}</Button>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

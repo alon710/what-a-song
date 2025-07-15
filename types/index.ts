@@ -14,6 +14,11 @@ export interface SpotifyTrack {
   preview_url?: string | null;
 }
 
+export interface SongWithLyrics extends SpotifyTrack {
+  originalLyrics?: string;
+  lyricsError?: string;
+}
+
 export interface GameStats {
   hintsUsed: number;
   linesRevealed: number;

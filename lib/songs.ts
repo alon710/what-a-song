@@ -9,6 +9,7 @@ import {
   where,
   doc,
   getDoc,
+  setDoc,
 } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
@@ -21,9 +22,11 @@ export interface CreateSongData {
   popularity: number;
   albumCover: string;
   originalLanguage: "en" | "he";
-  spotifyId: string;
-  spotifyUrl: string;
+  spotifyId: string; // Keep this for now as it's used in function parameters
+  spotifyTrackId: string; // Spotify track ID instead of full URL
   translatedLyrics: string[];
+  originalLyrics?: string; // Full original lyrics text
+  originalLyricsLines?: string[]; // First 5 lines of original lyrics for the game
   gameDate: string;
 }
 
@@ -37,8 +40,7 @@ export async function createSong(formData: FormData) {
     const popularity = parseInt(formData.get("popularity") as string);
     const albumCover = formData.get("albumCover") as string;
     const originalLanguage = formData.get("originalLanguage") as "en" | "he";
-    const spotifyId = formData.get("spotifyId") as string;
-    const spotifyUrl = formData.get("spotifyUrl") as string;
+    const spotifyTrackId = formData.get("spotifyTrackId") as string;
     const translatedLyricsJson = formData.get("translatedLyrics") as string;
 
     const acceptableAnswers = JSON.parse(acceptableAnswersJson);
@@ -64,8 +66,7 @@ export async function createSong(formData: FormData) {
       popularity,
       albumCover,
       originalLanguage,
-      spotifyId,
-      spotifyUrl,
+      spotifyTrackId: spotifyTrackId,
       translatedLyrics,
       gameDate,
     };
@@ -122,23 +123,6 @@ export async function createSongWithRedirect(songData: CreateSongData) {
   redirect("/admin?success=true");
 }
 
-export async function checkGameExistsForDate(gameDate: string) {
-  try {
-    const songsRef = collection(db, "songs");
-    const q = query(
-      songsRef,
-      where("gameDate", "==", gameDate),
-      where("isActive", "==", true)
-    );
-    const querySnapshot = await getDocs(q);
-
-    return !querySnapshot.empty;
-  } catch (error) {
-    console.error("Error checking game date:", error);
-    throw error;
-  }
-}
-
 export async function createSongOnly(songData: CreateSongData) {
   try {
     if (
@@ -169,6 +153,118 @@ export async function createSongOnly(songData: CreateSongData) {
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error("Error creating song:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function createOrUpdateSong(songData: CreateSongData) {
+  try {
+    if (
+      !songData.songTitle ||
+      !songData.artist ||
+      !songData.acceptableAnswers.length ||
+      !songData.translatedLyrics.length ||
+      !songData.gameDate ||
+      !songData.spotifyId
+    ) {
+      throw new Error("Missing required fields");
+    }
+
+    // Check if a game already exists for this date
+    const gameExists = await checkGameExistsForDate(songData.gameDate);
+    const existingSong = await getSongById(songData.spotifyId);
+
+    // Allow if it's the same song or no game exists for this date
+    if (
+      gameExists &&
+      (!existingSong.success ||
+        existingSong.song?.gameDate !== songData.gameDate)
+    ) {
+      throw new Error(
+        `A game already exists for ${songData.gameDate}. Please choose a different date.`
+      );
+    }
+
+    const isUpdate = existingSong.success;
+
+    // Process original lyrics to extract first 5 lines
+    let originalLyricsLines: string[] | undefined;
+    if (songData.originalLyrics) {
+      const lines = songData.originalLyrics
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+      originalLyricsLines = lines.slice(0, 5); // Take first 5 non-empty lines
+    }
+
+    const dataToSave = {
+      songTitle: songData.songTitle,
+      acceptableAnswers: songData.acceptableAnswers,
+      artist: songData.artist,
+      album: songData.album,
+      releaseYear: songData.releaseYear,
+      popularity: songData.popularity,
+      albumCover: songData.albumCover,
+      originalLanguage: songData.originalLanguage,
+      spotifyTrackId: songData.spotifyTrackId,
+      translatedLyrics: songData.translatedLyrics,
+      originalLyrics: songData.originalLyrics,
+      originalLyricsLines: originalLyricsLines,
+      gameDate: songData.gameDate,
+      id: songData.spotifyId, // Set ID to Spotify ID
+      createdAt: isUpdate
+        ? existingSong.song?.createdAt
+        : new Date().toISOString(),
+      isActive: true,
+    };
+
+    // Use setDoc with Spotify ID as document ID
+    await setDoc(doc(db, "songs", songData.spotifyId), dataToSave);
+
+    console.log(
+      `Song ${isUpdate ? "updated" : "created"} with Spotify ID:`,
+      songData.spotifyId
+    );
+
+    return { success: true, id: songData.spotifyId };
+  } catch (error) {
+    console.error("Error creating/updating song:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function getSongById(songId: string) {
+  try {
+    if (!songId) {
+      return { success: false, error: "Missing songId" };
+    }
+
+    // Direct query by document ID (which is now the Spotify ID)
+    const songDoc = await getDoc(doc(db, "songs", songId));
+
+    if (!songDoc.exists()) {
+      return { success: false, error: "Song not found" };
+    }
+
+    const songData = {
+      id: songDoc.id, // This is now the Spotify ID
+      ...songDoc.data(),
+    } as SongData;
+
+    // Check if song is active
+    if (!songData.isActive) {
+      return { success: false, error: "Song is not active" };
+    }
+
+    return { success: true, song: songData };
+  } catch (error) {
+    console.error("Error fetching song by ID:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -224,38 +320,6 @@ export async function getAllSongs() {
   }
 }
 
-export async function getSongById(songId: string) {
-  try {
-    if (!songId) {
-      return { success: false, error: "Missing songId" };
-    }
-
-    const songDoc = await getDoc(doc(db, "songs", songId));
-
-    if (!songDoc.exists()) {
-      return { success: false, error: "Song not found" };
-    }
-
-    const songData = {
-      id: songDoc.id,
-      ...songDoc.data(),
-    } as SongData;
-
-    // Check if song is active
-    if (!songData.isActive) {
-      return { success: false, error: "Song is not active" };
-    }
-
-    return { success: true, song: songData };
-  } catch (error) {
-    console.error("Error fetching song by ID:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
-  }
-}
-
 export async function getTodaysSong() {
   try {
     const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
@@ -304,5 +368,21 @@ export async function getActiveSongs() {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
     };
+  }
+}
+
+async function checkGameExistsForDate(gameDate: string): Promise<boolean> {
+  try {
+    const songsRef = collection(db, "songs");
+    const q = query(
+      songsRef,
+      where("gameDate", "==", gameDate),
+      where("isActive", "==", true)
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error checking game exists for date:", error);
+    return false;
   }
 }

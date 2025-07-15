@@ -37,11 +37,16 @@
   },
   "admin": {
     "title": "🎵 Admin Panel - Create Game",
+    "backToAdmin": "Back to Admin",
+    "editingSong": "Editing Song",
     "searchSongs": {
       "title": "Search Songs",
       "description": "Search for songs using Spotify's database",
       "placeholder": "Search for a song...",
-      "select": "Select"
+      "select": "Select",
+      "fetchingLyrics": "Fetching lyrics...",
+      "lyricsNotFound": "Lyrics not found for this song",
+      "lyricsFetchFailed": "Failed to fetch lyrics from Genius"
     },
     "selectedSong": {
       "title": "Selected Song",
@@ -63,9 +68,12 @@
     "lyricsInput": {
       "title": "Add Translated Lyrics",
       "description": "Enter exactly 5 lines of translated lyrics for the game",
+      "originalLyricsTitle": "Original Lyrics",
+      "originalLyricsPlaceholder": "Original lyrics will appear here...",
       "translatedLyrics": "Translated Lyrics ({language})",
       "placeholder": "Line {number} (required)",
-      "allLinesRequired": "All 5 lines are required for the game."
+      "allLinesRequired": "All 5 lines are required for the game.",
+      "errorCanContinue": "You can still proceed with adding translated lyrics."
     },
     "saveButton": "Save Game",
     "saving": "Saving...",
@@ -83,7 +91,8 @@
     "datePicker": {
       "title": "Game Date",
       "label": "Select the date for this game",
-      "description": "You can schedule games for both future and past dates. Each date can only have one game."
+      "description": "You can schedule games for both future and past dates. Each date can only have one game.",
+      "pickDate": "Pick a date"
     }
   },
   "history": {
@@ -260,6 +269,6 @@
     "confirm": "Confirm",
     "selectLanguage": "Select Language",
     "hebrewOption": "🇮🇱 עברית",
-    "englishOption": "🇺🇸 English"
+    "englishOption": "��🇸 English"
   }
 }

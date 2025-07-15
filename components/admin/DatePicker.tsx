@@ -60,7 +60,7 @@ export default function DatePicker({
               {selectedDate ? (
                 format(selectedDate, "PPP")
               ) : (
-                <span>Pick a date</span>
+                <span>{t("pickDate")}</span>
               )}
             </Button>
           </PopoverTrigger>
