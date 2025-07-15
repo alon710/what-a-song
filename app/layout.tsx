@@ -39,7 +39,7 @@ export default async function RootLayout({
         <html
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <body>
+          <body suppressHydrationWarning={true}>
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
               <Navigation />
               <main className="flex-1 w-full overflow-x-hidden">
