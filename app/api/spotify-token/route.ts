@@ -1,20 +1,17 @@
-import { NextResponse } from "next/server";
-import SpotifyWebApi from "spotify-web-api-node";
+import {
+  SpotifyApiHelper,
+  ApiSuccess,
+  withErrorHandler,
+} from "@/lib/api-utils";
 
-export async function GET() {
-  const spotifyApi = new SpotifyWebApi({
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
-  });
-
+async function handleSpotifyToken() {
   try {
-    const data = await spotifyApi.clientCredentialsGrant();
-    return NextResponse.json({ accessToken: data.body.access_token });
+    const accessToken = await SpotifyApiHelper.getAccessToken();
+    return ApiSuccess.ok({ accessToken });
   } catch (error) {
-    console.error("Failed to get Spotify access token", error);
-    return NextResponse.json(
-      { error: "Failed to get Spotify access token" },
-      { status: 500 }
-    );
+    console.error("Failed to get Spotify access token:", error);
+    throw new Error("Failed to authenticate with Spotify API");
   }
 }
+
+export const GET = withErrorHandler(handleSpotifyToken);

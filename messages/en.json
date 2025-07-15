@@ -99,9 +99,6 @@
     "title": "Game History",
     "subtitle": "All song challenges, past and present",
     "description": "Replay any game or discover songs you might have missed",
-    "showingSongs": "Showing {count} song",
-    "showingSongsPlural": "Showing {count} songs",
-    "backToToday": "← Back to Today's Game",
     "noGamesYet": "No Games Yet",
     "noGamesMessage": "No song challenges have been created yet.",
     "checkBackSoon": "Check back soon for new games to play!"

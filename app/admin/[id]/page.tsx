@@ -24,13 +24,13 @@ import { useTranslations } from "next-intl";
 function SongEditContent() {
   const params = useParams();
   const router = useRouter();
-  const spotifyId = params.id as string; // This is now the Spotify ID
+  const spotifyId = params.id as string;
   const t = useTranslations("admin");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [songData, setSongData] = useState<SongWithLyrics | null>(null);
-  const [existingSong, setExistingSong] = useState<SongData | null>(null); // Store existing song data if available
+  const [existingSong, setExistingSong] = useState<SongData | null>(null);
   const [translatedLyrics, setTranslatedLyrics] = useState<string[]>([
     "",
     "",
@@ -51,17 +51,14 @@ function SongEditContent() {
     setError(null);
 
     try {
-      // Step 1: Try to load existing song from database
       const dbResult = await getSongById(spotifyId);
 
       if (dbResult.success && dbResult.song) {
-        // Song exists in database, use that data
         const song = dbResult.song;
         setExistingSong(song);
 
-        // Convert SongData to SongWithLyrics format for consistency
         const songWithLyrics: SongWithLyrics = {
-          id: song.id, // This is now the Spotify ID
+          id: song.id,
           name: song.songTitle,
           artists: [{ name: song.artist }],
           album: {
@@ -69,12 +66,11 @@ function SongEditContent() {
             images: [{ url: song.albumCover, width: 300, height: 300 }],
             release_date: song.releaseYear.toString(),
           },
-          duration_ms: 0, // Not stored in our database
+          duration_ms: 0,
           external_urls: {
             spotify: `https://open.spotify.com/track/${song.spotifyTrackId}`,
           },
           popularity: song.popularity,
-          originalLyrics: song.originalLyrics,
         };
 
         setSongData(songWithLyrics);
@@ -91,7 +87,6 @@ function SongEditContent() {
         );
         setGameDate(song.gameDate);
       } else {
-        // Step 2: Song doesn't exist in database, fetch from Spotify API
         setExistingSong(null);
         console.log("Song not found in database, fetching from Spotify API...");
 
@@ -104,7 +99,6 @@ function SongEditContent() {
           if (spotifyData.success && spotifyData.track) {
             const track = spotifyData.track;
 
-            // Step 3: Fetch lyrics from Genius API
             console.log("Fetching lyrics from Genius API...");
             let originalLyrics: string | undefined;
             let lyricsError: string | undefined;
@@ -130,7 +124,6 @@ function SongEditContent() {
               lyricsError = "Failed to fetch lyrics from Genius";
             }
 
-            // Create SongWithLyrics object from Spotify data
             const songWithLyrics: SongWithLyrics = {
               id: track.id,
               name: track.name,
@@ -153,7 +146,7 @@ function SongEditContent() {
           }
         } catch (apiError) {
           console.error("Failed to fetch from Spotify API:", apiError);
-          // Final fallback: create basic structure
+
           setSongData({
             id: spotifyId,
             name: "",
@@ -226,7 +219,7 @@ function SongEditContent() {
         songData.album.images[0]?.url || existingSong?.albumCover || "",
       originalLanguage,
       spotifyId: spotifyId,
-      spotifyTrackId: spotifyId, // Use the Spotify ID directly as track ID
+      spotifyTrackId: spotifyId,
       translatedLyrics: filteredTranslated,
       originalLyrics: songData.originalLyrics,
       gameDate,
@@ -238,7 +231,7 @@ function SongEditContent() {
 
         if (result.success) {
           triggerSuccess();
-          // Reload data to get updated information
+
           loadSongData();
         } else {
           throw new Error(result.error || "Failed to save");

@@ -17,7 +17,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 export interface SongData {
-  id: string; // This is the Spotify ID (also used as document ID)
+  id: string;
   songTitle: string;
   acceptableAnswers: string[];
   artist: string;
@@ -26,10 +26,9 @@ export interface SongData {
   popularity: number;
   albumCover: string;
   originalLanguage: "en" | "he";
-  spotifyTrackId: string; // Spotify track ID (same as id, but kept for clarity)
+  spotifyTrackId: string;
   translatedLyrics: string[];
-  originalLyrics?: string; // Full original lyrics text
-  originalLyricsLines?: string[]; // First 5 lines of original lyrics for the game
+  originalLyricsLines?: string[];
   gameDate: string;
   createdAt: string;
   isActive: boolean;

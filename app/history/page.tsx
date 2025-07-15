@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { SongData } from "@/lib/firebase";
 import { getActiveSongs } from "@/lib/songs";
@@ -9,7 +8,6 @@ import { getActiveSongs } from "@/lib/songs";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import SongCard from "@/components/shared/SongCard";
-import PageHeader from "@/components/shared/PageHeader";
 import CenteredLayout from "@/components/shared/CenteredLayout";
 import { useUserScores } from "@/hooks/useUserScores";
 
@@ -31,19 +29,16 @@ export default function History() {
         throw new Error(songsResult.error || "Failed to load games");
       }
 
-      // Get today's date at midnight for comparison
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      // Filter songs to only include those from yesterday and older
       const pastSongs = (songsResult.songs || []).filter((song) => {
         if (!song.gameDate) return false;
         const gameDate = new Date(song.gameDate);
         gameDate.setHours(0, 0, 0, 0);
-        return gameDate.getTime() < today.getTime();
+        return gameDate.getTime() <= today.getTime();
       });
 
-      // Sort songs by game date (most recent first)
       const sortedSongs = pastSongs.sort((a, b) => {
         if (!a.gameDate || !b.gameDate) return 0;
         return new Date(b.gameDate).getTime() - new Date(a.gameDate).getTime();
@@ -71,28 +66,6 @@ export default function History() {
 
   return (
     <CenteredLayout maxWidth="7xl">
-      <PageHeader
-        title={t("title")}
-        subtitle={t("subtitle")}
-        description={t("description")}
-      />
-
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            {songs.length === 1
-              ? t("showingSongs", { count: songs.length })
-              : t("showingSongsPlural", { count: songs.length })}
-          </p>
-          <Link
-            href="/"
-            className="text-blue-600 hover:text-blue-800 underline font-medium text-sm"
-          >
-            {t("backToToday")}
-          </Link>
-        </div>
-      </div>
-
       {songs.length === 0 ? (
         <div className="text-center py-16">
           <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">

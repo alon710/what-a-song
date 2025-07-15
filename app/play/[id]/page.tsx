@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { SongData, ScoreData } from "@/lib/firebase";
 import { getSongById } from "@/lib/songs";
 import { saveScore, getUserScoreForSong, SaveScoreData } from "@/lib/scores";
-import { GameStats, Hint } from "@/types";
+import { Hint } from "@/types";
 import { useAuth } from "@/components/shared/AuthProvider";
 
 import LoadingState from "@/components/common/LoadingState";
@@ -383,19 +383,6 @@ export default function PlayGame() {
     }
   };
 
-  const getGameStats = (): GameStats => ({
-    hintsUsed: usedHints.length,
-    linesRevealed: revealedLines,
-    timeElapsed,
-    gameWon,
-    triesUsed: 3 - triesLeft,
-    attempts,
-  });
-
-  const resetGame = () => {
-    loadGame();
-  };
-
   if (loading) {
     return <LoadingState />;
   }
@@ -414,7 +401,7 @@ export default function PlayGame() {
             open={true}
             songData={songData}
             previousScore={userPreviousScore}
-            mode={userHasWon ? "alreadyWon" : "alreadyPlayed"}
+            mode={userHasWon ? "justWon" : "justPlayed"}
           />
         ) : !gameStarted ? (
           <WaitingScreen songData={songData} onStartGame={startGame} />
@@ -480,9 +467,7 @@ export default function PlayGame() {
         <ResultsDialog
           open={showStats}
           songData={songData}
-          stats={getGameStats()}
-          mode="justFinished"
-          onRestart={resetGame}
+          mode={userHasWon ? "justWon" : "justPlayed"}
         />
       </div>
     </div>

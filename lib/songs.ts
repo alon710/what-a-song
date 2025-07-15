@@ -22,11 +22,11 @@ export interface CreateSongData {
   popularity: number;
   albumCover: string;
   originalLanguage: "en" | "he";
-  spotifyId: string; // Keep this for now as it's used in function parameters
-  spotifyTrackId: string; // Spotify track ID instead of full URL
+  spotifyId: string;
+  spotifyTrackId: string;
   translatedLyrics: string[];
-  originalLyrics?: string; // Full original lyrics text
-  originalLyricsLines?: string[]; // First 5 lines of original lyrics for the game
+  originalLyrics?: string;
+  originalLyricsLines?: string[];
   gameDate: string;
 }
 
@@ -173,11 +173,9 @@ export async function createOrUpdateSong(songData: CreateSongData) {
       throw new Error("Missing required fields");
     }
 
-    // Check if a game already exists for this date
     const gameExists = await checkGameExistsForDate(songData.gameDate);
     const existingSong = await getSongById(songData.spotifyId);
 
-    // Allow if it's the same song or no game exists for this date
     if (
       gameExists &&
       (!existingSong.success ||
@@ -190,14 +188,13 @@ export async function createOrUpdateSong(songData: CreateSongData) {
 
     const isUpdate = existingSong.success;
 
-    // Process original lyrics to extract first 5 lines
     let originalLyricsLines: string[] | undefined;
     if (songData.originalLyrics) {
       const lines = songData.originalLyrics
         .split("\n")
         .map((line) => line.trim())
         .filter((line) => line.length > 0);
-      originalLyricsLines = lines.slice(0, 5); // Take first 5 non-empty lines
+      originalLyricsLines = lines.slice(0, 5);
     }
 
     const dataToSave = {
@@ -211,17 +208,15 @@ export async function createOrUpdateSong(songData: CreateSongData) {
       originalLanguage: songData.originalLanguage,
       spotifyTrackId: songData.spotifyTrackId,
       translatedLyrics: songData.translatedLyrics,
-      originalLyrics: songData.originalLyrics,
       originalLyricsLines: originalLyricsLines,
       gameDate: songData.gameDate,
-      id: songData.spotifyId, // Set ID to Spotify ID
+      id: songData.spotifyId,
       createdAt: isUpdate
         ? existingSong.song?.createdAt
         : new Date().toISOString(),
       isActive: true,
     };
 
-    // Use setDoc with Spotify ID as document ID
     await setDoc(doc(db, "songs", songData.spotifyId), dataToSave);
 
     console.log(
@@ -245,7 +240,6 @@ export async function getSongById(songId: string) {
       return { success: false, error: "Missing songId" };
     }
 
-    // Direct query by document ID (which is now the Spotify ID)
     const songDoc = await getDoc(doc(db, "songs", songId));
 
     if (!songDoc.exists()) {
@@ -253,11 +247,10 @@ export async function getSongById(songId: string) {
     }
 
     const songData = {
-      id: songDoc.id, // This is now the Spotify ID
+      id: songDoc.id,
       ...songDoc.data(),
     } as SongData;
 
-    // Check if song is active
     if (!songData.isActive) {
       return { success: false, error: "Song is not active" };
     }
@@ -322,7 +315,7 @@ export async function getAllSongs() {
 
 export async function getTodaysSong() {
   try {
-    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
     const songsRef = collection(db, "songs");
     const q = query(
       songsRef,

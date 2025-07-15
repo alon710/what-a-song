@@ -99,10 +99,6 @@
     "title": "היסטוריית משחקים",
     "subtitle": "כל אתגרי השירים, עבר והווה",
     "description": "שחק שוב כל משחק או גלה שירים שאולי פספסת",
-    "showingSongs": "מציג {count} שיר",
-    "showingSongsPlural": "מציג {count} שירים",
-    "backToToday": "← חזור למשחק של היום",
-    "noGamesYet": "עדיין אין משחקים",
     "noGamesMessage": "עדיין לא נוצרו אתגרי שירים.",
     "checkBackSoon": "חזור בקרוב למשחקים חדשים!"
   },

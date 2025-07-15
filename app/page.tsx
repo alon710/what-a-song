@@ -4,13 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { SongData } from "@/lib/firebase";
 import { getTodaysSong } from "@/lib/songs";
-import { format } from "date-fns";
 import Link from "next/link";
 
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import SongCard from "@/components/shared/SongCard";
-import PageHeader from "@/components/shared/PageHeader";
 import CenteredLayout from "@/components/shared/CenteredLayout";
 import { Button } from "@/components/ui/button";
 import { useUserScores } from "@/hooks/useUserScores";
@@ -55,17 +53,10 @@ export default function Home() {
     return <ErrorState error={error} />;
   }
 
-  const today = new Date();
   const userScore = todaysSong ? getUserScoreForSong(todaysSong.id) : null;
 
   return (
     <CenteredLayout>
-      <PageHeader
-        title={t("todaysChallenge")}
-        subtitle={format(today, "EEEE, MMMM do, yyyy")}
-        description={t("canYouGuess")}
-      />
-
       {!todaysSong ? (
         <div className="text-center py-16">
           <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
@@ -91,16 +82,6 @@ export default function Home() {
           </Link>
         </div>
       )}
-
-      <div className="text-center mt-12">
-        <p className="text-sm text-gray-500 mb-2">{t("wantToPrevious")}</p>
-        <Link
-          href="/history"
-          className="text-blue-600 hover:text-blue-800 underline font-medium"
-        >
-          {t("viewHistory")}
-        </Link>
-      </div>
     </CenteredLayout>
   );
 }
