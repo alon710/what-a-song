@@ -108,9 +108,6 @@ export default function SearchSongs({ onSongSelect }: SearchSongsProps) {
                         {song.artists.map((a) => a.name).join(", ")}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm">{t("select")}</Button>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
