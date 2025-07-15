@@ -2,6 +2,7 @@
   "siteName": "איזה שיר",
   "nav": {
     "home": "בית",
+    "daily": "אתגר יומי",
     "history": "היסטוריה",
     "admin": "ממשק ניהול",
     "play": "שחק",
@@ -11,12 +12,13 @@
   "home": {
     "title": "🎵 איזה שיר",
     "subtitle": "משחק ניחוש שירים מתורגמים",
+    "heroDescription": "בחן את הידע המוזיקלי שלך על ידי ניחוש שירים מהמילים המתורגמות שלהם. האם תוכל לזהות את הלהיטים הפופולריים בשפה אחרת?",
     "todaysChallenge": "אתגר השיר של היום",
     "canYouGuess": "האם תוכל לנחש את השיר של היום מהמילים המתורגמות?",
     "noGameToday": "אין משחק היום",
     "noGameTodayMessage": "אין אתגר שיר זמין להיום.",
     "checkBackTomorrow": "חזור מחר או בקר בהיסטוריה שלנו כדי לשחק משחקים קודמים!",
-    "startNow": "התחל עכשיו",
+    "startNow": "התחל לשחק",
     "wantToPrevious": "רוצה לשחק משחקים קודמים?",
     "viewHistory": "צפה בהיסטוריית המשחקים",
     "playButton": "שחק עכשיו",
@@ -24,6 +26,21 @@
     "loading": "טוען שיר...",
     "error": "שגיאה",
     "noSongFound": "לא נמצא שיר",
+    "howToPlay": {
+      "title": "איך לשחק",
+      "step1": {
+        "title": "קרא את המילים",
+        "description": "תראה מילים מתורגמות של שיר פופולרי, שנחשפות שורה אחר שורה."
+      },
+      "step2": {
+        "title": "השתמש ברמזים בחוכמה",
+        "description": "קבל רמזים כמו שם האמן, כיסוי האלבום או שנת השחרור שיעזרו לך לנחש."
+      },
+      "step3": {
+        "title": "בצע את הניחוש שלך",
+        "description": "יש לך 3 ניסיונות לנחש את שם השיר הנכון ולזכות בנקודות!"
+      }
+    },
     "songInfo": {
       "trackId": "מזהה רצועה",
       "explicit": "מפורש",

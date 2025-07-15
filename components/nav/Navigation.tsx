@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Settings, User, LogOut, History } from "lucide-react";
+import { Settings, User, LogOut, History, Calendar } from "lucide-react";
 import { useAuth } from "@/components/shared/AuthProvider";
 import Logo from "@/components/nav/Logo";
 import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
@@ -38,6 +38,7 @@ export default function Navigation() {
           <div className="flex items-center gap-2">
             {/* History Link */}
             <NavbarButton icon={History} text={t("history")} href="/history" />
+            <NavbarButton icon={Calendar} text={t("daily")} href="/" />
 
             {/* Admin Panel Link - Only show to admins */}
             {isAdmin && (

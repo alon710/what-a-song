@@ -2,6 +2,7 @@
   "siteName": "What A Song",
   "nav": {
     "home": "Home",
+    "daily": "Daily Challenge",
     "history": "History",
     "admin": "Admin Panel",
     "play": "Play",
@@ -11,12 +12,13 @@
   "home": {
     "title": "🎵 What a Song",
     "subtitle": "Lyric Translation Guessing Game",
+    "heroDescription": "Test your music knowledge by guessing songs from their translated lyrics. Can you recognize your favorite hits in a different language?",
     "todaysChallenge": "Today's Song Challenge",
     "canYouGuess": "Can you guess today's song from the translated lyrics?",
     "noGameToday": "No Game Today",
     "noGameTodayMessage": "There's no song challenge available for today.",
     "checkBackTomorrow": "Check back tomorrow or visit our history to play previous games!",
-    "startNow": "Start Now",
+    "startNow": "Start Playing",
     "wantToPrevious": "Want to play previous games?",
     "viewHistory": "View Game History",
     "playButton": "Play Game",
@@ -24,6 +26,21 @@
     "loading": "Loading song...",
     "error": "Error",
     "noSongFound": "No song found",
+    "howToPlay": {
+      "title": "How to Play",
+      "step1": {
+        "title": "Read the Lyrics",
+        "description": "You'll see translated lyrics from a popular song, revealed line by line."
+      },
+      "step2": {
+        "title": "Use Hints Wisely",
+        "description": "Get clues like artist name, album cover, or release year to help you guess."
+      },
+      "step3": {
+        "title": "Make Your Guess",
+        "description": "You have 3 attempts to guess the correct song title and win points!"
+      }
+    },
     "songInfo": {
       "trackId": "Track ID",
       "explicit": "Explicit",
